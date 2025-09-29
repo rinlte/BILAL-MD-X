@@ -5,7 +5,7 @@ cmd({
     pattern: "menu",
     alias: ["help", "commands", "allmenu", "m", "me", "men", "meno", "mno", "menu1", "list", "allcmd", "allcmds", "cmd", "cmds"],
     desc: "Show all menu commands in one list with channel button",
-    category: "menu",,
+    category: "menu",
     react: "👑",
     filename: __filename
 }, async (conn, mek, m, { from }) => {
@@ -128,25 +128,6 @@ cmd({
             },
             { quoted: mek }
         );
-
-        // Handle button click
-        conn.ev.on("messages.upsert", async (chatUpdate) => {
-            try {
-                const msg = chatUpdate.messages[0];
-                if (!msg.message) return;
-                const from = msg.key.remoteJid;
-                const buttonResponse = msg.message.buttonsResponseMessage?.selectedButtonId;
-
-                if (buttonResponse === "channel_link") {
-                    await conn.sendMessage(from, {
-                        text: "*👑 BILAL-MD SUPPORT 👑* \n *https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G*"
-                    });
-                }
-            } catch (err) {
-                console.error("Button Error:", err);
-            }
-        });
-
     } catch (e) {
         console.error('ERROR:', e);
         await conn.sendMessage(
@@ -154,5 +135,23 @@ cmd({
             { text: `*SHYAD KOI MASLA HAI BOT ME 🥺❤️* \n *AP BAD ME MENU MANGWA LENA OKY 😊🌹*` },
             { quoted: mek }
         );
+    }
+});
+
+// button handler ko global rakho, command ke andar nahi
+conn.ev.on("messages.upsert", async (chatUpdate) => {
+    try {
+        const msg = chatUpdate.messages[0];
+        if (!msg.message) return;
+        const from = msg.key.remoteJid;
+        const buttonResponse = msg.message.buttonsResponseMessage?.selectedButtonId;
+
+        if (buttonResponse === "channel_link") {
+            await conn.sendMessage(from, {
+                text: "*👑 BILAL-MD SUPPORT 👑* \n *https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G*"
+            });
+        }
+    } catch (err) {
+        console.error("Button Error:", err);
     }
 });
