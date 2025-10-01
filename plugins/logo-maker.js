@@ -1,5 +1,5 @@
 //---------------------------------------------
-//           KHAN-MD  
+//           BILAL MD 
 //---------------------------------------------
 //  ⚠️ DO NOT MODIFY THIS FILE ⚠️  
 //---------------------------------------------
@@ -8,7 +8,7 @@ const axios = require('axios');
 const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, sleep, fetchJson } = require('../lib/functions2');
 
 cmd({
-    pattern: "3dcomic",
+    pattern: "logo1",
     desc: "Create a 3D Comic-style text effect",
     category: "logo",
     react: "🎨",
@@ -45,7 +45,7 @@ cmd({
 });
 
 cmd({
-    pattern: "dragonball",
+    pattern: "logo2",
     desc: "Create a 3D Comic-style text effect",
     category: "logo",
     react: "🎨",
@@ -82,7 +82,7 @@ cmd({
 });
 
 cmd({
-    pattern: "deadpool",
+    pattern: "logo3",
     desc: "Create a deadpool text effect",
     category: "logo",
     react: "🎨",
@@ -119,7 +119,7 @@ cmd({
 });
 
 cmd({
-    pattern: "blackpink",
+    pattern: "logo4",
     desc: "Create a blackpink text effect",
     category: "logo",
     react: "🎨",
@@ -156,7 +156,7 @@ cmd({
 });
 
 cmd({
-    pattern: "neonlight",
+    pattern: "logo5",
     desc: "Create a neon light text effect",
     category: "logo",
     react: "🎨",
@@ -193,7 +193,7 @@ cmd({
 });
 
 cmd({
-    pattern: "cat",
+    pattern: "logo6",
     desc: "Create a cat text effect",
     category: "logo",
     react: "🎨",
@@ -230,10 +230,10 @@ cmd({
 });
 
 cmd({
-    pattern: "sadgirl",
+    pattern: "logo7",
     desc: "Create a sadgirl text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -267,10 +267,10 @@ cmd({
 });
 
 cmd({
-    pattern: "pornhub",
+    pattern: "logo8",
     desc: "Create a pornhub text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -304,10 +304,10 @@ cmd({
 });
 
 cmd({
-    pattern: "naruto",
+    pattern: "logo9",
     desc: "Create a Naruto text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -341,10 +341,10 @@ cmd({
 });
 
 cmd({
-    pattern: "thor",
+    pattern: "logo10",
     desc: "Create a Thor text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -378,10 +378,10 @@ cmd({
 });
 
 cmd({
-    pattern: "america",
+    pattern: "logo11",
     desc: "Create  American text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -415,10 +415,10 @@ cmd({
 });
 
 cmd({
-    pattern: "eraser",
+    pattern: "logo12",
     desc: "Create a Eraser text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -452,10 +452,10 @@ cmd({
 });
 
 cmd({
-    pattern: "3dpaper",
+    pattern: "logo14",
     desc: "Create a 3D Paper text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -489,10 +489,10 @@ cmd({
 });
 
 cmd({
-    pattern: "futuristic",
+    pattern: "logo15",
     desc: "Create a futuristic text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -526,10 +526,10 @@ cmd({
 });
 
 cmd({
-    pattern: "clouds",
+    pattern: "logo16",
     desc: "Create a Clouds text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -563,10 +563,10 @@ cmd({
 });
 
 cmd({
-    pattern: "sans",
+    pattern: "logo17",
     desc: "Create a Sand text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -600,10 +600,10 @@ cmd({
 });
 
 cmd({
-    pattern: "galaxy",
+    pattern: "logo18",
     desc: "Create a Galaxy text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -637,10 +637,10 @@ cmd({
 });
 
 cmd({
-    pattern: "leaf",
+    pattern: "logo19",
     desc: "Create a Leaf text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -674,10 +674,10 @@ cmd({
 });
 
 cmd({
-    pattern: "sunset",
+    pattern: "logo20",
     desc: "Create a sunset text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
@@ -711,10 +711,10 @@ cmd({
 });
 
 cmd({
-    pattern: "nigeria",
+    pattern: "logo21",
     desc: "Create a Nigeria text effect",
     category: "logo",
-    react: "🎨",
+    react: "🖼️",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
     try {
