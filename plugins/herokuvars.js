@@ -1,35 +1,24 @@
 /**
- * Cleaned & readable version of your obfuscated Heroku config + sudo management module.
- * Expects:
- *  - ../config to export HEROKU_APP_NAME and HEROKU_API_KEY (optional)
- *  - ../lib to export helpers like smd, prefix, etc.
- *
- * Commands registered:
- *  - sudo (list sudo/mods)
- *  - setsudo / addsudo (add sudo by mention)
- *  - delsudo / deletesudo (remove sudo by mention)
- *  - allvar (show all heroku config vars)
- *  - getvar (get a single heroku var)
- *  - setvar (set a heroku var)
- *
- * Keep in mind: this module uses global.sudo (comma-separated string of @numbers),
- * and toggles Heroku values if HEROKU_API_KEY + HEROKU_APP_NAME are present.
+ * BILAL-MD • Heroku + Sudo Management Commands
+ * Author: Umar Farooq
  */
 
 const Config = require('../config');
-const {
-  fancytext, tlang, tiny, runtime, formatp, botpic, prefix, sck1, smd
-} = require('../lib');
+const { prefix, smd } = require('../lib');
 
-const axios = require('axios');
-const fetch = require('node-fetch'); // original used node-fetch
+// ✅ Use global fetch (Node 18+). Fallback: node-fetch for Node <18
+let fetchFn = global.fetch;
+if (!fetchFn) {
+  fetchFn = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+}
+const fetch = fetchFn;
 
-// Heroku credentials from config (may be undefined)
+// Heroku creds
 const appName = Config.HEROKU_APP_NAME ? Config.HEROKU_APP_NAME.trim() : '';
 const authToken = Config.HEROKU_API_KEY;
-const HEROKU = !!(authToken && appName); // true if both present
+const HEROKU = !!(authToken && appName);
 
-// Utility: reload config from require cache (used after process.env changes)
+// Reload config after env changes
 let updateConfig = () => {
   try {
     const configPath = '../config';
@@ -42,15 +31,11 @@ let updateConfig = () => {
   }
 };
 
-// Heroku helper object
+// -------------------------
+// Heroku API Helpers
+// -------------------------
 const heroku = {};
 
-/**
- * Add or update a single Heroku config var (PATCH)
- * @param {string} key
- * @param {string} value
- * @returns {Promise<{status: boolean, data: any}>}
- */
 heroku.addVar = async (key, value) => {
   try {
     const headers = {
@@ -59,67 +44,43 @@ heroku.addVar = async (key, value) => {
       'Content-Type': 'application/json'
     };
     const url = `https://api.heroku.com/apps/${appName}/config-vars`;
-    const body = JSON.stringify({ [key]: value });
-    const res = await fetch(url, { method: 'PATCH', headers, body });
-    const data = await res.json();
-    return { status: true, data };
+    const res = await fetch(url, { method: 'PATCH', headers, body: JSON.stringify({ [key]: value }) });
+    return { status: res.ok, data: await res.json() };
   } catch (err) {
-    return { status: false, data: err };
+    return { status: false, data: err.message };
   }
 };
 
-/**
- * Get all Heroku config vars (GET)
- * @returns {Promise<{status: boolean, data: string|object}>}
- */
 heroku.getAllVars = async () => {
   try {
     const headers = {
       Accept: 'application/vnd.heroku+json; version=3',
       Authorization: 'Bearer ' + authToken
     };
-    const url = `https://api.heroku.com/apps/${appName}/config-vars`;
-    const res = await fetch(url, { headers });
+    const res = await fetch(`https://api.heroku.com/apps/${appName}/config-vars`, { headers });
     const data = await res.json();
-
-    // Build a formatted string listing vars
-    let out = `*${appName} VARS*』 \n*________________________________________*\n`;
-    Object.keys(data).forEach(key => {
-      out += `*${key}* : ${(data[key] ? '`' + data[key] + '`' : '')} \n`;
-    });
+    let out = `*${appName} VARS* \n*________________________________________*\n`;
+    for (let k in data) out += `*${k}* : \`${data[k]}\`\n`;
     return { status: true, data: out };
   } catch (err) {
-    // some errors have message property
-    return { status: false, data: err.message || err };
+    return { status: false, data: err.message };
   }
 };
 
-/**
- * Get a single var value from the Heroku app object (GET app)
- * @param {string} key - property name in the app object or config (uppercased)
- * @returns {Promise<{status: boolean, data: any}>}
- */
 heroku.getVar = async (key) => {
   try {
     const headers = {
       Accept: 'application/vnd.heroku+json; version=3',
       Authorization: 'Bearer ' + authToken
     };
-    const url = `https://api.heroku.com/apps/${appName}`;
-    const res = await fetch(url, { headers });
-    const appInfo = await res.json();
-    return { status: true, data: appInfo[key] };
+    const res = await fetch(`https://api.heroku.com/apps/${appName}/config-vars`, { headers });
+    const data = await res.json();
+    return { status: true, data: data[key] };
   } catch (err) {
-    return { status: false, data: err.message || err };
+    return { status: false, data: err.message };
   }
 };
 
-/**
- * Update an existing config var (checks var exists first)
- * @param {string} key
- * @param {string} value
- * @returns {Promise<{status:boolean,data:any}>}
- */
 heroku.setVarIfExists = async (key, value) => {
   try {
     const headers = {
@@ -127,237 +88,111 @@ heroku.setVarIfExists = async (key, value) => {
       Authorization: 'Bearer ' + authToken,
       'Content-Type': 'application/json'
     };
-
-    // First get existing config-vars
-    const getRes = await fetch(`https://api.heroku.com/apps/${appName}/config-vars`, { method: 'GET', headers });
-    if (!getRes.ok) {
-      return { status: false, data: 'Failed to fetch app variables. Status: ' + getRes.status };
-    }
-    const current = await getRes.json();
-
-    if (!Object.prototype.hasOwnProperty.call(current, key)) {
-      return { status: false, data: 'Variable not found in app' };
-    }
-
-    // patch with new value
-    const patched = { ...current, [key]: value };
+    const res = await fetch(`https://api.heroku.com/apps/${appName}/config-vars`, { headers });
+    const current = await res.json();
+    if (!current.hasOwnProperty(key)) return { status: false, data: 'Variable not found in app' };
     const patchRes = await fetch(`https://api.heroku.com/apps/${appName}/config-vars`, {
-      method: 'PATCH',
-      headers,
-      body: JSON.stringify(patched)
+      method: 'PATCH', headers, body: JSON.stringify({ [key]: value })
     });
-
-    if (patchRes.ok) {
-      return { status: true, data: await patchRes.json() };
-    } else {
-      return { status: false, data: 'Failed to update app variable. Status: ' + patchRes.status };
-    }
+    return { status: patchRes.ok, data: await patchRes.json() };
   } catch (err) {
-    return { status: false, data: err.message || err };
+    return { status: false, data: err.message };
   }
 };
 
-/* -------------------------
-   Command handlers (smd registrations)
-   ------------------------- */
+// -------------------------
+// Commands
+// -------------------------
 
-/**
- * Command: sudo
- * Show list of sudo/mods (global.sudo is expected comma-separated)
- */
+// Sudo list
 smd({
   cmdname: 'sudo',
-  alias: ['mods', 'ssudo'],
-  info: 'get sudo users list.',
+  alias: ['mods'],
+  info: 'Get sudo users list',
   fromMe: true,
   type: 'tools',
   filename: __filename
 }, async (msg) => {
-  try {
-    // global.sudo expected like ",123@s.whatsapp.net,456@s.whatsapp.net"
-    let arr = (global.sudo || '').split(',').filter(x => x && x !== 'null').map(x => x.trim());
-    const listText = arr.map((v, i) => `  ${i + 1} • ${v}\n\n`).join('');
-
-    if (!listText || !arr || !arr[0]) {
-      return await msg.reply('*There\'s no mods/sudo added for your bot!*');
-    }
-
-    const caption = `*${Config.SOME_BOTNAME ? Config.SOME_BOTNAME : 'SUHAIL-MD '}* • SUDO LIST\n\n${listText}`.trim();
-    const mentions = [msg.sender, ...arr];
-    return await msg.send({ image: { url: 'https://telegra.ph/file/5fd51597b0270b8cff15b.png' }, caption, mentions });
-  } catch (err) {
-    console.error(err);
-  }
+  let arr = (global.sudo || '').split(',').filter(x => x && x !== 'null');
+  if (!arr.length) return msg.reply('*No sudo/mods added!*');
+  let listText = arr.map((v, i) => ` ${i + 1}. ${v}`).join('\n');
+  msg.reply(`*SUDO LIST*\n\n${listText}`);
 });
 
-/**
- * Command: setsudo / addsudo
- * Add a mentioned user to sudo list
- * Usage: reply or mention a user like @123
- */
+// Add sudo
 smd({
   pattern: 'setsudo',
-  alias: ['addsudo', 'gsudo'],
-  info: 'Make sudo to a user',
+  alias: ['addsudo'],
   fromMe: true,
+  info: 'Add sudo user',
   type: 'tools',
   filename: __filename
 }, async (msg) => {
-  try {
-    // get mention from reply or from message text
-    let mentionText = msg.reply_message ? msg.reply_message.text : (msg.quoted && msg.quoted[0]) ? msg.quoted[0] : '';
-    // fallback: if msg has arguments, take first arg
-    if (!mentionText && msg.clientText) mentionText = msg.clientText.split(' ')[0];
-
-    if (!mentionText || !mentionText.includes('@')) {
-      return await msg.reply('*Uhh dear, reply/mention an User*');
-    }
-
-    const number = mentionText.split('@')[0];
-    if (global.sudo && global.sudo.includes(number)) {
-      return await msg.reply('*Number Already Exist In Sudo!*');
-    }
-
-    global.sudo = (global.sudo || '') + ',' + number;
-
-    let result = HEROKU ? await heroku.addVar('SUDO', global.sudo) : { status: false };
-    if (result && result.status) {
-      return msg.reply(`*${number} Added Succesfully.*\nSudo Numbers : \`\`\`${global.sudo}\`\`\``);
-    } else {
-      // where heroku not configured, we still added temporarily
-      if (HEROKU) await msg.reply('*There\'s no responce from HEROKU*, \n  please check that you put valid\n  _HEROKU_APP_NAME_ & _HEROKU_API_KEY_');
-      await msg.reply('*User temporary added in sudo.*');
-    }
-  } catch (err) {
-    await msg.error(err + '\n\ncommand: setsudo', err);
-  }
+  let jid = msg.reply_message ? msg.reply_message.sender : (msg.mentionedJid && msg.mentionedJid[0]);
+  if (!jid) return msg.reply('Reply or mention a user!');
+  if (!global.sudo?.includes(jid)) global.sudo = (global.sudo || '') + ',' + jid;
+  let result = HEROKU ? await heroku.addVar('SUDO', global.sudo) : { status: false };
+  msg.reply(result.status ? `✅ Added to sudo: ${jid}` : `Temporarily added (Heroku not updated)`);
 });
 
-/**
- * Command: delsudo / deletesudo
- * Remove a mentioned user from sudo
- */
+// Delete sudo
 smd({
   pattern: 'delsudo',
-  alias: ['deletesudo', 'dsudo'],
+  alias: ['deletesudo'],
   fromMe: true,
-  desc: 'delete sudo user.',
-  category: 'tools',
+  info: 'Remove sudo user',
+  type: 'tools',
   filename: __filename
 }, async (msg) => {
-  try {
-    let mentionText = msg.reply_message ? msg.reply_message.text : (msg.clientText ? msg.clientText.split(' ')[0] : '');
-    if (!mentionText || !mentionText.includes('@')) return await msg.reply('*Uhh dear, reply/mention an User*');
-
-    const number = mentionText.split('@')[0];
-    const search = ',' + number;
-    if (global.sudo && global.sudo.includes(search)) {
-      global.sudo = global.sudo.replace(search, '');
-    } else {
-      return await msg.reply('*_User not found in the Sudo List!_*');
-    }
-
-    let result = HEROKU ? await heroku.addVar('SUDO', global.sudo) : { status: false };
-    if (result && result.status) {
-      return msg.reply(`*${number} Deleted Succesfully.*\nSudo Numbers : \`\`\`${global.sudo}\`\`\``);
-    } else {
-      if (HEROKU) await msg.reply('*There\'s no responce from HEROKU*, \n  please check that you put valid\n  _HEROKU_APP_NAME_ & _HEROKU_API_KEY_');
-      await msg.reply('*User removed from sudo.*');
-    }
-  } catch (err) {
-    await msg.error(err + '\n\ncommand: delsudo', err);
-  }
+  let jid = msg.reply_message ? msg.reply_message.sender : (msg.mentionedJid && msg.mentionedJid[0]);
+  if (!jid) return msg.reply('Reply or mention a user!');
+  if (global.sudo?.includes(jid)) global.sudo = global.sudo.replace(',' + jid, '');
+  else return msg.reply('User not in sudo list!');
+  let result = HEROKU ? await heroku.addVar('SUDO', global.sudo) : { status: false };
+  msg.reply(result.status ? `❌ Removed from sudo: ${jid}` : `Removed locally (Heroku not updated)`);
 });
 
-/**
- * Command: allvar
- * Show all heroku config vars formatted
- */
+// All vars
 smd({
   pattern: 'allvar',
-  alias: ['getallvar', 'getvars'],
-  desc: 'To get all heroku variables',
   fromMe: true,
-  category: 'tools',
+  info: 'Show all heroku vars',
+  type: 'tools',
   filename: __filename
 }, async (msg) => {
-  try {
-    let result = await heroku.getAllVars();
-    console.log({ result });
-    if (result.status) {
-      return msg.reply(result.data);
-    } else {
-      console.error(result.data);
-      return msg.reply('*_There\'s no responce from HEROKU_*, \n  please check that you put valid\n  _HEROKU_APP_NAME_ & _HEROKU_API_KEY_\n``` See Console to check whats the err```');
-    }
-  } catch (err) {
-    await msg.error(err + '\n\ncommand: allvar', err);
-  }
+  let result = await heroku.getAllVars();
+  msg.reply(result.status ? result.data : 'Heroku not responding. Check API key/app name.');
 });
 
-/**
- * Command: getvar
- * Get a single heroku var
- * Usage: getvar VAR_NAME
- */
+// Get var
 smd({
   pattern: 'getvar',
-  desc: 'To Get A Heroku Var',
-  category: 'tools',
   fromMe: true,
+  info: 'Get single heroku var',
+  type: 'tools',
   filename: __filename
-}, async (msg, text, { cmdName }) => {
-  try {
-    if (!text) return msg.reply(`To Get A Heroku Var, use: ${prefix}${cmdName} VAR_NAME`);
-    const varName = text.split(' ')[0].toUpperCase();
-    let result = await heroku.getVar(varName);
-    if (result.status) {
-      if (result.data) return msg.reply(`*${varName}* : ${result.data}`);
-      else return msg.reply(`*${varName}* does not exist in Heroku *${appName}*`);
-    } else {
-      console.error(result.data);
-      await msg.reply('*_There\'s no responce from HEROKU_*, \n  please check that you put valid\n  _HEROKU_APP_NAME_ & _HEROKU_API_KEY_');
-    }
-  } catch (err) {
-    await msg.error(err + '\n\ncommand: getvar', err);
-  }
+}, async (msg, text) => {
+  if (!text) return msg.reply(`Usage: ${prefix}getvar VAR_NAME`);
+  let result = await heroku.getVar(text.toUpperCase());
+  msg.reply(result.status ? `${text.toUpperCase()} = ${result.data || 'Not Found'}` : result.data);
 });
 
-/**
- * Command: setvar
- * Set a heroku config var
- * Usage: setvar KEY:VALUE
- */
+// Set var
 smd({
   pattern: 'setvar',
-  desc: 'To Set Heroku Vars',
-  category: 'tools',
   fromMe: true,
+  info: 'Set heroku var',
+  type: 'tools',
   filename: __filename
-}, async (msg, text, { smd: cmdName }) => {
-  try {
-    if (!text) return msg.reply(`*Please give me Variable Name*\n*Example : ${prefix}setvar PREFIX:null*`);
-    const idx = text.indexOf(':');
-    const key = text.slice(0, idx).toUpperCase().trim();
-    const value = text.slice(idx + 1).trim();
-
-    if (!value) return msg.reply(`*Please, Provide Value After ':' !*\n*Example : ${prefix}${cmdName} PREFIX:VALUE*`);
-
-    // update local process.env and config
-    process.env[key] = value;
-    updateConfig();
-
-    // update on heroku if possible
-    const result = await heroku.setVarIfExists(key, value);
-    if (result.status) {
-      await msg.reply(`*${key}* updated to *${value}* successfully.`);
-    } else {
-      console.error(result.data);
-      await msg.reply(result.data.toString());
-    }
-  } catch (err) {
-    await msg.error(err + `\n\ncommand: ${cmdName}`, err);
-  }
+}, async (msg, text) => {
+  if (!text.includes(':')) return msg.reply(`Usage: ${prefix}setvar KEY:VALUE`);
+  let [key, ...valArr] = text.split(':');
+  let value = valArr.join(':').trim();
+  key = key.toUpperCase().trim();
+  process.env[key] = value;
+  updateConfig();
+  let result = await heroku.setVarIfExists(key, value);
+  msg.reply(result.status ? `✅ ${key} updated to ${value}` : `❌ ${result.data}`);
 });
 
 module.exports = heroku;
