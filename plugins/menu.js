@@ -72,6 +72,29 @@ cmd({
 *┃👑│ • IMAGINE*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
+*╭━━〔 👑 LOGO MENU 👑 〕━━┈⊷*
+*┃👑│ • LOGO1*
+*┃👑│ • LOGO2*
+*┃👑│ • LOGO3*
+*┃👑│ • LOGO4*
+*┃👑│ • LOGO5*
+*┃👑│ • LOGO6*
+*┃👑│ • LOGO7*
+*┃👑│ • LOGO8*
+*┃👑│ • LOGO9*
+*┃👑│ • LOGO10*
+*┃👑│ • LOGO11*
+*┃👑│ • LOGO12*
+*┃👑│ • LOGO13*
+*┃👑│ • LOGO14*
+*┃👑│ • LOGO15*
+*┃👑│ • LOGO16*
+*┃👑│ • LOGO17*
+*┃👑│ • LOGO18*
+*┃👑│ • LOGO19*
+*┃👑│ • LOGO20*
+*╰━━━━━━━━━━━━━━━┈⊷*
+
 *╭━━〔 👑 CONVERTER MENU 👑 〕━━┈⊷*
 *┃👑│ • STICKER*
 *┃👑│ • EMOJIMIX*
