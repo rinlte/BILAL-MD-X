@@ -168,13 +168,13 @@ const contextInfo = {
         }  
     };  
 
-    // Function to send menu audio with timeout  
+    // Function to send menu audio with timeout (Voice Note Style)  
     const sendMenuAudio = async () => {  
         try {  
             await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay after image  
             await conn.sendMessage(from, {  
                 audio: { url: 'https://github.com/BiLaLTeCh05/BILAL-MD/raw/refs/heads/main/plugins/naat.mp3' },  
-                mimetype: 'audio/mp4',  
+                mimetype: 'audio/ogg; codecs=opus',  
                 ptt: true,  
             }, { quoted: mek });  
         } catch (e) {  
@@ -207,10 +207,8 @@ const contextInfo = {
       
     const messageID = sentMsg.key.id;  
 
-    // EMPTY menuData (numbers wale menus delete kar diye)  
     const menuData = {};  
 
-    // Message handler  
     const handler = async (msgData) => {  
         try {  
             const receivedMsg = msgData.messages[0];  
