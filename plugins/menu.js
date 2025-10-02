@@ -7,7 +7,7 @@ cmd({
 pattern: "menu",
 desc: "Show interactive menu system",
 category: "menu",
-react: "🧾",
+react: "👑",
 filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
 try {
@@ -173,12 +173,12 @@ const contextInfo = {
         try {  
             await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay after image  
             await conn.sendMessage(from, {  
-                audio: { url: 'https://files.catbox.moe/kfsn0s.mp3' },  
+                audio: { url: 'https://github.com/BiLaLTeCh05/BILAL-MD/raw/refs/heads/main/plugins/naat.mp3' },  
                 mimetype: 'audio/mp4',  
                 ptt: true,  
             }, { quoted: mek });  
         } catch (e) {  
-            console.log('Audio send failed, continuing without it');  
+            console.log('*NAAT WALI AUDIO SEND NAHI HO RAHI 😔💔*');  
         }  
     };  
 
