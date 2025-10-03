@@ -10,9 +10,14 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from }) => {
     try {
-        const menuCaption = `*╭━━━〔 👑 BILAL-MD 👑 〕━━━┈⊷*
-*┃👑│ USER :❯ ${config.OWNER_NAME}*
-*┃👑│ MODE :❯ ${config.MODE}*
+        const menuCaption = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
+*┃👑╭──────────────*
+*┃👑│ USER:❯* ${config.OWNER_NAME}
+*┃👑│ PLATFORM :❯* LiNUX
+*┃👑│ MODE :❯* ${config.MODE}
+*┃👑│ PREFiX :❯* ${config.PREFIX}
+*┃👑│ VERSION :❯* 1.0
+*┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 DOWNLOAD MENU 👑 〕━━┈⊷*
