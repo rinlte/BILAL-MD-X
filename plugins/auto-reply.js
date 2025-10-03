@@ -1,30 +1,34 @@
-const axios = require('axios');
-const config = require('../config');
 const fs = require('fs');
 const path = require('path');
-const {cmd , commands} = require('../command')
+const { cmd, commands } = require('../command');
+const config = require('../config');
 
+// Path to local autoreply JSON
+const AUTOREPLY_PATH = path.join(__dirname, '../data/autoreply.json');
 
-// Replace this with your actual GitHub RAW JSON URL
-const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/chamod-mv/Whiteshadow-data/main/autoreply.json';
+// Read and parse JSON synchronously
+let autoReplies = {};
+try {
+    const rawData = fs.readFileSync(AUTOREPLY_PATH, 'utf-8');
+    autoReplies = JSON.parse(rawData);
+} catch (err) {
+    console.error('ERROR reading autoreply.json:', err.message);
+}
 
 cmd({
-  on: "body"
-},
-async (conn, mek, m, { body }) => {
-  try {
-    const res = await axios.get(GITHUB_RAW_URL);
-    const data = res.data;
-
-    for (const text in data) {
-      if (body.toLowerCase() === text.toLowerCase()) {
-        if (config.AUTO_REPLY === 'true') {
-          await m.reply(data[text]);
+    on: "body"
+}, async (conn, mek, m, { body }) => {
+    try {
+        if (!body) return;
+        for (const text in autoReplies) {
+            if (body.toLowerCase() === text.toLowerCase()) {
+                if (config.AUTO_REPLY === 'true') {
+                    await m.reply(autoReplies[text]);
+                }
+                break;
+            }
         }
-        break;
-      }
+    } catch (err) {
+        console.error('ERROR replying:', err.message);
     }
-  } catch (err) {
-    console.error('ERROR', err.message);
-  }
 });
