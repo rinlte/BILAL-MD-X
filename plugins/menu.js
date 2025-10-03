@@ -1,19 +1,5 @@
 const config = require('../config');
 const { cmd, commands } = require('../command');
-const { getUptime } = require('../uptime'); // Uptime function
-const { version } = require('../../package.json'); // package.json se version
-
-// Detect platform
-function getPlatform() {
-    if (process.env.REPL_ID) return "REPLIT";
-    if (process.env.HEROKU_APP_NAME) return "HEROKU";
-    switch (process.platform) {
-        case "linux": return "LINUX/TERMUX";
-        case "win32": return "WINDOWS";
-        case "darwin": return "MACOS";
-        default: return process.platform.toUpperCase();
-    }
-}
 
 cmd({
     pattern: "menu",
@@ -22,26 +8,12 @@ cmd({
     category: "menu",
     react: "👑",
     filename: __filename
-}, async (conn, mek, m, { from, pushName }) => {
+}, async (conn, mek, m, { from }) => {
     try {
-        const platformName = getPlatform();
-        const totalCommands = commands.length;
-        const uptime = getUptime();
-        const userName = pushName || "User";
-
         const menuCaption = `*╭━━━〔 👑 BILAL-MD 👑 〕━━━┈⊷*
-*┃👑╭──────────────*
 *┃👑│ USER :❯ ${config.OWNER_NAME}*
-*┃👑│ PLATFORM :❯ ${platformName}*
-*┃👑│ COMMANDS :❯ ${totalCommands}*
 *┃👑│ MODE :❯ ${config.MODE}*
-*┃👑│ PREFIX :❯ ${config.PREFIX}*
-*┃👑│ VERSION :❯ ${version}*
-*┃👑│ UPTIME :❯ ${uptime}*
-*┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
-
-*╭━━〔 HI ) ${userName} 〕━━┈⊷*
 
 *╭━━〔 👑 DOWNLOAD MENU 👑 〕━━┈⊷*
 *┃👑│ • FB*
@@ -169,9 +141,7 @@ cmd({
         console.error('Menu Error:', e);
         await conn.sendMessage(
             from,
-            { 
-                text: "*❌ MENU ERROR, TRY AGAIN LATER.*\n\n*BILAL-MD BOT ME KOI ERROR HAO SHYD 🥺 IS LIE MENU SHOW NAHI HUWA LEKIN AP PARSHAN NA HO 😇 BOT KA OWNER IS ERROR KO BAHUT JALDI FIX KAR LE GA 🥰🌹*" 
-            },
+            { text: "*DUBARA KOSHISH KARO 🥺❤️*" },
             { quoted: mek }
         );
     }
