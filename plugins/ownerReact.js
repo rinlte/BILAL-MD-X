@@ -6,8 +6,8 @@ const config = require('../config');
 // Path to store owner react state
 const STATE_PATH = path.join(__dirname, '../data/ownerReact.json');
 
-// Load state
-let ownerReactState = { enabled: true, emoji: '🥰' };
+// Load or create state
+let ownerReactState = { enabled: true, emoji: '🌟' }; // default emoji
 if (fs.existsSync(STATE_PATH)) {
     try {
         ownerReactState = JSON.parse(fs.readFileSync(STATE_PATH, 'utf-8'));
@@ -18,48 +18,68 @@ if (fs.existsSync(STATE_PATH)) {
     fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState));
 }
 
-// Owner number from env or config
+// Owner number from Heroku vars or config
 const OWNER_NUMBER = process.env.OWNER_NUMBER || config.OWNER_NUMBER || '923276650623';
 
-// Toggle ON/OFF command
+// Command: Toggle ON/OFF or Set Emoji
 cmd({
     pattern: 'ownerreact',
-    fromMe: true,
+    fromMe: false,
     desc: 'Toggle owner react ON/OFF or set emoji'
-}, async (m, { conn, args }) => {
+}, async (m, { args }) => {
     try {
-        if (args[0] && args[0].toLowerCase() === 'set' && args[1]) {
-            // Set new emoji
-            ownerReactState.emoji = args[1];
-            fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState));
-            await m.reply(`✅ Owner React emoji set to: ${ownerReactState.emoji}`);
-        } else {
-            // Toggle ON/OFF
-            ownerReactState.enabled = !ownerReactState.enabled;
-            fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState));
-            await m.reply(`✅ Owner React is now *${ownerReactState.enabled ? 'ON' : 'OFF'}*`);
+        const sender = m.key.remoteJid.split('@')[0];
+        if (sender !== OWNER_NUMBER) return; // Only owner can use
+
+        if (args[0]) {
+            const arg = args[0].toLowerCase();
+            if (arg === 'set' && args[1]) {
+                // Set new emoji
+                ownerReactState.emoji = args[1];
+                fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState));
+                await m.reply(`✅ Owner React emoji updated to: ${ownerReactState.emoji}`);
+                return;
+            }
+            if (arg === 'on') {
+                ownerReactState.enabled = true;
+                fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState));
+                await m.reply(`✅ Owner React is now ON`);
+                return;
+            }
+            if (arg === 'off') {
+                ownerReactState.enabled = false;
+                fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState));
+                await m.reply(`✅ Owner React is now OFF`);
+                return;
+            }
         }
+
+        // Default toggle if no argument
+        ownerReactState.enabled = !ownerReactState.enabled;
+        fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState));
+        await m.reply(`✅ Owner React is now *${ownerReactState.enabled ? 'ON' : 'OFF'}*`);
+
     } catch (e) {
         console.error('❌ ERROR updating owner react:', e.message);
         await m.reply('⚠️ Something went wrong!');
     }
 });
 
-// Actual owner react handler
+// React handler: Owner messages only
 cmd({
     on: 'body'
 }, async (conn, mek, m) => {
     try {
         if (!ownerReactState.enabled) return;
 
-        const sender = m.key?.fromMe ? OWNER_NUMBER : m.key?.remoteJid?.split('@')[0];
+        const sender = m.key.remoteJid.split('@')[0];
         if (sender !== OWNER_NUMBER) return;
 
         if (!conn.sendMessage) return;
 
         await conn.sendMessage(m.key.remoteJid, {
             react: {
-                text: ownerReactState.emoji,
+                text: ownerReactState.emoji, // updated emoji will be used
                 key: m.key
             }
         });
