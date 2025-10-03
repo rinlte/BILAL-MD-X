@@ -1,34 +1,97 @@
-import say from 'say'
-import { readFileSync, unlinkSync, writeFileSync } from 'fs'
-import { join } from 'path'
+const { cmd } = require("../command");
+const googleTTS = require('google-tts-api'); 
 
-const defaultLang = 'en'
-let handler = async (m, { conn, args, usedPrefix, command }) => {
+cmd({
+  pattern: "tts",
+  desc: "Convert text to speech with different voices.",
+  category: "fun",
+  react: "😇",
+  filename: __filename
+},
+async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+  try {
+    // Ensure there is text
+    if (!q) {
+      return reply("Please provide text for conversion! Usage: `.tts <text>`");
+    }
 
-  let lang = args[0]
-  let text = args.slice(1).join(' ')
-  if ((args[0] || '').length !== 2) {
-    lang = defaultLang
-    text = args.join(' ')
+    // Select voice language based on user input or default to a male voice
+    let voiceLanguage = 'en-US'; // Default language is American English with a male voice
+    let selectedVoice = 'male';  // Default voice type (we assume it's male by default)
+
+    // Check if user wants a different language or voice
+    if (args[0] === "male") {
+      voiceLanguage = 'en-US'; // Use American male voice
+    } else if (args[0] === "female") {
+      voiceLanguage = 'en-GB'; // Use British female voice
+      selectedVoice = 'female';
+    } else if (args[0] === "loud") {
+      voiceLanguage = 'en-US'; // Default male voice, but let's interpret "loud" as normal speech speed.
+    } else if (args[0] === "deep") {
+      voiceLanguage = 'en-US'; // Deep male voice (still has limitations with `google-tts-api`)
+    } else {
+      voiceLanguage = 'en-US'; // Default fallback
+    }
+
+    // Generate the URL for the TTS audio
+    const url = googleTTS.getAudioUrl(q, {
+      lang: voiceLanguage,  // Choose language based on selected voice
+      slow: false,  // Normal speed for the speech
+      host: 'https://translate.google.com'
+    });
+
+    // Send the audio message to the user
+    await conn.sendMessage(from, { 
+      audio: { url: url }, 
+      mimetype: 'audio/mpeg', 
+      ptt: true 
+    }, { quoted: mek });
+
+  } catch (error) {
+    console.error(error);
+    reply(`Error: ${error.message}`);
   }
-  if (!text && m.quoted?.text) text = m.quoted.text
-  if (!text) throw `📌 Example : \n${usedPrefix}${command} en hello world`
+});
 
-  let filePath = join('./tmp', `${Date.now()}.wav`)
 
-  await new Promise((resolve, reject) => {
-    say.export(text, null, 1.0, filePath, (err) => {
-      if (err) reject(err)
-      else resolve()
-    })
-  })
+cmd({
+  pattern: "tts2",
+  desc: "Convert text to speech with different voices.",
+  category: "fun",
+  react: "🔊",
+  filename: __filename
+},
+async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+  try {
+    // Ensure there is text
+    if (!q) {
+      return reply("Please provide text for conversion! Usage: `.tts2 <text>`");
+    }
 
-  conn.sendFile(m.chat, readFileSync(filePath), 'tts.wav', null, m, true)
-  unlinkSync(filePath)
-}
+    // Set default language
+    let voiceLanguage = 'en-US'; // Default language is American English
 
-handler.help = ['tts <lang> <task>']
-handler.tags = ['tools']
-handler.command = ['tts', 'voz']
+    // Check if user specifies Urdu language
+    if (args[0] === "ur" || args[0] === "urdu") {
+      voiceLanguage = 'ur'; // Set language to Urdu
+    }
 
-export default handler
+    // Generate the URL for the TTS audio
+    const url = googleTTS.getAudioUrl(q, {
+      lang: voiceLanguage,  // Choose language based on input
+      slow: false,  // Normal speed for the speech
+      host: 'https://translate.google.com'
+    });
+
+    // Send the audio message to the user
+    await conn.sendMessage(from, { 
+      audio: { url: url }, 
+      mimetype: 'audio/mpeg', 
+      ptt: true 
+    }, { quoted: mek });
+
+  } catch (error) {
+    console.error(error);
+    reply(`Error: ${error.message}`);
+  }
+});
