@@ -1,93 +1,106 @@
 const fs = require("fs");
 const path = require("path");
-const { cmd } = require('../command');
+const { cmd } = require("../command");
 
 const bgmFile = path.join(__dirname, "../data/bgm.json");
+const voicesDir = path.join(__dirname, "../voices");
 
-// ✅ Load JSON
-function loadBgm() {
-    if (!fs.existsSync(bgmFile)) {
-        return { enabled: true, audios: {} };
-    }
-    return JSON.parse(fs.readFileSync(bgmFile));
+// Ensure voices folder exists
+if (!fs.existsSync(voicesDir)) {
+    fs.mkdirSync(voicesDir, { recursive: true });
 }
 
-// ✅ Save JSON
+// Load BGMs
+function loadBgm() {
+    if (!fs.existsSync(bgmFile)) return {};
+    try {
+        return JSON.parse(fs.readFileSync(bgmFile));
+    } catch {
+        return {};
+    }
+}
+
+// Save BGMs
 function saveBgm(data) {
     fs.writeFileSync(bgmFile, JSON.stringify(data, null, 2));
 }
 
-// ✅ Check URL
-function isUrl(str) {
-    try { new URL(str); return true; } catch { return false; }
-}
+let bgmStatus = true; // on/off control
 
-// 🎶 BGM Management Command
+// Manage BGMs
 cmd({
     pattern: "bgm",
-    desc: "Manage BGM voices",
+    desc: "Manage BGMs (add/list/del/on/off)",
     category: "fun",
     react: "🎶",
     filename: __filename
 },
-async (conn, mek, m, { from, reply, args }) => {
+async (conn, mek, m, { from, reply, args, quoted, isOwner }) => {
     try {
-        let data = loadBgm();
+        let bgmAudios = loadBgm();
 
-        if (!args[0]) {
-            return reply("❌ Usage:\n- bgm add <name>\n- bgm list\n- bgm on/off");
+        // Show list
+        if (args[0] === "list") {
+            let list = Object.keys(bgmAudios).map(n => `• ${n}`).join("\n");
+            return reply(list ? "*🎶 Saved BGMs:*\n" + list : "❌ No BGMs saved yet.");
         }
 
-        // 🔹 Enable/Disable
+        // Turn on/off
         if (args[0] === "on") {
-            data.enabled = true;
-            saveBgm(data);
-            return reply("✅ BGM Auto-Reply *ON* ho gaya");
+            bgmStatus = true;
+            return reply("✅ BGM is now *ON*");
         }
         if (args[0] === "off") {
-            data.enabled = false;
-            saveBgm(data);
-            return reply("🚫 BGM Auto-Reply *OFF* ho gaya");
+            bgmStatus = false;
+            return reply("✅ BGM is now *OFF*");
         }
 
-        // 🔹 List
-        if (args[0] === "list") {
-            let list = Object.keys(data.audios).map(n => `• ${n}`).join("\n");
-            return reply(list ? "*🎶 Saved BGMs:*\n" + list : "❌ Abhi tak koi BGM save nahi hai.");
-        }
-
-        // 🔹 Add new BGM (auto detect last audio)
-        if (args[0] === "add") {
-            if (!args[1]) return reply("❌ Usage: bgm add <name>");
+        // Delete audio (owner only)
+        if (args[0] === "del") {
+            if (!isOwner) return reply("❌ Only Owner can delete audios.");
+            if (!args[1]) return reply("❌ Usage: bgm del <name>");
             const name = args[1].toLowerCase();
+            if (!bgmAudios[name]) return reply("❌ No audio found for this name.");
 
-            // Agar reply hai to usko lo, warna last audio from chat history
-            let quoted = m.quoted ? m.quoted : mek;
-            let msg = quoted.msg || quoted.message || mek.message;
+            // delete file from voices folder
+            try {
+                if (fs.existsSync(bgmAudios[name])) {
+                    fs.unlinkSync(bgmAudios[name]);
+                }
+            } catch {}
+            delete bgmAudios[name];
+            saveBgm(bgmAudios);
+            return reply(`🗑️ Deleted BGM: *${name}*`);
+        }
 
-            if (!msg.audioMessage) {
-                return reply("❌ Pehle ek audio bhejo, phir `.bgm add <name>` likho.");
+        // Add new audio
+        if (args[0] === "add") {
+            if (!args[1]) return reply("❌ Usage: reply to an audio with: bgm add <name>");
+            if (!quoted || !quoted.message || (!quoted.message.audioMessage && !quoted.message.voiceMessage)) {
+                return reply("❌ Reply to an *audio* to save it.");
             }
 
-            // ✅ Save audio in /data folder
-            const filePath = path.join(__dirname, `../data/bgm_${name}.mp3`);
-            const buff = await conn.downloadMediaMessage({ message: msg });
+            const name = args[1].toLowerCase();
+            const filePath = path.join(voicesDir, `${name}.mp3`);
+
+            // download audio and save
+            const buff = await conn.downloadMediaMessage(quoted);
             fs.writeFileSync(filePath, buff);
 
-            // ✅ Update JSON
-            data.audios[name] = filePath;
-            saveBgm(data);
+            // Multiple names can point to same file
+            bgmAudios[name] = filePath;
+            saveBgm(bgmAudios);
 
-            return reply(`✅ Voice saved for: *${name}*`);
+            return reply(`✅ Voice saved for name: *${name}*`);
         }
 
-        reply("❌ Invalid usage.");
+        reply("❌ Usage:\nReply audio: bgm add <name>\nList: bgm list\nDelete: bgm del <name>\nOn/Off: bgm on | bgm off");
     } catch (e) {
         reply("❌ Error: " + e.message);
     }
 });
 
-// 🎶 Auto Trigger: name likhne se voice bhejna
+// Auto BGM Trigger (no command, just text)
 cmd({
     pattern: ".*",
     dontAddCommandList: true,
@@ -95,29 +108,20 @@ cmd({
 },
 async (conn, mek, m, { from, body }) => {
     try {
-        if (!body) return;
-        let data = loadBgm();
-        if (!data.enabled) return;
-
+        if (!body || !bgmStatus) return;
+        const bgmAudios = loadBgm();
         const text = body.trim().toLowerCase();
-        let audios = data.audios;
 
-        // Agar JSON me name exist kare to send karo
-        if (audios[text]) {
-            let val = audios[text];
-            if (isUrl(val)) {
+        for (let key of Object.keys(bgmAudios)) {
+            if (key.toLowerCase() === text) {
                 await conn.sendMessage(from, {
-                    audio: { url: val },
+                    audio: fs.readFileSync(bgmAudios[key]),
                     mimetype: "audio/mpeg"
                 }, { quoted: mek });
-            } else if (fs.existsSync(val)) {
-                await conn.sendMessage(from, {
-                    audio: fs.readFileSync(val),
-                    mimetype: "audio/mpeg"
-                }, { quoted: mek });
+                break;
             }
         }
     } catch (e) {
-        console.log("BGM error:", e.message);
+        console.log("BGM auto error:", e.message);
     }
 });
