@@ -1,44 +1,34 @@
-const { cmd } = require('../command');
-const fs = require('fs');
-const path = require('path');
-const gTTS = require('gtts');
+import say from 'say'
+import { readFileSync, unlinkSync, writeFileSync } from 'fs'
+import { join } from 'path'
 
-cmd({
-    pattern: "tts",
-    alias: ["voice", "speak", "bolo", "awaz"], // 👈 aliases add kiye
-    desc: "Convert text to speech",
-    category: "tools",
-    use: "<lang> <text>",
-    react: "🎤",   // 👈 react emoji
-    filename: __filename
-}, async (conn, mek, m, { args, reply }) => {
-    try {
-        if (!args[0]) return reply("⚠️ Example: .tts en Hello World");
+const defaultLang = 'en'
+let handler = async (m, { conn, args, usedPrefix, command }) => {
 
-        const lang = args[0];
-        const text = args.slice(1).join(" ");
-        if (!text) return reply("⚠️ Please provide text after language.\n\nExample: `.tts en Assalamu Alaikum`");
+  let lang = args[0]
+  let text = args.slice(1).join(' ')
+  if ((args[0] || '').length !== 2) {
+    lang = defaultLang
+    text = args.join(' ')
+  }
+  if (!text && m.quoted?.text) text = m.quoted.text
+  if (!text) throw `📌 Example : \n${usedPrefix}${command} en hello world`
 
-        const fileName = `tts-${Date.now()}.mp3`;
-        const filePath = path.join(__dirname, '..', 'voices', fileName);
+  let filePath = join('./tmp', `${Date.now()}.wav`)
 
-        const gtts = new gTTS(text, lang);
-        gtts.save(filePath, async function (err) {
-            if (err) {
-                reply("❌ Error generating TTS audio.");
-                return;
-            }
+  await new Promise((resolve, reject) => {
+    say.export(text, null, 1.0, filePath, (err) => {
+      if (err) reject(err)
+      else resolve()
+    })
+  })
 
-            await conn.sendMessage(m.chat, {
-                audio: fs.readFileSync(filePath),
-                mimetype: 'audio/mpeg',
-                ptt: true // 👈 voice note style
-            }, { quoted: mek });
+  conn.sendFile(m.chat, readFileSync(filePath), 'tts.wav', null, m, true)
+  unlinkSync(filePath)
+}
 
-            fs.unlinkSync(filePath);
-        });
+handler.help = ['tts <lang> <task>']
+handler.tags = ['tools']
+handler.command = ['tts', 'voz']
 
-    } catch (e) {
-        reply("❌ Error: " + e.message);
-    }
-});
+export default handler
