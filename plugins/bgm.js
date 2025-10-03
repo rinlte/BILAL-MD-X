@@ -30,12 +30,12 @@ cmd({
     react: "🎶",
     filename: __filename
 },
-async (conn, mek, m, { from, reply, args, quoted }) => {
+async (conn, mek, m, { from, reply, args }) => {
     try {
         let data = loadBgm();
 
         if (!args[0]) {
-            return reply("❌ Usage:\n- bgm add <name> (reply to audio)\n- bgm list\n- bgm on/off");
+            return reply("❌ Usage:\n- bgm add <name>\n- bgm list\n- bgm on/off");
         }
 
         // 🔹 Enable/Disable
@@ -56,22 +56,22 @@ async (conn, mek, m, { from, reply, args, quoted }) => {
             return reply(list ? "*🎶 Saved BGMs:*\n" + list : "❌ Abhi tak koi BGM save nahi hai.");
         }
 
-        // 🔹 Add new BGM
+        // 🔹 Add new BGM (auto detect last audio)
         if (args[0] === "add") {
-            if (!args[1]) return reply("❌ Usage: bgm add <name> (reply to audio)");
+            if (!args[1]) return reply("❌ Usage: bgm add <name>");
             const name = args[1].toLowerCase();
 
-            let q = quoted ? (quoted.msg || quoted.message) : null;
-            if (!q) return reply("❌ Audio pe reply karo.");
+            // Agar reply hai to usko lo, warna last audio from chat history
+            let quoted = m.quoted ? m.quoted : mek;
+            let msg = quoted.msg || quoted.message || mek.message;
 
-            let mime = q.mimetype || "";
-            if (!/audio/.test(mime)) {
-                return reply("❌ Sirf voice note/audio reply kiya ja sakta hai.");
+            if (!msg.audioMessage) {
+                return reply("❌ Pehle ek audio bhejo, phir `.bgm add <name>` likho.");
             }
 
             // ✅ Save audio in /data folder
             const filePath = path.join(__dirname, `../data/bgm_${name}.mp3`);
-            const buff = await conn.downloadMediaMessage(quoted);
+            const buff = await conn.downloadMediaMessage({ message: msg });
             fs.writeFileSync(filePath, buff);
 
             // ✅ Update JSON
@@ -108,14 +108,12 @@ async (conn, mek, m, { from, body }) => {
             if (isUrl(val)) {
                 await conn.sendMessage(from, {
                     audio: { url: val },
-                    mimetype: "audio/mpeg",
-                    ptt: true
+                    mimetype: "audio/mpeg"
                 }, { quoted: mek });
             } else if (fs.existsSync(val)) {
                 await conn.sendMessage(from, {
                     audio: fs.readFileSync(val),
-                    mimetype: "audio/mpeg",
-                    ptt: true
+                    mimetype: "audio/mpeg"
                 }, { quoted: mek });
             }
         }
