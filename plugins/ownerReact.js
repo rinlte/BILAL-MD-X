@@ -7,7 +7,7 @@ const config = require('../config');
 const STATE_PATH = path.join(__dirname, '../data/ownerReact.json');
 
 // Load or create state
-let ownerReactState = { enabled: true, emoji: '🌟' }; // default emoji
+let ownerReactState = { enabled: true, emoji: '🌹' }; // default emoji
 if (fs.existsSync(STATE_PATH)) {
     try {
         ownerReactState = JSON.parse(fs.readFileSync(STATE_PATH, 'utf-8'));
