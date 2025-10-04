@@ -1,19 +1,21 @@
 const { cmd } = require("../command");
 
-let handler = async (m, { conn, text }) => {
-    let [l, r] = text.split`|`
-    if (!l) l = ''
-    if (!r) r = ''
-    conn.reply(m.chat, l + readMore + r, m)
-}
+const more = String.fromCharCode(8206);
+const readMore = more.repeat(4001);
 
-handler.help = ['readmore <text1>|<text2>']
-handler.tags = ['tools']
-handler.command = ['readmore']
-
-cmd(handler)
-
-const more = String.fromCharCode(8206)
-const readMore = more.repeat(4001)
-
-module.exports = handler
+cmd({
+  pattern: "readmore",
+  desc: "Split text into two parts using | and add ReadMore effect",
+  category: "tools",
+  use: "<text1>|<text2>",
+}, async (m, conn, text) => {
+  let [l, r] = text.split("|");
+  if (!l) l = "";
+  if (!r) r = "";
+  
+  await conn.sendMessage(
+    m.chat,
+    { text: l + readMore + r },
+    { quoted: m }
+  );
+});
