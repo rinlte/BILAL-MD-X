@@ -4,7 +4,7 @@ const { cmd } = require("../command");
 
 const HEROKU_APP = config.HEROKU_APP_NAME || "";
 const HEROKU_API = config.HEROKU_API_KEY || "";
-const OWNER = process.env.OWNER_NUMBER || config.OWNER_NUMBER || "";  // 🔹 direct Heroku vars se le raha hai
+const OWNER = process.env.OWNER_NUMBER || config.OWNER_NUMBER || ""; // 🔹 direct Heroku vars
 
 // base URL for Heroku API
 const baseURL = HEROKU_APP && HEROKU_API
@@ -44,13 +44,15 @@ async function deleteVar(key) {
 }
 
 // ────────────────
-// Commands (Owner Only)
+// Owner check
 // ────────────────
 function isOwner(sender) {
-  return sender.replace(/[^0-9]/g, "") === OWNER.replace(/[^0-9]/g, ""); // normalize
+  return sender.replace(/[^0-9]/g, "") === OWNER.replace(/[^0-9]/g, "");
 }
 
-// list all vars
+// ────────────────
+// Commands
+// ────────────────
 cmd({
   pattern: "allvar",
   desc: "Get all Heroku config vars",
@@ -67,7 +69,6 @@ cmd({
   }
 });
 
-// get one var
 cmd({
   pattern: "getvar",
   desc: "Get value of a specific Heroku var",
@@ -83,7 +84,6 @@ cmd({
   }
 });
 
-// set var
 cmd({
   pattern: "setvar",
   desc: "Set new Heroku var",
@@ -100,7 +100,6 @@ cmd({
   }
 });
 
-// delete var
 cmd({
   pattern: "delvar",
   desc: "Delete Heroku var",
@@ -115,3 +114,11 @@ cmd({
     conn.sendMessage(m.chat, { text: "❌ Failed to delete var" }, { quoted: m });
   }
 });
+
+// 🔹 export (important for loader)
+module.exports = {
+  getAllVars,
+  getVar,
+  setVar,
+  deleteVar
+};
