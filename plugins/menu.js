@@ -13,10 +13,10 @@ cmd({
         const menuCaption = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
 *┃👑│ USER:❯* ${config.OWNER_NAME}
+*┃👑│ USER:❯* ${config.OWNER_NUMBER}
 *┃👑│ PLATFORM :❯* LiNUX
 *┃👑│ MODE :❯* ${config.MODE}
 *┃👑│ PREFiX :❯* ${config.PREFIX}
-*┃👑│ VERSION :❯* 1.0
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
@@ -32,12 +32,8 @@ cmd({
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 GROUP MENU 👑 〕━━┈⊷*
-*┃👑│ • GROUPLINK*
-*┃👑│ • KICKALL*
-*┃👑│ • KICKALL2*
-*┃👑│ • KICKALL3*
+*┃👑│ • INVITE*
 *┃👑│ • ADD*
-*┃👑│ • REMOVE*
 *┃👑│ • KICK*
 *┃👑│ • PROMOTE*
 *┃👑│ • DEMOTE*
@@ -51,7 +47,6 @@ cmd({
 *┃👑│ • HIDETAG*
 *┃👑│ • TAGALL*
 *┃👑│ • TAGADMINS*
-*┃👑│ • INVITE*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 USER MENU 👑 〕━━┈⊷*
@@ -62,6 +57,7 @@ cmd({
 *┃👑│ • GETPP*
 *┃👑│ • RESTART*
 *┃👑│ • UPDATECMD*
+*┃👑│ • OWNERREACT*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 AI MENU 👑 〕━━┈⊷*
@@ -100,34 +96,21 @@ cmd({
 *┃👑│ • TAKE*
 *┃👑│ • TOMP3*
 *┃👑│ • FANCY*
-*┃👑│ • TTS*
 *┃👑│ • TRT*
-*┃👑│ • BASE64*
-*┃👑│ • UNBASE64*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 XTRA MENU 👑 〕━━┈⊷*
 *┃👑│ • TIMENOW*
-*┃👑│ • DATE*
-*┃👑│ • FLIP*
-*┃👑│ • COINFLIP*
-*┃👑│ • RCOLOR*
-*┃👑│ • ROLL*
 *┃👑│ • SS*
-*┃👑│ • NEWS*
-*┃👑│ • MOVIE*
-*┃👑│ • WEATHER*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 MAIN MENU 👑 〕━━┈⊷*
 *┃👑│ • PING*
 *┃👑│ • ALIVE*
-*┃👑│ • RUNTIME*
 *┃👑│ • UPTIME*
 *┃👑│ • REPO*
 *┃👑│ • OWNER*
 *┃👑│ • MENU*
-*┃👑│ • LIST*
 *┃👑│ • RESTART*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
