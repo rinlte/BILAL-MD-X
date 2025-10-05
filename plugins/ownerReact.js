@@ -3,69 +3,77 @@ const fs = require('fs');
 const path = require('path');
 const config = require('../config');
 
+// ✅ File jahan setting save hogi
 const STATE_PATH = path.join(__dirname, '../data/ownerReact.json');
 
-// Load or create state file
+// ✅ Default state
 let ownerReactState = { enabled: true, emoji: '🌹' };
-if (fs.existsSync(STATE_PATH)) {
-    try {
+
+// ✅ File load ya create
+try {
+    if (fs.existsSync(STATE_PATH)) {
         ownerReactState = JSON.parse(fs.readFileSync(STATE_PATH, 'utf-8'));
-    } catch (e) {
-        console.error('❌ Failed to read ownerReact.json:', e.message);
+    } else {
+        fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
     }
-} else {
-    fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
+} catch (e) {
+    console.error('❌ Failed to read/write ownerReact.json:', e.message);
 }
 
+// ✅ Owner number (change kar sakte ho)
 const OWNER_NUMBER = (process.env.OWNER_NUMBER || config.OWNER_NUMBER || '923276650623').replace(/[^0-9]/g, '');
 
-// ✅ Command to toggle or set emoji
+// ✅ Command: ownerreact (sirf owner ke liye)
 cmd({
     pattern: 'ownerreact',
-    fromMe: true, // must be true so owner can control it from bot account
     desc: 'Toggle owner auto-react ON/OFF or set emoji'
-}, async (m, { text }) => {
+}, async (message, match) => {
     try {
-        const args = text.trim().split(/\s+/);
+        const sender = (message.sender || '').replace(/[^0-9]/g, '');
+        if (sender !== OWNER_NUMBER) {
+            return await message.reply('❌ Ye command sirf *Owner* use kar sakta hai.');
+        }
+
+        const args = match.trim().split(/\s+/);
         const action = args[0]?.toLowerCase();
 
         if (action === 'set' && args[1]) {
             ownerReactState.emoji = args[1];
             fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-            return await m.reply(`✅ Owner React emoji updated to ${ownerReactState.emoji}`);
+            return await message.reply(`✅ Owner React emoji update ho gaya ${ownerReactState.emoji} pe`);
         }
 
         if (action === 'on') {
             ownerReactState.enabled = true;
             fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-            return await m.reply(`✅ Owner React turned ON`);
+            return await message.reply('✅ Owner React ab *ON* hai');
         }
 
         if (action === 'off') {
             ownerReactState.enabled = false;
             fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-            return await m.reply(`✅ Owner React turned OFF`);
+            return await message.reply('✅ Owner React ab *OFF* hai');
         }
 
-        // Default toggle if no args
+        // Agar kuch nahi diya to toggle karega
         ownerReactState.enabled = !ownerReactState.enabled;
         fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-        await m.reply(`✅ Owner React is now *${ownerReactState.enabled ? 'ON' : 'OFF'}*`);
+        await message.reply(`✅ Owner React ab *${ownerReactState.enabled ? 'ON' : 'OFF'}* hai`);
+
     } catch (err) {
         console.error('❌ Error in ownerreact cmd:', err.message);
-        await m.reply('⚠️ Something went wrong.');
+        await message.reply('⚠️ Kuch ghalat ho gaya bhai, dubara koshish karo.');
     }
 });
 
-// ✅ Auto-react on owner messages
+// ✅ Jab owner message bheje to auto react kare
 cmd({
     on: 'body'
-}, async (conn, mek, m) => {
+}, async (conn, m) => {
     try {
         if (!ownerReactState.enabled) return;
         const sender = (m.key?.participant || m.key?.remoteJid || '').split('@')[0];
         if (sender !== OWNER_NUMBER) return;
-        if (!conn.sendMessage) return;
 
         await conn.sendMessage(m.key.remoteJid, {
             react: {
