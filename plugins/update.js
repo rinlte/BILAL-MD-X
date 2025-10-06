@@ -6,12 +6,6 @@ const AdmZip = require("adm-zip");
 const { setCommitHash, getCommitHash } = require("../data/updateDB");
 const config = require("../config");
 
-// ────────────────────────────────
-// Heroku vars for restart
-// ────────────────────────────────
-const HEROKU_APP = config.HEROKU_APP_NAME || "";
-const HEROKU_API = config.HEROKU_API_KEY || "";
-
 cmd({
   pattern: "update",
   alias: ["upgrade", "sync"],
@@ -20,16 +14,17 @@ cmd({
   category: "misc",
   filename: __filename
 }, async (client, message, args, { reply, isOwner }) => {
-  if (!isOwner)
-    return reply("*❌ YE COMMAND SIRF OWNER KE LIYE HAI!*");
+
+  if (!isOwner) return reply("*❌ YE COMMAND SIRF OWNER KE LIYE HAI!*");
+
+  const HEROKU_APP = process.env.HEROKU_APP_NAME || config.HEROKU_APP_NAME || "";
+  const HEROKU_API = process.env.HEROKU_API_KEY || config.HEROKU_API_KEY || "";
 
   try {
-    await reply("*🔍 CHECKING FOR NEW BiLAL-MD VERSION...*");
+    await reply("*🔍 CHECKING FOR NEW BILAL-MD VERSION...*");
 
-    // ✅ Correct GitHub repo
-    const { data: commitData } = await axios.get(
-      "https://api.github.com/repos/BilalTech05/BILAL-MD/commits/main"
-    );
+    // ✅ Latest Git commit
+    const { data: commitData } = await axios.get("https://api.github.com/repos/BilalTech05/BILAL-MD/commits/main");
     const latestCommitHash = commitData.sha;
 
     // ✅ Current version
@@ -49,69 +44,55 @@ cmd({
     );
     fs.writeFileSync(zipPath, zipData);
 
-    // ✅ Extract
-    await reply("*📦 EXTRACTING NEW FILES...*");
+    // ✅ Extract ZIP
     const extractPath = path.join(__dirname, "latest");
     const zip = new AdmZip(zipPath);
     zip.extractAllTo(extractPath, true);
 
-    // ✅ Copy files (skip config + app.json)
+    // ✅ Copy files (skip sensitive ones)
     const sourcePath = path.join(extractPath, "BILAL-MD-main");
     const destinationPath = path.join(__dirname, "..");
     copyFolderSync(sourcePath, destinationPath);
 
-    // ✅ Save commit
     await setCommitHash(latestCommitHash);
 
-    // ✅ Cleanup
+    // Cleanup
     fs.unlinkSync(zipPath);
     fs.rmSync(extractPath, { recursive: true, force: true });
 
-    // ✅ Try restart (if Heroku vars exist)
+    // ✅ Heroku restart if vars exist
     if (HEROKU_APP && HEROKU_API) {
       await reply("*🔄 DEPLOYING NEW VERSION ON HEROKU...*");
-      await restartHerokuApp();
-      await reply("*✅ BILAL-MD BOT UPDATED & RESTARTING ON HEROKU 💥*");
+      await restartHerokuApp(HEROKU_APP, HEROKU_API);
+      await reply("*✅ BILAL-MD AUTO-RESTARTING ON HEROKU 💥*");
     } else {
-      await reply("*✅ BILAL-MD UPDATED SUCCESSFULLY! MANUAL RESTART REQUIRED 🔁*");
+      await reply("*✅ BILAL-MD UPDATED SUCCESSFULLY!*");
     }
 
-  } catch (error) {
-    console.error("Update error:", error);
-    return reply("*❌ BOT UPDATE FAILED — TRY MANUALLY 🥺♥️*");
+  } catch (err) {
+    console.error("Update error:", err);
+    return reply("*❌ BOT UPDATE FAILED — TRY MANUALLY 🥺*");
   }
 });
 
-// ────────────────────────────────
-// Helper: Copy folders safely
-// ────────────────────────────────
+// ─────────── Helper: Copy folders safely ───────────
 function copyFolderSync(source, target) {
   if (!fs.existsSync(target)) fs.mkdirSync(target, { recursive: true });
   const items = fs.readdirSync(source);
   for (const item of items) {
-    const srcPath = path.join(source, item);
-    const destPath = path.join(target, item);
-
-    if (["config.js", "app.json"].includes(item)) {
-      console.log(`⏭️ Skipping ${item} to preserve settings.`);
-      continue;
-    }
-
-    if (fs.lstatSync(srcPath).isDirectory()) {
-      copyFolderSync(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
-    }
+    const src = path.join(source, item);
+    const dest = path.join(target, item);
+    if (["config.js", "app.json"].includes(item)) continue;
+    if (fs.lstatSync(src).isDirectory()) copyFolderSync(src, dest);
+    else fs.copyFileSync(src, dest);
   }
 }
 
-// ────────────────────────────────
-// Helper: Restart Heroku App
-// ────────────────────────────────
-async function restartHerokuApp() {
+// ─────────── Helper: Restart Heroku App ───────────
+async function restartHerokuApp(appName, apiKey) {
   const headers = {
     Accept: "application/vnd.heroku+json; version=3",
-    Authorization: `Bearer ${HEROKU_API}`,
+    Authorization: `Bearer ${apiKey}`
   };
-  await axios.delete(`https://api.heroku.com/apps/${HEROKU_APP}/dynos`, { headers });
-}
+  await axios.delete(`https://api.heroku.com/apps/${appName}/dynos`, { headers });
+    }
