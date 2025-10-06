@@ -3,9 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const config = require('../config');
 
+// File jahan state save hoti hai
 const STATE_PATH = path.join(__dirname, '../data/ownerReact.json');
-let ownerReactState = { enabled: true, emoji: '🌹' };
 
+// Default state
+let ownerReactState = { enabled: false, emoji: '🌹' };
+
+// Load ya create state file
 try {
     if (fs.existsSync(STATE_PATH)) {
         ownerReactState = JSON.parse(fs.readFileSync(STATE_PATH, 'utf-8'));
@@ -16,8 +20,10 @@ try {
     console.error('❌ ownerReact.json read/write error:', e.message);
 }
 
+// Owner number normalize
 const OWNER_NUMBER = (config.OWNER_NUMBER || '923276650623').replace(/[^0-9]/g, '');
 
+// ✅ Command: .ownerreact on/off/set
 cmd({
     pattern: 'ownerreact',
     desc: 'Owner ke liye auto react system',
@@ -29,13 +35,15 @@ cmd({
         const sender = (mek.sender || '').replace(/[^0-9]/g, '');
         if (sender !== OWNER_NUMBER) return reply('❌ Ye command sirf *Owner* use kar sakta hai.');
 
-        const args = m.text?.split(/\s+/) || [];
+        const args = (m.text || '').split(/\s+/);
         const action = args[1]?.toLowerCase();
 
-        if (action === 'set' && args[2]) {
-            ownerReactState.emoji = args[2];
+        if (action === 'set') {
+            const emoji = args[2];
+            if (!emoji) return reply('⚠️ Example: `.ownerreact set 😍`');
+            ownerReactState.emoji = emoji;
             fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-            return reply(`✅ Emoji set ho gaya ${ownerReactState.emoji} pe`);
+            return reply(`✅ Emoji set ho gaya: ${emoji}`);
         }
 
         if (action === 'on') {
@@ -50,15 +58,15 @@ cmd({
             return reply('✅ Owner React ab *OFF* hai');
         }
 
-        ownerReactState.enabled = !ownerReactState.enabled;
-        fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-        reply(`✅ Owner React ab *${ownerReactState.enabled ? 'ON' : 'OFF'}* hai`);
+        // agar koi extra arg nahi diya
+        return reply(`📘 Use:\n.ownerreact on\n.ownerreact off\n.ownerreact set 😍`);
     } catch (err) {
-        console.error('❌ Error in ownerreact:', err.message);
+        console.error('❌ Error in ownerreact cmd:', err.message);
         reply('⚠️ Kuch ghalat ho gaya, dubara koshish karo.');
     }
 });
 
+// ✅ Auto reaction on owner messages
 cmd({
     on: 'message'
 }, async (conn, mek) => {
@@ -69,6 +77,7 @@ cmd({
         const senderNum = (senderJid || '').replace(/[^0-9]/g, '');
         const fromMe = mek.key.fromMe;
 
+        // react sirf owner ke ya apne messages pe
         if (fromMe || senderNum === OWNER_NUMBER) {
             await conn.sendMessage(mek.key.remoteJid, {
                 react: { text: ownerReactState.emoji, key: mek.key }
