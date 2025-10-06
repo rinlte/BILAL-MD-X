@@ -4,6 +4,7 @@ if (fs.existsSync('config.env')) require('dotenv').config({ path: './config.env'
 function convertToBool(text, fault = 'true') {
     return text === fault ? true : false;
 }
+
 module.exports = {
 SESSION_ID: process.env.SESSION_ID || "BILAL-MD~6J0iWa4I#Pv8b1tGcyX0HGI0Ib9iRB3PMon6S7MWYfN9_NlXfYXA",
 // add your Session Id 
@@ -77,6 +78,12 @@ ANTI_VV: process.env.ANTI_VV || "true",
 // true for anti once view 
 ANTI_DEL_PATH: process.env.ANTI_DEL_PATH || "log", 
 // change it to 'same' if you want to resend deleted message in same chat 
-AUTO_RECORDING: process.env.AUTO_RECORDING || "false"
+AUTO_RECORDING: process.env.AUTO_RECORDING || "false",
 // make it true for auto recoding 
+
+// ────────────────────────────────
+// 🔧 Added Heroku Restart Support
+// ────────────────────────────────
+HEROKU_APP_NAME: process.env.HEROKU_APP_NAME || "",
+HEROKU_API_KEY: process.env.HEROKU_API_KEY || ""
 };
