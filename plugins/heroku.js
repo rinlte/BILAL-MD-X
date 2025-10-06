@@ -2,123 +2,54 @@ const axios = require("axios");
 const config = require("../config");
 const { cmd } = require("../command");
 
+// 🔹 Heroku Config
 const HEROKU_APP = config.HEROKU_APP_NAME || "";
 const HEROKU_API = config.HEROKU_API_KEY || "";
-const OWNER = process.env.OWNER_NUMBER || config.OWNER_NUMBER || ""; // 🔹 direct Heroku vars
+const OWNER = config.OWNER_NUMBER || "";
 
-// base URL for Heroku API
-const baseURL = HEROKU_APP && HEROKU_API
-  ? `https://api.heroku.com/apps/${HEROKU_APP}/config-vars`
-  : null;
-
+// 🔹 Heroku API Base
+const baseURL = `https://api.heroku.com/apps/${HEROKU_APP}/config-vars`;
 const headers = {
   "Accept": "application/vnd.heroku+json; version=3",
-  "Authorization": `Bearer ${HEROKU_API}`
+  "Authorization": `Bearer ${HEROKU_API}`,
 };
 
-// ────────────────
-// Helper Functions
-// ────────────────
-async function getAllVars() {
-  if (!baseURL) return null;
-  const res = await axios.get(baseURL, { headers });
-  return res.data;
-}
-
-async function getVar(key) {
-  if (!baseURL) return null;
-  const res = await axios.get(baseURL, { headers });
-  return res.data[key];
-}
-
-async function setVar(key, value) {
-  if (!baseURL) return null;
-  await axios.patch(baseURL, { [key]: value }, { headers });
-  return true;
-}
-
-async function deleteVar(key) {
-  if (!baseURL) return null;
-  await axios.patch(baseURL, { [key]: null }, { headers });
-  return true;
-}
-
-// ────────────────
-// Owner check
-// ────────────────
+// 🔹 Function: Owner Check
 function isOwner(sender) {
   return sender.replace(/[^0-9]/g, "") === OWNER.replace(/[^0-9]/g, "");
 }
 
-// ────────────────
-// Commands
-// ────────────────
-cmd({
-  pattern: "allvar",
-  desc: "Get all Heroku config vars",
-  category: "heroku",
-}, async (m, conn) => {
-  if (!isOwner(m.sender)) return;
-  try {
-    const vars = await getAllVars();
-    let msg = "⚙️ *Heroku Vars:*\n\n";
-    for (let k in vars) msg += `🔑 ${k} = ${vars[k]}\n`;
-    conn.sendMessage(m.chat, { text: msg }, { quoted: m });
-  } catch {
-    conn.sendMessage(m.chat, { text: "❌ Failed to fetch vars" }, { quoted: m });
-  }
-});
-
-cmd({
-  pattern: "getvar",
-  desc: "Get value of a specific Heroku var",
-  category: "heroku",
-  use: "<KEY>",
-}, async (m, conn, text) => {
-  if (!isOwner(m.sender)) return;
-  try {
-    const value = await getVar(text.trim());
-    conn.sendMessage(m.chat, { text: `🔑 ${text} = ${value}` }, { quoted: m });
-  } catch {
-    conn.sendMessage(m.chat, { text: "❌ Var not found" }, { quoted: m });
-  }
-});
-
+// 🔹 Command: Set Heroku Var
 cmd({
   pattern: "setvar",
-  desc: "Set new Heroku var",
-  category: "heroku",
-  use: "<KEY>=<VALUE>",
-}, async (m, conn, text) => {
-  if (!isOwner(m.sender)) return;
-  const [key, ...val] = text.split("=");
+  desc: "WhatsApp se Heroku vars edit kare",
+  category: "owner",
+  use: ".setvar KEY=VALUE"
+}, async (message, match) => {
   try {
-    await setVar(key.trim(), val.join("=").trim());
-    conn.sendMessage(m.chat, { text: `✅ Var *${key}* updated!` }, { quoted: m });
-  } catch {
-    conn.sendMessage(m.chat, { text: "❌ Failed to set var" }, { quoted: m });
+    // 🔸 Owner check
+    if (!isOwner(message.sender)) {
+      return await message.reply("❌ Ye command sirf owner ke liye hai.");
+    }
+
+    if (!match.includes("=")) {
+      return await message.reply("⚙️ Example:\n.setvar SESSION_ID=BILAL-MD~abc123xyz");
+    }
+
+    const [key, ...valueParts] = match.split("=");
+    const keyName = key.trim().toUpperCase();
+    const value = valueParts.join("=").trim();
+
+    if (!keyName || !value) {
+      return await message.reply("❌ Key ya Value sahi format me likho bhai.\nExample: .setvar PREFIX=.");
+    }
+
+    // 🔹 Patch request to Heroku
+    await axios.patch(baseURL, { [keyName]: value }, { headers });
+
+    await message.reply(`✅ Var *${keyName}* updated successfully!`);
+  } catch (error) {
+    console.error("❌ setvar error:", error.message);
+    await message.reply("⚠️ Kuch ghalat ho gaya, var update nahi hua.");
   }
 });
-
-cmd({
-  pattern: "delvar",
-  desc: "Delete Heroku var",
-  category: "heroku",
-  use: "<KEY>",
-}, async (m, conn, text) => {
-  if (!isOwner(m.sender)) return;
-  try {
-    await deleteVar(text.trim());
-    conn.sendMessage(m.chat, { text: `🗑️ Var *${text}* deleted!` }, { quoted: m });
-  } catch {
-    conn.sendMessage(m.chat, { text: "❌ Failed to delete var" }, { quoted: m });
-  }
-});
-
-// 🔹 export (important for loader)
-module.exports = {
-  getAllVars,
-  getVar,
-  setVar,
-  deleteVar
-};
