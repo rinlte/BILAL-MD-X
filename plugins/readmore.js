@@ -1,21 +1,27 @@
-const { cmd } = require("../command");
-
-const more = String.fromCharCode(8206);
-const readMore = more.repeat(4001);
+const { cmd } = require('../command');
 
 cmd({
-  pattern: "readmore",
-  desc: "Split text into two parts using | and add ReadMore effect",
-  category: "tools",
-  use: "<text1>|<text2>",
-}, async (m, conn, text) => {
-  let [l, r] = text.split("|");
-  if (!l) l = "";
-  if (!r) r = "";
-  
-  await conn.sendMessage(
-    m.chat,
-    { text: l + readMore + r },
-    { quoted: m }
-  );
+    pattern: 'readmore',
+    desc: 'Generate a readmore text',
+    use: '.readmore line1 | line2'
+}, async (message, match) => {
+    try {
+        if (!match) {
+            return await message.reply('📄 Example:\n.readmore Hello | This is hidden text');
+        }
+
+        // Split visible aur hidden text
+        const [visible, hidden] = match.split('|').map(x => x.trim());
+
+        const more = String.fromCharCode(8206).repeat(4000); // invisible chars
+
+        const output = visible
+            ? `${visible}\n${more}\n${hidden || ''}`
+            : `${more}\n${hidden || ''}`;
+
+        await message.reply(output);
+    } catch (err) {
+        console.error('❌ Error in readmore cmd:', err.message);
+        await message.reply('⚠️ Kuch ghalat ho gaya bhai.');
+    }
 });
