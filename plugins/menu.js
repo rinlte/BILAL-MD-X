@@ -3,7 +3,7 @@ const { cmd, commands } = require('../command');
 
 cmd({
     pattern: "menu",
-    alias: ["m","men","meno","mno","mnos","cmd","cmds","command","commands","cmnds"],
+    alias: ["m", "men", "meno", "mno", "mnos", "cmd", "cmds", "command", "commands", "cmnds"],
     desc: "Show interactive menu system",
     category: "menu",
     react: "👑",
@@ -120,7 +120,17 @@ cmd({
             from,
             {
                 image: { url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png' },
-                caption: menuCaption
+                caption: menuCaption,
+                contextInfo: {
+                    externalAdReply: {
+                        title: "BILAL-MD OFFICIAL CHANNEL 💫",
+                        body: "Tap here to join 🔥",
+                        thumbnailUrl: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png',
+                        sourceUrl: "https://chat.whatsapp.com/BwWffeDwiqe6cjDDklYJ5m?mode=ems_copy_t",
+                        mediaType: 1,
+                        renderLargerThumbnail: true
+                    }
+                }
             },
             { quoted: mek }
         );
