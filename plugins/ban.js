@@ -1,72 +1,97 @@
-const fs = require('fs');
-const path = require('path');
-const { cmd } = require('../command');
+const fs = require("fs");
+const path = require("path");
+const { cmd } = require("../command");
 
-const BAN_FILE = path.join(__dirname, '../data/banned.json');
+const banFile = path.join(__dirname, "../lib/ban.json");
 
-// ✅ Load or create ban file
-let banned = [];
-if (fs.existsSync(BAN_FILE)) {
-  try {
-    banned = JSON.parse(fs.readFileSync(BAN_FILE, 'utf8'));
-  } catch (e) {
-    console.error('❌ Error reading banned.json:', e);
-  }
-} else {
-  fs.writeFileSync(BAN_FILE, JSON.stringify([], null, 2));
+function loadBans() {
+    if (!fs.existsSync(banFile)) fs.writeFileSync(banFile, "[]");
+    return JSON.parse(fs.readFileSync(banFile, "utf-8"));
 }
 
-// ✅ Helper function
-const saveBanned = () => fs.writeFileSync(BAN_FILE, JSON.stringify(banned, null, 2));
+function saveBans(banned) {
+    fs.writeFileSync(banFile, JSON.stringify([...new Set(banned)], null, 2));
+}
 
-// ✅ Ban command
+// ✅ Ban Command
 cmd({
-  pattern: "ban",
-  desc: "Ban a user from using the bot",
-  category: "admin",
-  use: "<reply or mention>",
-  fromMe: true
-}, async (m, { conn, text }) => {
-  const target = m.mentionedJid?.[0] || m.reply_message?.sender || text?.replace(/[^0-9]/g, '');
-  if (!target) return await m.reply("⚠️ Reply or mention someone to ban.");
+    pattern: "ban",
+    alias: ["blockuser", "addban"],
+    desc: "Ban a user from using the bot",
+    category: "owner",
+    react: "⛔",
+    filename: __filename
+}, async (conn, mek, m, { from, args, isCreator, reply }) => {
+    if (!isCreator) return reply("_❗Only the bot owner can use this command!_");
 
-  const number = target.replace(/[^0-9]/g, '');
-  if (banned.includes(number)) return await m.reply("🚫 User is already banned.");
+    let target = m.mentionedJid?.[0] 
+        || (m.quoted?.sender ?? null)
+        || (args[0]?.replace(/[^0-9]/g, '') + "@s.whatsapp.net");
 
-  banned.push(number);
-  saveBanned();
-  await m.reply(`🚫 @${number} has been *banned* from using the bot.`, { mentions: [target + '@s.whatsapp.net'] });
+    if (!target || !target.includes("@s.whatsapp.net")) return reply("❌ Please tag, reply, or provide a valid number.");
+
+    let banned = loadBans();
+
+    if (banned.includes(target)) return reply("❌ This user is already banned.");
+
+    banned.push(target);
+    saveBans(banned);
+
+    await conn.sendMessage(from, {
+        image: { url: "https://files.catbox.moe/fnmvlq.jpg" },
+        caption: `⛔ *User has been banned from using the bot.*\n\n👤 *ID:* ${target}`
+    }, { quoted: mek });
 });
 
-// ✅ Unban command
+// ✅ Unban Command
 cmd({
-  pattern: "unban",
-  desc: "Unban a banned user",
-  category: "admin",
-  use: "<reply or mention>",
-  fromMe: true
-}, async (m, { conn, text }) => {
-  const target = m.mentionedJid?.[0] || m.reply_message?.sender || text?.replace(/[^0-9]/g, '');
-  if (!target) return await m.reply("⚠️ Reply or mention someone to unban.");
+    pattern: "unban",
+    alias: ["removeban"],
+    desc: "Unban a user",
+    category: "owner",
+    react: "✅",
+    filename: __filename
+}, async (conn, mek, m, { from, args, isCreator, reply }) => {
+    if (!isCreator) return reply("_❗Only the bot owner can use this command!_");
 
-  const number = target.replace(/[^0-9]/g, '');
-  if (!banned.includes(number)) return await m.reply("✅ User is not banned.");
+    let target = m.mentionedJid?.[0] 
+        || (m.quoted?.sender ?? null)
+        || (args[0]?.replace(/[^0-9]/g, '') + "@s.whatsapp.net");
 
-  banned = banned.filter(n => n !== number);
-  saveBanned();
-  await m.reply(`✅ @${number} has been *unbanned*.`, { mentions: [target + '@s.whatsapp.net'] });
+    if (!target || !target.includes("@s.whatsapp.net")) return reply("❌ Please tag, reply, or provide a valid number.");
+
+    let banned = loadBans();
+
+    if (!banned.includes(target)) return reply("❌ This user is not banned.");
+
+    saveBans(banned.filter(u => u !== target));
+
+    await conn.sendMessage(from, {
+        image: { url: "https://files.catbox.moe/fnmvlq.jpg" },
+        caption: `✅ *User has been unbanned.*\n\n👤 *ID:* ${target}`
+    }, { quoted: mek });
 });
 
-// ✅ Auto check before executing any command
+// ✅ List Ban Command
 cmd({
-  on: 'body'
-}, async (conn, mek, m) => {
-  try {
-    const sender = (m.key?.participant || m.key?.remoteJid || '').split('@')[0];
-    if (banned.includes(sender)) {
-      return await conn.sendMessage(m.chat, { text: "🚫 You are banned from using this bot." }, { quoted: m });
-    }
-  } catch (err) {
-    console.error("Error checking banned user:", err);
-  }
+    pattern: "listban",
+    alias: ["banlist", "bannedusers"],
+    desc: "List all banned users",
+    category: "owner",
+    react: "📋",
+    filename: __filename
+}, async (conn, mek, m, { from, isCreator, reply }) => {
+    if (!isCreator) return reply("_❗Only the bot owner can use this command!_");
+
+    let banned = loadBans();
+
+    if (banned.length === 0) return reply("✅ No banned users found.");
+
+    let msg = "⛔ *Banned Users List:*\n\n";
+    msg += banned.map((id, i) => `${i + 1}. wa.me/${id.replace("@s.whatsapp.net", "")}`).join("\n");
+
+    await conn.sendMessage(from, {
+        image: { url: "https://files.catbox.moe/fnmvlq.jpg" },
+        caption: msg
+    }, { quoted: mek });
 });
