@@ -4,201 +4,84 @@
   "logo": "https://files.catbox.moe/kunzpz.png",
   "keywords": ["BILAL-MD"],
   "success_url": "/",
+  "stack": "container",
 
-    "stack": "container",
   "env": {
     "SESSION_ID": {
       "description": "AP NE PAIR YA QR CODE SE WHATSAPP LINK KIA HOGA TO APKE PAS WHATSAPP PER EK CODE AYA HOGA AP WO CODE WHATSAPP SE COPY KAR KE YAHA NICHE BOX ME PASTE KARE",
       "required": true,
       "value": "BILAL-MD~fMEgRZBQ#GZqIV_KMDGNdcAQA8pOqwNxElbt2Zdc5M5vBtfcdsu0"
-    },  
-    
-    "STICKER_NAME": {
-      "description": "APKA BOT JO STICKERS BANAYE GA UN STICKERS PER KIA NAME HO STICKERS PER NICHE BOX ME NAME LIKHE",
-      "required": false,
-      "value": "👑 BILAL-MD WHATSAPP BOT 👑"
-    }, 
-      
+    },
+
     "PREFIX": {
       "description": "AP APNE BOT KO KON SI NISHANI SE CHALANA CHAHTE HAI JESE . ! ? : & AP IN ME SE KOI BHI NISHAN NICHE BOX ME LIKHE PHIR APKA BOT JAB ACTIVE HO JAYE GA TO IS NISHAN KE ZARIYE CHALE GA",
-      "required": false,
+      "required": true,
       "value": "."
     },
-    
+
     "MODE": {
       "description": "AP KIA CHAHTE HAI KE AP KA BOT SIRF AP KHUD USE KARE TO ISKE LIE AP NICHE BOX ME ❮private❯ LIKHO AUR AGAR HAR KOI USE KARE TO USKE LIE NICHE BOX ME ❮public❯ LIKHO",
-      "required": false,
+      "required": true,
       "value": "public"
-      
     },
-    
-    
+
     "ALWAYS_ONLINE": {
       "description": "AGAR AP ALL TIME 24 HOURS ONLINE SHOW HONA CHAHTE HAI TO NICHE BOX ME ❮true❯ LIKHO AGAR NAHI CHAHTE TO USKE LIE NICHE ❮false❯ LIKHE",
-      "required": false,
-      "value": "false"  
-    },    
-  
-    "AUTO_VOICE": {
-      "description": "BOT ME KUCH VOICES ADD HAI JAB KOI MSG KRTA HAI TO VOICE JATE HAI AGAR AP YE SETTING ON RAKHNA CHAHTE TO NICHE BOX ME ❮true❯ LIKHE AGAR SETTING OFF RAKHNI HAI TO NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
+      "required": true,
       "value": "false"
-    }, 
-
-    "AUTO_REPLY": {
-      "description": "AGAR KOI HUME MESSAGE KARTA HAI TO HAMARA REPLY KHUD HI HO JATA HAI YEH SETTING ON RAKHNE K LIE NICHE BOX ME ❮true❯ LIKHE AGAR OFF RAKHNI HAI TO USKE LIE NICHE BOX ME ❮false❯ LIKHE",
-      "required": false,
-      "value": "false"
-    }, 
-
-    "AUTO_STICKER": {
-      "description": "BOT ME KUCH STICKERS ADD HAI JAB KOI HUME MESSAGE KARTA HAI TO WO STICKER KHUD HI SEND HO JATE HAI AGAR AP NE YE SETTING ON RAKHNI TO NICHE BOX ME ❮true❯ LIKHO AGAR YE SETTING OFF RAKHNI TO NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-    }, 
-
+    },
 
     "AUTO_STATUS_SEEN": {
       "description": "JAB KOI STATUS LAGAYE GA TO WO USY TIME SEEN HO JAYE GA APKO SEEN KARNE KI ZARURAT HI NAHIII AGAR AP NE YE SETTING ON RAKHNI HAI TO NICHE BOX ME ❮true❯ LIKHO AGAR YE SETTING OFF RAKHNI HAI TO NICHE BOX ME ❮false❯ LIKHO",
       "required": true,
       "value": "true"
-    }, 
+    },
 
     "AUTO_STATUS_REACT": {
       "description": "AP KIA CHAHTE HAI JAB APKA BOT STATUS SEEN KARE TO SATH ME REACT BHI KAREE TO USKE LIE NICHE BOX ME ❮true❯ LIKHO AGAR AP CHAHTE KE APKA BOT SIRF STATUS SEEN KARE REACT NAA KARE TO USKE LIE NICHE BOX ME ❮false❯ LIKHO",
       "required": true,
       "value": "true"
-    }, 
+    },
 
-    "AUTO_STATUS_REPLY": {
-      "description": "AP KIA CHAHTE HAI KE JAB APKA BOT STATUS SEEN KARE TO SATH KOI B ACHA SA REPLY BHI KARE TO USKE LIE NICHE BOX ME ❮true❯ LIKHO AUR AGAR AP CHAHTE KE SIRF STATUS SEEN KARE KOI REPLY NAA KARE TO USKE LIEE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": true,
-      "value": "false"
-    }, 
-
-    "AUTO_STATUS_MSG": {
-      "description": "APKA BOT JAB STATUS SEEN KARE GA TO YE MESSAGE BHEJE GAA STATUS KE REPLY MEE AP ISE APNE MESSAGE SE CHANGE KAR LO JO B APKA DIL KARE WO MESSAGE LIKH LO NICHE BOX ME",
-      "required": true,
-      "value": "MENE SAB SE PEHLE APKA STATUS SEEN KIA HAI🌹"
-   
-     }, 
-    
     "OWNER_NAME": {
       "description": "BOT KON USE KARE GA AP USKA NAME NICHE BOX ME LIKHO",
-      "required": false,
+      "required": true,
       "value": "BILAL"
-}, 
+    },
 
     "OWNER_NUMBER": {
       "description": "BOT USER KA WHATSAPP NUMBER NICHE LIKHO YAAD RAHE BOT KE SAB COMMANDS SIRF YEH NUMBER HI USE KAR PAYE GA BAKII KOI AUR SAB COMMANDS USE NAHI KAR PAYE GA OK",
-      "required": false,
+      "required": true,
       "value": "22553229710"
-
-    }, 
-
-    "BOT_NAME": {
-      "description": "AP APNE BOT KA NAME NICHE BOX ME LIKHO",
-      "required": false,
-      "value": "👑 BILAL-MD 👑"
-
-      }, 
+    },
 
     "ANTI_LINK": {
       "description": "GROUP ME KOI BHI LINK BHEJE GA TO APKA BOT LINK DELETE KARE GA AUR LINK BHEJNE WALO KO REMOVE KRE GA AGAR AP NE YE SETTING ON RAKHNI HAI TO USKE LIE NICHE BOX ME ❮true❯ LIKHO AGAR AP CHAHTE KE APKA BOT LINKS DELETE NAA KARE AUR MEMBER BHI REMOVE NAA KARE TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
       "required": true,
       "value": "true"
-      
-    },
-
-     "ANTI_LINK_KICK": {
-      "description": "AGAR AP CHAHTE HAI KE APKA BOT LINK BHEJNE WALE KO REMOVE BHI KARE TO USKE LIE NICHE BOX ME ❮true❯ LIKHO AGAR AP CHAHTE KE LINK DELETE KARE AUR MEMBER REMOVE NAAA KARE TO USKE LIE NICHE BOX ME ❮false❯ LIKHO",
-      "required": true,
-      "value": "false"
-      
-    },
-    
-    "ANTI_BAD": {
-      "description": "GROUPS ME AP NE DEKHA HOGA K AKSAR LOG GANDI BATE KARTE HAI JESE ❮SEX FUCK PORN WALE BATE❯ TO JO KOI BHI YEH GANDI BAAT KARE GA GROUP ME APKA BOT USKA WO GANDA MESSAGE DELETE KAR DE GAA AGAR AP NE YE SETTING ON RAKHNI HAI TO USKE LIE NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-    },
-
-   "MENTION_REPLY": {
-      "description": "AGAR APKO GROUPS ME KOI MENTION KARE GA TO APKA KOI ACHA SAA MESSAGE MENTION KARNE WALE KO REPLY MEE MIL JAYE GA AGAR AP NE YE SETTING ON RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AUR AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-    },
-    
-    "MENU_IMAGE_URL": {
-      "description": "APKE BOT KE MENU ME KON SI PIC AYE AP US PIC KA LINK NICHE BOX ME DAALO",
-      "required": false,
-      "value": "https://files.catbox.moe/kunzpz.png"
-    },
-    
-     "DESCRIPTION": {
-      "description": "APKA BOT KOI BHI AUDIOS VIDEOS PICS YA KUCH BHI BHEJE GA TO US PER KIA NAME SHO HO AP WO NAME NICHE BOX ME LIKHO",
-      "required": false,
-      "value": "*👑 BILAL-MD WHATSAPP BOT 👑*"
-    },
-
-      "DELETE_LINKS": {
-      "description": "AGAR AP CHAHTE KE APKE GROUPS ME LOG LINKS BHEJTE HAJ TO AP KA BOT LINKS DELETE KARE AGAR AP NE SETTING ON RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-    },
-    
-    "AUTO_RECORDING": {
-      "description": "JAB KOI APKO MESSAGE KARE GA TO USKE PASS SHOW HOGA KE AP KOI VOICE BHEJ RAHE HAI US KE LIE AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-    },
-
-    "AUTO_TYPING": {
-      "description": "JAB KOI APKO MESSAGE KARE GA TO USKE PASS SHOW HOGA KE AP KOI MESSAGE TYPE KAR RAHE HAI US KE LIE AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-    },
-
-    "AUTO_REACT": {
-      "description": "JO KOI BHI APKO MESSAGE KARE GA WO CHAHE IB HO YA APKA GROUP HOO HAR KISI KE MESSAGE PER APKA REACT HO JAYE GAA AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-    },
-    
-    "CUSTOM_REACT": {
-      "description": "AGAR AP CHAHTE KEE APKA BOT KOI BHI REACTS KARE DUSRO KE MESSAGES PER TO AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
-      
-    }, 
-    
-    "CUSTOM_REACT_EMOJIS": {
-      "description": "AP NICHE BOX ME WO EMOJIES LAGAYE KE JO AP CHAHTE HAI KE SIRF YHY EMOJIES DUSRO KE MESSAGES PER REACT HO TO AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO ",
-      "required": false,
-      "value": "💝,💖,💗,🦋,❤️,🌹,🌺"
-    }, 
-    
-    "ANTI_DEL_PATH": {
-      "description": "JAB KOI WHATSAPP SE MESSAGE DELETE KARE GA TO AP USKA DELETED MESSAGE APKE PASS BHI SHOW HO TO AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "log"
-    }, 
-
-    "ADMIN_EVENTS": {
-      "description": "AGAR GROUP ME KOI KISI AUR MEMBER KO ADMIN BANAYE GA TO APKO PATA CHAL JAYE GA KE IS ADMIN NE IS MEMBER KO NEW ADMIN BANAYA HAI TO AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
-      "value": "false"
     },
 
     "WELCOME": {
       "description": "AGAR AP CHAHTE KE KOI BHI NEW MEMBER JAB GROUP ME JAYE GA TO BOT USKA WELCOME KARE GAA TO AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
+      "required": true,
       "value": "true"
     },
 
     "READ_MESSAGE": {
       "description": "JO KOI BHI APKO MESSAGE KARE GA WO CHAHE GROUP HO TO APKA BOT KHUD HI MESSAGE SEEN KAR LE GA TO AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
-      "required": false,
+      "required": true,
+      "value": "false"
+    },
+
+    "AUTO_RECORDING": {
+      "description": "JAB KOI APKO MESSAGE KARE GA TO USKE PASS SHOW HOGA KE AP KOI VOICE BHEJ RAHE HAI US KE LIE AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
+      "required": true,
+      "value": "false"
+    },
+
+    "AUTO_TYPING": {
+      "description": "JAB KOI APKO MESSAGE KARE GA TO USKE PASS SHOW HOGA KE AP KOI MESSAGE TYPE KAR RAHE HAI US KE LIE AGAR AP NE YE SETTING ON RAKHNI TO USKE LIE AP NICHE BOX ME ❮true❯ LIKHO AGAR AP NE YE SETTING OFF RAKHNI HAI TO USKE LIE AP NICHE BOX ME ❮false❯ LIKHO",
+      "required": true,
       "value": "false"
     },
 
@@ -215,10 +98,10 @@
     }
   },
 
-     "buildpacks": [
-        {
-            "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
-        }
-     ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    }
+  ],
   "stack": "heroku-24"
 }
