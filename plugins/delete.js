@@ -1,98 +1,64 @@
-const { cmd } = require('../command');
-const isAdmin = require('../lib/isAdmin');
-const store = require('../lib/lightweight_store');
+const { cmd } = require("../command");
 
 cmd({
-  pattern: "delete",
-  alias: ["delmsg", "del"],
-  desc: "Delete recent messages of a user (admin only)",
+  pattern: "del",
+  alias: ["delete", "d", "dd"],
+  desc: "Delete any message (admin only)",
   category: "group",
-  react: "🗑️",
-  filename: __filename
-}, 
-async (conn, mek, m, { from, reply, sender }) => {
+  use: "<reply to message to delete>",
+}, async (message, conn) => {
   try {
-    const { isSenderAdmin, isBotAdmin } = await isAdmin(conn, from, sender);
+    const m = message;
+    const chat = m.chat;
 
-    if (!isBotAdmin) return reply("⚠️ I need to be *Admin* to delete messages.");
-    if (!isSenderAdmin) return reply("⚠️ Only *Group Admins* can use this command.");
-
-    // Extract text (for count)
-    const text = m.body || "";
-    const parts = text.trim().split(/\s+/);
-    let count = 1;
-    if (parts.length > 1) {
-      const maybeNum = parseInt(parts[1], 10);
-      if (!isNaN(maybeNum) && maybeNum > 0) count = Math.min(maybeNum, 50);
+    // Check agar message reply nahi hai
+    if (!m.quoted) {
+      return await conn.sendMessage(chat, { text: "❎ Reply kisi message ko karo delete karne ke liye." }, { quoted: m });
     }
 
-    // Get target user (reply or mention)
-    const ctxInfo = mek.message?.extendedTextMessage?.contextInfo || {};
-    const mentioned = Array.isArray(ctxInfo.mentionedJid) && ctxInfo.mentionedJid.length > 0 ? ctxInfo.mentionedJid[0] : null;
-    const repliedParticipant = ctxInfo.participant || null;
+    // Group info nikalte hain
+    const groupMetadata = m.isGroup ? await conn.groupMetadata(chat) : {};
+    const groupAdmins = m.isGroup ? groupMetadata.participants.filter(p => p.admin).map(p => p.id) : [];
 
-    let targetUser = null;
-    let repliedMsgId = null;
-    if (repliedParticipant && ctxInfo.stanzaId) {
-      targetUser = repliedParticipant;
-      repliedMsgId = ctxInfo.stanzaId;
-    } else if (mentioned) {
-      targetUser = mentioned;
-    } else {
-      return reply("⚠️ Please reply to a message or mention a user.");
+    const botNumber = (await conn.decodeJid(conn.user.id)).split("@")[0];
+    const sender = m.sender.split("@")[0];
+    const quotedSender = m.quoted.sender;
+    const botIsAdmin = groupAdmins.includes(conn.user.id);
+    const senderIsAdmin = groupAdmins.includes(m.sender);
+
+    // agar private chat me use kiya gaya
+    if (!m.isGroup) {
+      return await conn.sendMessage(chat, { text: "❎ Ye command sirf group me kaam karti hai." }, { quoted: m });
     }
 
-    // Collect messages from store
-    const chatMessages = Array.isArray(store.messages[from]) ? store.messages[from] : [];
-    const toDelete = [];
-    const seenIds = new Set();
-
-    if (repliedMsgId) {
-      const repliedInStore = chatMessages.find(
-        msg => msg.key.id === repliedMsgId && (msg.key.participant || msg.key.remoteJid) === targetUser
-      );
-      if (repliedInStore) {
-        toDelete.push(repliedInStore);
-        seenIds.add(repliedInStore.key.id);
-        count = Math.max(0, count - 1);
-      }
+    // agar sender admin nahi hai
+    if (!senderIsAdmin) {
+      return await conn.sendMessage(chat, { text: "❎ Sirf *Admins* hi messages delete kar sakte hain." }, { quoted: m });
     }
 
-    for (let i = chatMessages.length - 1; i >= 0 && toDelete.length < count; i--) {
-      const msg = chatMessages[i];
-      const participant = msg.key.participant || msg.key.remoteJid;
-      if (participant === targetUser && !seenIds.has(msg.key.id)) {
-        if (!msg.message?.protocolMessage) {
-          toDelete.push(msg);
-          seenIds.add(msg.key.id);
-        }
-      }
+    // agar bot admin nahi hai
+    if (!botIsAdmin) {
+      return await conn.sendMessage(chat, { text: "❎ Bot ko pehle *Admin* banao, tab delete kar paunga." }, { quoted: m });
     }
 
-    if (toDelete.length === 0) return reply("⚠️ No recent messages found for that user.");
+    // delete karne ke liye info
+    const deleteOptions = {
+      remoteJid: chat,
+      fromMe: false,
+      id: m.quoted.id,
+      participant: quotedSender,
+    };
 
-    // Delete messages
-    for (const msg of toDelete) {
-      try {
-        await conn.sendMessage(from, {
-          delete: {
-            remoteJid: from,
-            fromMe: false,
-            id: msg.key.id,
-            participant: msg.key.participant || targetUser
-          }
-        });
-        await new Promise(r => setTimeout(r, 300));
-      } catch {}
+    // agar message bot ka khud ka hai
+    if (quotedSender === conn.user.id) {
+      deleteOptions.fromMe = true;
     }
 
-    await conn.sendMessage(from, { 
-      text: `🗑️ Deleted ${toDelete.length} message(s) from @${(targetUser||'').split('@')[0]}`, 
-      mentions: [targetUser] 
-    }, { quoted: mek });
+    // delete message bhejna
+    await conn.sendMessage(chat, { delete: deleteOptions });
 
   } catch (err) {
-    console.error("Delete command error:", err);
-    reply("❌ Failed to delete messages.");
+    console.error("❌ Delete command error:", err);
+    await conn.sendMessage(m.chat, { text: `⚠️ Error deleting message:\n${err.message}` }, { quoted: m });
   }
 });
