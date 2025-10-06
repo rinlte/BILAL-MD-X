@@ -124,12 +124,13 @@ cmd({
                 caption: menuCaption,
                 contextInfo: {
                     externalAdReply: {
-                        title: "BILAL-MD SUPPORT",
-                        body: "FOLLOW OUR CHANNEL",
-                        thumbnailUrl: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png',
-                        sourceUrl: "https://chat.whatsapp.com/BwWffeDwiqe6cjDDklYJ5m?mode=ems_copy_t",
+                        title: "👑 BILAL-MD OFFICIAL CHANNEL 👑",
+                        body: "Click below to View Channel",
                         mediaType: 1,
-                        renderLargerThumbnail: true
+                        thumbnailUrl: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png',
+                        sourceUrl: "https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G",
+                        renderLargerThumbnail: true,
+                        showAdAttribution: true
                     }
                 }
             },
