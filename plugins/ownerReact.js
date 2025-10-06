@@ -3,13 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const config = require('../config');
 
-// File jahan state save hoti hai
+// ✅ File jahan state save hoti hai
 const STATE_PATH = path.join(__dirname, '../data/ownerReact.json');
 
-// Default state
+// ✅ Default state
 let ownerReactState = { enabled: false, emoji: '🌹' };
 
-// Load ya create state file
+// ✅ File load ya create
 try {
     if (fs.existsSync(STATE_PATH)) {
         ownerReactState = JSON.parse(fs.readFileSync(STATE_PATH, 'utf-8'));
@@ -20,7 +20,7 @@ try {
     console.error('❌ ownerReact.json read/write error:', e.message);
 }
 
-// Owner number normalize
+// ✅ Owner number normalize
 const OWNER_NUMBER = (config.OWNER_NUMBER || '923276650623').replace(/[^0-9]/g, '');
 
 // ✅ Command: .ownerreact on/off/set
@@ -30,16 +30,15 @@ cmd({
     category: 'owner',
     react: '🌹',
     filename: __filename
-}, async (conn, mek, m, { from, reply }) => {
+}, async (conn, mek, m, { from, reply, args }) => {
     try {
         const sender = (mek.sender || '').replace(/[^0-9]/g, '');
         if (sender !== OWNER_NUMBER) return reply('❌ Ye command sirf *Owner* use kar sakta hai.');
 
-        const args = (m.text || '').split(/\s+/);
-        const action = args[1]?.toLowerCase();
+        const action = (args[0] || '').toLowerCase();
 
         if (action === 'set') {
-            const emoji = args[2];
+            const emoji = args[1];
             if (!emoji) return reply('⚠️ Example: `.ownerreact set 😍`');
             ownerReactState.emoji = emoji;
             fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
@@ -49,16 +48,16 @@ cmd({
         if (action === 'on') {
             ownerReactState.enabled = true;
             fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-            return reply('✅ Owner React ab *ON* hai');
+            return reply('✅ *Owner React ab ON hai!*');
         }
 
         if (action === 'off') {
             ownerReactState.enabled = false;
             fs.writeFileSync(STATE_PATH, JSON.stringify(ownerReactState, null, 2));
-            return reply('✅ Owner React ab *OFF* hai');
+            return reply('✅ *Owner React ab OFF hai!*');
         }
 
-        // agar koi extra arg nahi diya
+        // agar koi valid action nahi mila
         return reply(`📘 Use:\n.ownerreact on\n.ownerreact off\n.ownerreact set 😍`);
     } catch (err) {
         console.error('❌ Error in ownerreact cmd:', err.message);
@@ -66,7 +65,7 @@ cmd({
     }
 });
 
-// ✅ Auto reaction on owner messages
+// ✅ Auto reaction system
 cmd({
     on: 'message'
 }, async (conn, mek) => {
