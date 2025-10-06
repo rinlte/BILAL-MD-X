@@ -102,6 +102,7 @@ cmd({
 *╭━━〔 👑 XTRA 👑 〕━━┈⊷*
 *┃👑│ • TIMENOW*
 *┃👑│ • SS*
+*┃👑│ • READMORE*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 MAIN 👑 〕━━┈⊷*
@@ -123,8 +124,8 @@ cmd({
                 caption: menuCaption,
                 contextInfo: {
                     externalAdReply: {
-                        title: "BILAL-MD OFFICIAL CHANNEL 💫",
-                        body: "Tap here to join 🔥",
+                        title: "BILAL-MD SUPPORT",
+                        body: "FOLLOW OUR CHANNEL",
                         thumbnailUrl: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png',
                         sourceUrl: "https://chat.whatsapp.com/BwWffeDwiqe6cjDDklYJ5m?mode=ems_copy_t",
                         mediaType: 1,
