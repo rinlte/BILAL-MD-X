@@ -66,21 +66,26 @@ cmd({
     }
 });
 
-// ✅ Jab owner message bheje to auto react kare
+// ✅ Jab owner kisi bhi chat (group ya inbox) me message bheje to auto react kare
 cmd({
-    on: 'body'
+    on: 'message'
 }, async (conn, m) => {
     try {
         if (!ownerReactState.enabled) return;
-        const sender = (m.key?.participant || m.key?.remoteJid || '').split('@')[0];
-        if (sender !== OWNER_NUMBER) return;
 
-        await conn.sendMessage(m.key.remoteJid, {
-            react: {
-                text: ownerReactState.emoji,
-                key: m.key
-            }
-        });
+        const fromMe = m.key.fromMe;
+        const senderJid = m.participant || m.key.participant || m.key.remoteJid;
+        const senderNum = (senderJid || '').replace(/[^0-9]/g, '');
+
+        // ✅ Agar message owner ka hai (chahe fromMe ho ya participant)
+        if (fromMe || senderNum === OWNER_NUMBER) {
+            await conn.sendMessage(m.key.remoteJid, {
+                react: {
+                    text: ownerReactState.emoji,
+                    key: m.key
+                }
+            });
+        }
     } catch (err) {
         console.error('❌ Error in auto owner react:', err.message);
     }
