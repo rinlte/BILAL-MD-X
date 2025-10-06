@@ -8,15 +8,15 @@ const { setCommitHash, getCommitHash } = require('../data/updateDB');
 cmd({
     pattern: "update",
     alias: ["upgrade", "sync"],
-    react: '🆕',
+    react: '👑',
     desc: "Update the bot to the latest version.",
     category: "misc",
     filename: __filename
 }, async (client, message, args, { reply, isOwner }) => {
-    if (!isOwner) return reply("This command is only for the bot owner.");
+    if (!isOwner) return reply("*_AP YE COMMAND USE NAHI KAR SAKTE_* \n *_YEH COMMAND SIRF MERE LIE HAI_*");
 
     try {
-        await reply("🔍 Checking for BiLAL-MD updates...");
+        await reply("*_ADDING NEW VERSION...._*");
 
         // Fetch the latest commit hash from GitHub (BiLAL-md repo)
         const { data: commitData } = await axios.get("https://api.github.com/repos/BilalTech05/BiLAL-MD/commits/main");
@@ -26,24 +26,24 @@ cmd({
         const currentHash = await getCommitHash();
 
         if (latestCommitHash === currentHash) {
-            return reply("✅ Your bot is already up-to-date!");
+            return reply("*YEH BILAL-MD BOT KA NEW VERSION HAI JO AP USE KAR RAHE HAI☺️❤️*");
         }
 
-        await reply("🚀 Updating BiLAL-MD Bot...");
+        await reply("*_UPDATING BILAL-MD BOT..._*");
 
         // Download the latest code (BiLAL-md repo)
         const zipPath = path.join(__dirname, "latest.zip");
-        const { data: zipData } = await axios.get("https://github.com/cnw-db/BiLAL-md/archive/refs/heads/main.zip", { responseType: "arraybuffer" });
+        const { data: zipData } = await axios.get("https://github.com/BilalTech05/BiLAL-MD/archive/refs/heads/main.zip", { responseType: "arraybuffer" });
         fs.writeFileSync(zipPath, zipData);
 
         // Extract ZIP file
-        await reply("📦 Extracting the latest code...");
+        await reply("*_ADDING NEW FEATURES..._*");
         const extractPath = path.join(__dirname, 'latest');
         const zip = new AdmZip(zipPath);
         zip.extractAllTo(extractPath, true);
 
         // Copy updated files, preserving config.js and app.json
-        await reply("🔄 Replacing files...");
+        await reply("*_STARTING...._*");
         const sourcePath = path.join(extractPath, "BiLAL-md-main");
         const destinationPath = path.join(__dirname, '..');
         copyFolderSync(sourcePath, destinationPath);
@@ -55,11 +55,11 @@ cmd({
         fs.unlinkSync(zipPath);
         fs.rmSync(extractPath, { recursive: true, force: true });
 
-        await reply("✅ Update complete! Restarting the bot...");
+        await reply("*👑 BILAL-MD BOT AB UPDATE HO CHUKA HAI 👑* \n *🥰 APKE BOT ME NEW FEATURES ADD HO CHUKE HAI 🥰*");
         process.exit(0);
     } catch (error) {
         console.error("Update error:", error);
-        return reply("❌ Update failed. Please try manually.");
+        return reply("*BOT ME KOI PROBLEM HAI BOT UPDATE NAHI HO RAHA 🥺♥️*");
     }
 });
 
