@@ -13,10 +13,10 @@ cmd({
     try {
         const menuCaption = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
-*┃👑│ USER:❯* ${config.OWNER_NAME}
-*┃👑│ USER:❯* ${config.OWNER_NUMBER}
-*┃👑│ MODE :❯* ${config.MODE}
-*┃👑│ PREFiX :❯* ${config.PREFIX}
+*┃👑│ USER:❯ ${config.OWNER_NAME}*
+*┃👑│ USER:❯ ${config.OWNER_NUMBER}*
+*┃👑│ MODE :❯ ${config.MODE}*
+*┃👑│ PREFiX :❯ ${config.PREFIX}*
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
