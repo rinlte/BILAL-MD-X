@@ -20,8 +20,7 @@ const {
     fetchLatestBaileysVersion,
     Browsers
   } = require('@whiskeysockets/baileys')
-  const mongoose = require('mongoose');
-require('./lib/database/connection');
+  
   
   const l = console.log
   const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('./lib/functions')
@@ -130,22 +129,7 @@ conn.ev.on('connection.update', (update) => {
   console.log('Plugins installed successful ✅')
   console.log('Bot connected to whatsapp ✅')
   
-  let up = `*✨ Hello BILAL MD USER! ✨*
-
-╭─〔 *🤖 BILAL-MD🧑‍💻* 〕  
-├─▸ *Simplicity. Speed. Power. BY BILAL KING |*  
-╰─➤ *Your New WhatsApp Sidekick is Here!*
-
-*❤️ Thank you for Choosing BILAL MD!*
-
-╭──〔 🔗 *Quick Links* 〕  
-├─ 📢 *Join Our Channel:*  
-│   Click [**Here**](https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G) to join!  
-├─ ⭐ *Give Us a Star:*  
-│   Star Us [**Here**](https://github.com/KING-OS/BILAL-MD)!  
-╰─🛠️ *Prefix:* \`${prefix}\`
-
-> _© MADE BY BILAL KING_`;
+  let up = `*👑 BILAL-MD STARTED 👑*`;
     conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/kunzpz.png` }, caption: up })
   }
   })
