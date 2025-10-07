@@ -1,74 +1,80 @@
 const { cmd } = require("../command");
-const axios = require("axios");
-const { getCommitHash, setCommitHash } = require("../data/updateDB");
-const config = require("../config");
+const axios = require('axios');
+const fs = require('fs');
+const path = require("path");
+const AdmZip = require("adm-zip");
+const { setCommitHash, getCommitHash } = require('../data/updateDB');
 
 cmd({
-  pattern: "update",
-  desc: "Update the bot to the latest version from GitHub and restart Heroku automatically.",
-  category: "misc",
-  react: "👑",
-  filename: __filename
+    pattern: "update",
+    alias: ["upgrade", "sync"],
+    react: '🆕',
+    desc: "Update the bot to the latest version.",
+    category: "misc",
+    filename: __filename
 }, async (client, message, args, { reply, isOwner }) => {
+    if (!isOwner) return reply("This command is only for the bot owner.");
 
-  if (!isOwner) return reply("*❌ YE COMMAND SIRF OWNER KE LIYE HAI!*");
+    try {
+        await reply("🔍 Checking for update...");
 
-  const HEROKU_APP = process.env.HEROKU_APP_NAME || config.HEROKU_APP_NAME || "";
-  const HEROKU_API = process.env.HEROKU_API_KEY || config.HEROKU_API_KEY || "";
+        // Fetch latest commit hash from new GitHub repo
+        const { data: commitData } = await axios.get("https://api.github.com/repos/BilalTech05/BILAL-MD/commits/main");
+        const latestCommitHash = commitData.sha;
 
-  if (!HEROKU_APP || !HEROKU_API)
-    return reply("*⚠️ HEROKU_APP_NAME aur HEROKU_API_KEY vars missing hain!*");
+        const currentHash = await getCommitHash();
 
-  try {
-    await reply("_⏳ BILAL-MD BOT UPDATE HO RAHA HAI... PLEASE WAIT..._");
+        if (latestCommitHash === currentHash) {
+            return reply("✅ Your bot is already up-to-date!");
+        }
 
-    // ✅ Fetch latest GitHub commit hash
-    const { data: commitData } = await axios.get(
-      "https://api.github.com/repos/BilalTech05/BILAL-MD/commits/main"
-    );
-    const latestHash = commitData.sha;
-    const currentHash = await getCommitHash();
+        await reply("🚀 Updating bot from GitHub...");
 
-    // ✅ Already latest version
-    if (latestHash === currentHash) {
-      return reply("_✅ AAPKE PAAS BILAL-MD KA LATEST VERSION HAI! 🌹_");
+        const zipPath = path.join(__dirname, "latest.zip");
+        const { data: zipData } = await axios.get("https://github.com/BilalTech05/BILAL-MD/archive/main.zip", { responseType: "arraybuffer" });
+        fs.writeFileSync(zipPath, zipData);
+
+        await reply("📦 Extracting the latest code...");
+        const extractPath = path.join(__dirname, 'latest');
+        const zip = new AdmZip(zipPath);
+        zip.extractAllTo(extractPath, true);
+
+        await reply("🔄 Replacing files...");
+        // Make sure the inner folder is correctly named:
+        const sourcePath = path.join(extractPath, "Whiteshadow-vx-main");
+        const destinationPath = path.join(__dirname, '..');
+        copyFolderSync(sourcePath, destinationPath);
+
+        await setCommitHash(latestCommitHash);
+
+        fs.unlinkSync(zipPath);
+        fs.rmSync(extractPath, { recursive: true, force: true });
+
+        await reply("✅ Update complete! Restarting the bot...");
+        process.exit(0);
+    } catch (error) {
+        console.error("Update error:", error);
+        return reply("❌ Update failed. Please try manually.");
+    }
+});
+
+function copyFolderSync(source, target) {
+    if (!fs.existsSync(target)) {
+        fs.mkdirSync(target, { recursive: true });
     }
 
-    const headers = {
-      Accept: "application/vnd.heroku+json; version=3",
-      Authorization: `Bearer ${HEROKU_API}`,
-    };
-
-    // ✅ Trigger new Heroku build (force fresh ZIP every time)
-    const zipUrl = `https://github.com/BilalTech05/BILAL-MD/archive/refs/heads/main.zip?nocache=${Date.now()}`;
-
-    const build = await axios.post(
-      `https://api.heroku.com/apps/${HEROKU_APP}/builds`,
-      {
-        source_blob: {
-          url: zipUrl,
-          version: latestHash,
-        },
-      },
-      { headers }
-    );
-
-    // ✅ Save new commit hash
-    await setCommitHash(latestHash);
-
-    // ✅ Wait a few seconds before restart
-    setTimeout(async () => {
-      try {
-        await axios.delete(`https://api.heroku.com/apps/${HEROKU_APP}/dynos`, { headers });
-      } catch (err) {
-        console.error("Heroku Restart Error:", err.message);
-      }
-    }, 15000); // 15 seconds delay
-
-    await reply("*✅ BILAL-MD UPDATED SUCCESSFULLY!* 🔁\n_Bot restarting automatically... Please wait 1–2 minutes._");
-
-  } catch (err) {
-    console.error("UPDATE ERROR:", err.response?.data || err.message);
-    reply("*❌ UPDATE FAILED — PLEASE CHECK HEROKU VARS OR NETWORK CONNECTION!*");
-  }
-});
+    const items = fs.readdirSync(source);
+    for (const item of items) {
+        if (item === "config.js" || item === "app.json") {
+            console.log(`Skipping ${item} to preserve custom settings.`);
+            continue;
+        }
+        const srcPath = path.join(source, item);
+        const destPath = path.join(target, item);
+        if (fs.lstatSync(srcPath).isDirectory()) {
+            copyFolderSync(srcPath, destPath);
+        } else {
+            fs.copyFileSync(srcPath, destPath);
+        }
+    }
+}
