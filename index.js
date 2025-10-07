@@ -20,7 +20,8 @@ const {
     fetchLatestBaileysVersion,
     Browsers
   } = require('@whiskeysockets/baileys')
-  
+  const mongoose = require('mongoose');
+require('./lib/database/connection');
   
   const l = console.log
   const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('./lib/functions')
