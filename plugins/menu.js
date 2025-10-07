@@ -115,7 +115,7 @@ cmd({
 *┃👑│ • RESTART*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
-*👑 BILAL-MD WHATSAPP BOT 👑*`;
+*BILAL-MD WHATSAPP BOT`;
 
         const contextInfo = {
             mentionedJid: [m.sender],
