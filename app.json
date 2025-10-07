@@ -95,6 +95,12 @@
       "description": "HEROKU APP NAME JO APKE BOT KA HAI WO YAHA DALEN",
       "required": true,
       "value": "bilal-md-test"
+    },
+
+    "MONGODB_URI": {
+      "description": "YAHAN APKA MONGODB ATLAS DATABASE CONNECTION LINK DALNA HAI JO APKO MONGO DB SE MILA HAI. YAAD RAHE <db_password> WALI JAGAH APKA REAL PASSWORD HONA CHAHIYE (AGAR PASSWORD ME SPECIAL CHARACTERS HO TO UNHE URL ENCODE KAREIN).",
+      "required": true,
+      "value": "mongodb+srv://BilalTech05:abcd%2C%2C234@cluster0.3vk6owd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     }
   },
 
