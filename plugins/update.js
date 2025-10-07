@@ -21,7 +21,7 @@ cmd({
   const HEROKU_API = process.env.HEROKU_API_KEY || config.HEROKU_API_KEY || "";
 
   try {
-    await reply("*🔍 CHECKING FOR NEW BILAL-MD VERSION...*");
+    await reply("_UPDATING BILAL-MD BOT......_");
 
     // ✅ Latest Git commit
     const { data: commitData } = await axios.get("https://api.github.com/repos/BilalTech05/BILAL-MD/commits/main");
@@ -31,10 +31,8 @@ cmd({
     const currentHash = await getCommitHash();
 
     if (latestCommitHash === currentHash) {
-      return reply("*✅ APKA BILAL-MD BOT ALREADY UPDATED HAI ❤️*");
+      return reply("_YEH BILAL-MD BOT KA LATEST VERSION HAI APKE PASS ☺️_");
     }
-
-    await reply("*🚀 UPDATING BILAL-MD BOT...*");
 
     // ✅ Download new ZIP
     const zipPath = path.join(__dirname, "latest.zip");
@@ -62,12 +60,10 @@ cmd({
 
     // ✅ Heroku restart if vars exist
     if (HEROKU_APP && HEROKU_API) {
-      await reply("*🔄 DEPLOYING NEW VERSION ON HEROKU...*");
       await restartHerokuApp(HEROKU_APP, HEROKU_API);
-      await reply("*✅ BILAL-MD AUTO-RESTARTING ON HEROKU 💥*");
-    } else {
-      await reply("*✅ BILAL-MD UPDATED SUCCESSFULLY!*");
     }
+
+    await reply("_BILAL-MD BOT UPDATE HO CHUKA HAI 🥰🌹_  _AB APKE PAS BOT KA LATEST VERSION HAI ☺️🌹_");
 
   } catch (err) {
     console.error("Update error:", err);
@@ -95,4 +91,4 @@ async function restartHerokuApp(appName, apiKey) {
     Authorization: `Bearer ${apiKey}`
   };
   await axios.delete(`https://api.heroku.com/apps/${appName}/dynos`, { headers });
-    }
+}
