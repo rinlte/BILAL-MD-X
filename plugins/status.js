@@ -13,7 +13,7 @@ cmd({
     react: "📃",
     filename: __filename
 },
-async (Void, citel, text, { from, reply }) => {
+async (conn, mek, m, { from, reply }) => {
     try {
         const timestampe = speed();
         const latensie = speed() - timestampe;
@@ -43,24 +43,23 @@ async (Void, citel, text, { from, reply }) => {
 *Powered by ${config.botname || "BILAL-MD"} 💎*
 `;
 
-        const buttonMessage = {
+        await conn.sendMessage(from, {
             image: { url: await botpic() },
-            caption: caption,
-            headerType: 4,
+            caption,
             contextInfo: {
                 externalAdReply: {
                     title: config.botname || "BILAL-MD",
                     body: "Bot Status Information",
-                    thumbnail: await botpic(),
-                    mediaType: 2,
+                    mediaType: 1,
+                    thumbnailUrl: await botpic(),
+                    renderLargerThumbnail: true,
                     sourceUrl: "https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G"
                 }
             }
-        };
+        }, { quoted: mek });
 
-        await Void.sendMessage(from, buttonMessage, { quoted: citel });
     } catch (e) {
-        console.log("Status cmd error:", e);
-        await reply("⚠️ Error while fetching status info!");
+        console.log("❌ Error in status cmd:", e);
+        reply("⚠️ Error while showing status!");
     }
 });
