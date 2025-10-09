@@ -34,7 +34,7 @@ const displayName = userName ? userName : userNumber;
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *HI ${displayName} G ☺️♥️*
-*MERE BOT KA MENU 🥰🌹
+*MERE BOT KA MENU 🥰🌹*
 *YEH HAI G 🌺🌹*
 
 *╭━━〔 👑 DOWNLOAD 👑 〕━━┈⊷*
