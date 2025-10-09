@@ -24,6 +24,7 @@ cmd({
 *┃👑│ MODE :❯ ${config.MODE}*
 *┃👑│ PREFiX :❯ ${config.PREFIX}*
 *┃👑│ UPTIME :❯ ${runtime(process.uptime())}*
+*┃👑│ PLATFORM :❯ ${getPlatform()}*
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
