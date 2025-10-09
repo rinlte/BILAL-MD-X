@@ -10,16 +10,16 @@ const { setCommitHash, getCommitHash } = require("../data/updateDB");
 // =========================================
 cmd({
   pattern: "update",
-  alias: ["upgrade", "sync", "upd", "upda", "updates", "updater", "new"],
+  alias: ["upgrade", "sync"],
   react: "💓",
   desc: "Update the bot to the latest version.",
   category: "misc",
   filename: __filename,
 }, async (client, m, store, { reply, isOwner }) => {
   try {
-    if (!isOwner) return reply("*YEH COMMAND SIRF MERE LIE HAI 🥰♥️*");
+    if (!isOwner) return reply("*YEH COMMAND SIRF MERE LIE HAI 🥰💓*");
 
-    await reply("*BILAL-MD BOT K NEW FEATURES CHECK HO RAHE HAI...☺️🌹*");
+    await reply("NEW FEATURES CHECK HO RAHE HAI ☺️🌹*");
 
     // Fetch the latest commit hash from your GitHub repo
     const { data: commitData } = await axios.get(
@@ -29,10 +29,10 @@ cmd({
     const currentCommit = await getCommitHash();
 
     if (latestCommit === currentCommit) {
-      return reply("");
+      return reply("*APKE BOT ME PEHLE SE HI NEW FEATURES ADD HAI 🥰♥️*");
     }
 
-    await reply("*ABHI TAK KOI NEW FEATURES NAHI AYE LEKIN BAHUT JALD NEW FEATURES AA JAYE GE 🥰♥️*");
+    await reply("*BOT ME NEW FEATURE ADD HO RAHE HAI 🥰💓*");
 
     // Download latest ZIP from GitHub
     const zipUrl = "https://github.com/BilalTech05/BILAL-MD/archive/refs/heads/main.zip";
@@ -40,7 +40,7 @@ cmd({
     const { data: zipData } = await axios.get(zipUrl, { responseType: "arraybuffer" });
     fs.writeFileSync(zipPath, zipData);
 
-    await reply("*BILAL-MD BOT UPDATE HO RAHA HAI ☺️💓*");
+    await reply("*BILAL-MD BOT UPDATE HO RAHA HAI ☺️♥️*");
     const extractPath = path.join(__dirname, "update-temp");
     const zip = new AdmZip(zipPath);
     zip.extractAllTo(extractPath, true);
