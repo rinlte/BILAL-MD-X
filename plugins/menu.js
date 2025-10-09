@@ -23,7 +23,7 @@ cmd({
 *┃👑│ USER:❯ ${config.OWNER_NUMBER}*
 *┃👑│ MODE :❯ ${config.MODE}*
 *┃👑│ PREFiX :❯ ${config.PREFIX}*
-*┃👑│ UPTIME :❯ ${runtime(process.uptime())}*
+*┃👑│ COMMANDS :❯ ${commands.length}*
 *┃👑│ PLATFORM :❯ ${getPlatform()}*
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
