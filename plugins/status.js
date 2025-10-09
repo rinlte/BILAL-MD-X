@@ -13,20 +13,20 @@ cmd({
     react: "📃",
     filename: __filename
 },
-async (Void, citel) => {
+async (Void, citel, text, { from, reply }) => {
+    try {
+        const timestampe = speed();
+        const latensie = speed() - timestampe;
+        const uptime = runtime(process.uptime());
+        const totalMem = os.totalmem();
+        const freeMem = os.freemem();
+        const usedMem = totalMem - freeMem;
+        const memUsage = `${(usedMem / 1024 / 1024).toFixed(0)}MB / ${(totalMem / 1024 / 1024).toFixed(0)}MB`;
 
-    const timestampe = speed();
-    const latensie = speed() - timestampe;
-    const uptime = runtime(process.uptime());
-    const totalMem = os.totalmem();
-    const freeMem = os.freemem();
-    const usedMem = totalMem - freeMem;
-    const memUsage = `${(usedMem / 1024 / 1024).toFixed(0)}MB / ${(totalMem / 1024 / 1024).toFixed(0)}MB`;
+        const time = moment().tz('Asia/Karachi').format('HH:mm:ss');
+        const date = moment().tz('Asia/Karachi').format('DD/MM/YYYY');
 
-    const time = moment().tz('Asia/Karachi').format('HH:mm:ss');
-    const date = moment().tz('Asia/Karachi').format('DD/MM/YYYY');
-
-    let caption = `
+        const caption = `
 ╭═══〘  *🤖 ${config.botname || "BILAL-MD"} STATUS* 〙═══⊷❍
 │
 │ *👤 Owner:* ${config.ownername}
@@ -43,20 +43,24 @@ async (Void, citel) => {
 *Powered by ${config.botname || "BILAL-MD"} 💎*
 `;
 
-    const buttonMessage = {
-        image: { url: await botpic() },
-        caption: caption,
-        headerType: 4,
-        contextInfo: {
-            externalAdReply: {
-                title: config.botname || "BILAL-MD",
-                body: "Bot Status Information",
-                thumbnail: await botpic(),
-                mediaType: 2,
-                sourceUrl: "https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G"
+        const buttonMessage = {
+            image: { url: await botpic() },
+            caption: caption,
+            headerType: 4,
+            contextInfo: {
+                externalAdReply: {
+                    title: config.botname || "BILAL-MD",
+                    body: "Bot Status Information",
+                    thumbnail: await botpic(),
+                    mediaType: 2,
+                    sourceUrl: "https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G"
+                }
             }
-        }
-    };
+        };
 
-    await Void.sendMessage(citel.chat, buttonMessage, { quoted: citel });
+        await Void.sendMessage(from, buttonMessage, { quoted: citel });
+    } catch (e) {
+        console.log("Status cmd error:", e);
+        await reply("⚠️ Error while fetching status info!");
+    }
 });
