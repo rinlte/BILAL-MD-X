@@ -1,5 +1,8 @@
 const { cmd } = require("../command");
-const googleTTS = require('google-tts-api'); 
+const googleTTS = require("google-tts-api");
+const fs = require("fs");
+const axios = require("axios");
+const path = require("path");
 
 cmd({
   pattern: "tts",
@@ -8,90 +11,89 @@ cmd({
   react: "😇",
   filename: __filename
 },
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, { from, args, q, reply }) => {
   try {
-    // Ensure there is text
-    if (!q) {
-      return reply("Please provide text for conversion! Usage: `.tts <text>`");
-    }
+    if (!q) return reply("❌ Please provide text for conversion!\nExample: `.tts hello world`");
 
-    // Select voice language based on user input or default to a male voice
-    let voiceLanguage = 'en-US'; // Default language is American English with a male voice
-    let selectedVoice = 'male';  // Default voice type (we assume it's male by default)
+    // Select voice / language
+    let voiceLanguage = "en-US";
+    if (args[0] === "female") voiceLanguage = "en-GB";
+    else if (args[0] === "ur" || args[0] === "urdu") voiceLanguage = "ur";
 
-    // Check if user wants a different language or voice
-    if (args[0] === "male") {
-      voiceLanguage = 'en-US'; // Use American male voice
-    } else if (args[0] === "female") {
-      voiceLanguage = 'en-GB'; // Use British female voice
-      selectedVoice = 'female';
-    } else if (args[0] === "loud") {
-      voiceLanguage = 'en-US'; // Default male voice, but let's interpret "loud" as normal speech speed.
-    } else if (args[0] === "deep") {
-      voiceLanguage = 'en-US'; // Deep male voice (still has limitations with `google-tts-api`)
-    } else {
-      voiceLanguage = 'en-US'; // Default fallback
-    }
-
-    // Generate the URL for the TTS audio
-    const url = googleTTS.getAudioUrl(q, {
-      lang: voiceLanguage,  // Choose language based on selected voice
-      slow: false,  // Normal speed for the speech
-      host: 'https://translate.google.com'
+    // Generate TTS URL
+    const ttsUrl = googleTTS.getAudioUrl(q, {
+      lang: voiceLanguage,
+      slow: false,
+      host: "https://translate.google.com",
     });
 
-    // Send the audio message to the user
-    await conn.sendMessage(from, { 
-      audio: { url: url }, 
-      mimetype: 'audio/mpeg', 
-      ptt: true 
+    // Download the audio file
+    const outputPath = path.join(__dirname, "../temp_tts.mp3");
+    const response = await axios({
+      url: ttsUrl,
+      method: "GET",
+      responseType: "arraybuffer",
+    });
+    fs.writeFileSync(outputPath, response.data);
+
+    // Send as voice message (PTT)
+    await conn.sendMessage(from, {
+      audio: fs.readFileSync(outputPath),
+      mimetype: "audio/mpeg",
+      ptt: true
     }, { quoted: mek });
 
+    // Delete temp file
+    fs.unlinkSync(outputPath);
+
   } catch (error) {
-    console.error(error);
-    reply(`Error: ${error.message}`);
+    console.error("TTS Error:", error);
+    reply(`❌ Error generating speech: ${error.message}`);
   }
 });
 
 
 cmd({
   pattern: "tts2",
-  desc: "Convert text to speech with different voices.",
+  desc: "Convert text to speech (Urdu or English).",
   category: "fun",
   react: "🔊",
   filename: __filename
 },
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, { from, args, q, reply }) => {
   try {
-    // Ensure there is text
-    if (!q) {
-      return reply("Please provide text for conversion! Usage: `.tts2 <text>`");
-    }
+    if (!q) return reply("❌ Please provide text!\nExample: `.tts2 ur Hello world`");
 
-    // Set default language
-    let voiceLanguage = 'en-US'; // Default language is American English
+    // Detect language
+    let voiceLanguage = "en-US";
+    if (args[0] === "ur" || args[0] === "urdu") voiceLanguage = "ur";
 
-    // Check if user specifies Urdu language
-    if (args[0] === "ur" || args[0] === "urdu") {
-      voiceLanguage = 'ur'; // Set language to Urdu
-    }
-
-    // Generate the URL for the TTS audio
-    const url = googleTTS.getAudioUrl(q, {
-      lang: voiceLanguage,  // Choose language based on input
-      slow: false,  // Normal speed for the speech
-      host: 'https://translate.google.com'
+    const ttsUrl = googleTTS.getAudioUrl(q, {
+      lang: voiceLanguage,
+      slow: false,
+      host: "https://translate.google.com",
     });
 
-    // Send the audio message to the user
-    await conn.sendMessage(from, { 
-      audio: { url: url }, 
-      mimetype: 'audio/mpeg', 
-      ptt: true 
+    // Download and save
+    const outputPath = path.join(__dirname, "../temp_tts2.mp3");
+    const response = await axios({
+      url: ttsUrl,
+      method: "GET",
+      responseType: "arraybuffer",
+    });
+    fs.writeFileSync(outputPath, response.data);
+
+    // Send voice message
+    await conn.sendMessage(from, {
+      audio: fs.readFileSync(outputPath),
+      mimetype: "audio/mpeg",
+      ptt: true
     }, { quoted: mek });
 
+    fs.unlinkSync(outputPath);
+
   } catch (error) {
-    console.error(error);
-    reply(`Error: ${error.message}`);
+    console.error("TTS2 Error:", error);
+    reply(`❌ Error generating audio: ${error.message}`);
   }
 });
