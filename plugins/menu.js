@@ -2,7 +2,13 @@ const config = require('../config');
 const { cmd, commands } = require('../command');
 const { runtime } = require('../lib/functions');
 const axios = require('axios');
-
+function getPlatform() {
+    if (process.env.HEROKU_APP_NAME) return "Heroku";
+    if (process.env.KOYEB_API) return "Koyeb";
+    if (process.env.RENDER) return "Render";
+    if (process.env.TERMUX) return "Termux";
+    return "Unknown";
+}
 cmd({
     pattern: "menu",
     desc: "Show interactive menu system",
