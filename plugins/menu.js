@@ -8,11 +8,6 @@ function getPlatform() {
     if (process.env.RENDER) return "Render";
     if (process.env.TERMUX) return "Termux";
     return "Unknown";
-// 🧠 User name fetch
-const userName = m.pushName || m.sender.split('@')[0];
-const userNumber = m.sender.split('@')[0];
-const displayName = userName ? userName : userNumber;
-    
 }
 cmd({
     pattern: "menu",
@@ -22,6 +17,11 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
+        // 🧠 User name fetch
+const userName = m.pushName || m.sender.split('@')[0];
+const userNumber = m.sender.split('@')[0];
+const displayName = userName ? userName : userNumber;
+        
         const menuCaption = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
 *┃👑│ USER:❯ ${config.OWNER_NAME}*
