@@ -1,33 +1,52 @@
-const axios = require("axios");
-const { cmd } = require("../command"); // tumhare bot ka command system
+const { cmd } = require('../command');
+const { downloadMediaMessage } = require('@whiskeysockets/baileys');
+const fs = require('fs');
+const path = require('path');
+const remini = require('../lib/remini'); // make sure ../lib/remini.js exists
 
 cmd({
-  pattern: "remini",
-  desc: "Enhance image quality using API",
-  category: "tools",
+  pattern: 'remini',
+  alias: ['hdr', 'dehaze', 'recolor'],
+  desc: 'Enhance or improve image quality (AI-based).',
+  category: 'image',
+  react: '🪄',
   filename: __filename
-}, async (m, conn) => {
+}, async (conn, mek, m, { reply, args, prefix, command }) => {
+
   try {
-    // check reply
-    let qmsg = m.quoted ? m.quoted : m;
-    if (!qmsg || !qmsg.message || !qmsg.message.imageMessage) {
-      return conn.sendMessage(m.chat, { text: "📷 *Reply to an image to enhance it!*" }, { quoted: m });
-    }
+    const quoted = mek.quoted ? mek.quoted : mek;
+    const mime = (quoted.msg || quoted).mimetype || '';
 
-    // download image
-    let media = await conn.downloadAndSaveMediaMessage(qmsg);
-    let { uploadImage } = require("../lib/uploadImage"); // upload helper
-    let url = await uploadImage(media);
+    if (!mime) return reply(`❌ Reply to an image with *${prefix + command}*`);
+    if (!/image\/(jpe?g|png)/.test(mime)) return reply(`❌ Please reply to a valid image (jpg/png).`);
 
-    // call API
-    let apiUrl = `https://api.princetechn.com/api/tools/remini?apikey=prince&url=${encodeURIComponent(url)}`;
-    let response = await axios.get(apiUrl, { responseType: "arraybuffer" });
+    await conn.sendMessage(mek.chat, { react: { text: '⏳', key: mek.key } });
+    await reply('🪄 *Enhancing image... Please wait...*');
 
-    // send enhanced image
-    await conn.sendMessage(m.chat, { image: Buffer.from(response.data), caption: "✨ Enhanced by *Remini AI*" }, { quoted: m });
+    // Download image to buffer
+    const buffer = await downloadMediaMessage(quoted, 'buffer', {}, { reuploadRequest: conn.waUploadToServer });
 
-  } catch (e) {
-    console.error(e);
-    conn.sendMessage(m.chat, { text: "❌ Failed to enhance image!" }, { quoted: m });
+    if (!Buffer.isBuffer(buffer)) return reply('❌ Failed to download image. Try again.');
+
+    // Detect which type of enhancement to apply
+    let enhancementType = 'enhance';
+    if (command === 'dehaze') enhancementType = 'dehaze';
+    else if (command === 'recolor') enhancementType = 'recolor';
+    else if (command === 'hdr') enhancementType = 'enhance';
+
+    // Call AI remini function
+    const enhanced = await remini(buffer, enhancementType);
+
+    // Send enhanced image back
+    await conn.sendMessage(mek.chat, {
+      image: enhanced,
+      caption: `✨ *Image Enhanced with ${command.toUpperCase()} Mode*\n_© Powered by TOHID-AI_`
+    }, { quoted: mek });
+
+    await conn.sendMessage(mek.chat, { react: { text: '✅', key: mek.key } });
+
+  } catch (err) {
+    console.error('Remini command error:', err);
+    reply('❌ Something went wrong while processing the image.');
   }
 });
