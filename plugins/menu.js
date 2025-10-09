@@ -8,6 +8,11 @@ function getPlatform() {
     if (process.env.RENDER) return "Render";
     if (process.env.TERMUX) return "Termux";
     return "Unknown";
+// 🧠 User name fetch
+const userName = m.pushName || m.sender.split('@')[0];
+const userNumber = m.sender.split('@')[0];
+const displayName = userName ? userName : userNumber;
+    
 }
 cmd({
     pattern: "menu",
@@ -27,6 +32,10 @@ cmd({
 *┃👑│ PLATFORM :❯ ${getPlatform()}*
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
+
+*HI ${displayName} G ☺️♥️*
+*MERE BOT KA MENU 🥰🌹
+*YEH HAI G 🌺🌹*
 
 *╭━━〔 👑 DOWNLOAD 👑 〕━━┈⊷*
 *┃👑│ • FB*
