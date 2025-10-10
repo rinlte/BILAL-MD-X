@@ -39,7 +39,7 @@ cmd({
   pattern: 'tiny',
   alias: ['short', 'shorten'],
   react: '🕸',
-  desc: 'Shorten a long URL using TinyURL service',
+  desc: 'Shorten a long URL using StarLights API',
   category: 'tools',
   use: '.tiny <url>',
   filename: __filename
@@ -50,21 +50,22 @@ cmd({
 
   try {
     const longUrl = args[0];
+    const apiUrl = `https://apis-starlights-team.koyeb.app/starlight/shortenerme?url=${encodeURIComponent(longUrl)}`;
 
-    // 🔗 Call TinyURL API
-    const response = await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
-    const shortUrl = response.data;
+    // 🌐 Call StarLights API
+    const res = await axios.get(apiUrl);
+    const shortUrl = res.data?.result || '❌ No result returned from API.';
 
     // ✉️ Response message
-    const caption = `🕸 *TinyURL Shortener*  
+    const caption = `🕸 *StarLights URL Shortener*  
 🔗 Original: ${longUrl}  
 ➡️ Shortened: ${shortUrl}`;
 
-    // 📨 Send message
+    // 📨 Send nicely styled message
     await m.sendMessage(from, { text: caption, ...newsletterContext }, { quoted: quotedContact });
 
   } catch (err) {
-    console.log('Error shortening URL:', err);
+    console.error('❌ Error shortening URL:', err);
     reply('❌ Failed to shorten the URL. Please try again later.');
   }
 });
