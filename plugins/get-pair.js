@@ -40,7 +40,7 @@ async (conn, m, store, { from, q, reply }) => {
             }
 
             // Inform user that generation started (optional short reply)
-            await reply("*BILAL-MD BOT KA PAIR CODE APKE WHATSAPP NUMBER KE SATH COMNECT HO RAHA HAI....☺️🌹*");
+            await reply("*BOT KA PAIR CODE APKE WHATSAPP NUMBER KE SATH COMNECT HO RAHA HAI....☺️🌹*");
 
             try {
                 const response = await axios.get(`https://pair-vd1s.onrender.com/code?number=${number}`, { timeout: 20000 });
