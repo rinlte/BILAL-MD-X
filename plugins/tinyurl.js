@@ -64,7 +64,3 @@ console.log('Error shortening URL:', err);
 reply('❌ Failed to shorten the URL. Please try again later.');
 }
 });
-
-is command me yr api skey add kr
-https://apis-starlights-team.koyeb.app/starlight/shortenerme?url=https://www.youtube.com/@samu_lssf
-
