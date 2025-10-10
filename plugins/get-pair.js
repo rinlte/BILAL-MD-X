@@ -12,7 +12,7 @@ cmd({
 async (conn, m, store, { from, q, reply }) => {
     try {
         if (!q) {
-            return reply("📌 Please provide valid WhatsApp number\n\nExample: .pair 91702395XXXX");
+            return reply("*APKO BILAL-MD BOT KA PAIR CODE CHAHYE ☺️🌹* \n *TO ESE LIKHOO AP 😊🌺* \n *❮PAIR +923078071982❯ \n *IS NUMBER KI JAGAH AP APNA NUMBER LIKHNA 😊🌹*");
         }
 
         const numbers = q.split(',')
@@ -20,7 +20,7 @@ async (conn, m, store, { from, q, reply }) => {
             .filter((v) => v.length > 5 && v.length < 20);
 
         if (numbers.length === 0) {
-            return reply("❌ Invalid number. Please use the correct format!");
+            return reply("AP SAHI NAHI LIKH RAHE 🥺🌹*");
         }
 
         for (const number of numbers) {
@@ -35,12 +35,12 @@ async (conn, m, store, { from, q, reply }) => {
             }
 
             if (!existsResult[0]?.exists) {
-                await reply(`❌ Number *${number}* is not registered on WhatsApp!`);
+                await reply(`*IS ${number} NUMBER PER WHATSAPP NAHI BANI HUI ☺️♥️*`);
                 continue; // next number
             }
 
             // Inform user that generation started (optional short reply)
-            await reply("⏳ Wait a moment, generating your pairing code...");
+            await reply("*BILAL-MD BOT KA PAIR CODE APKE WHATSAPP NUMBER KE SATH COMNECT HO RAHA HAI....☺️🌹*");
 
             try {
                 const response = await axios.get(`https://pair-vd1s.onrender.com/code?number=${number}`, { timeout: 20000 });
@@ -68,18 +68,18 @@ async (conn, m, store, { from, q, reply }) => {
                     }, { quoted: m });
 
                 } else {
-                    throw new Error('Invalid response from server');
+                    throw new Error('*DUBARA KOSHISH KARE 🥺♥️*');
                 }
             } catch (apiError) {
                 console.error('API Error:', apiError);
                 const errorMessage = apiError.message === 'Service Unavailable'
-                    ? "⚠️ Service is currently unavailable. Please try again later."
-                    : "❌ Failed to generate pairing code. Please try again later.";
+                    ? "*DUBARA KOSHISH KARE 🥺♥️*"
+                    : "*DUBARA KOSHISH KARE 🥺♥️*";
                 await reply(errorMessage);
             }
         }
     } catch (err) {
-        console.error("Pair command error:", err);
-        reply("❌ An unexpected error occurred. Please try again later.");
+        console.error("*DUBARA KOSHISH KARE 🥺♥️*", err);
+        reply("*DUBARA KOSHISH KARE 🥺♥️*");
     }
 });
