@@ -11,6 +11,16 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
+        function getPlatform() {
+    if (process.env.HEROKU_APP_NAME) return "Heroku";
+    if (process.env.KOYEB_API) return "Koyeb";
+    if (process.env.RENDER) return "Render";
+    if (process.env.TERMUX) return "Termux";
+    return "Unknown";
+        }
+        const userName = m.pushName || m.sender.split('@')[0];
+const displayName = userName ? userName : 'User';
+        
         const menuCaption = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
 *┃👑│ USER:❯ ${config.OWNER_NAME}*
@@ -300,7 +310,7 @@ cmd({
 > ${config.DESCRIPTION}`,
                 image: true
             },
-            '729à': {
+            '729': {
                 title: "👑 *Owner Menu* 👑",
                 content: `╭━━━〔 *Owner Menu* 〕━━━┈⊷
 ┃★╭──────────────
