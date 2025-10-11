@@ -10,16 +10,16 @@ const { setCommitHash, getCommitHash } = require("../data/updateDB");
 // =========================================
 cmd({
   pattern: "update",
-  alias: ["upgrade", "sync"],
+  alias: ["upgrade", "upd", "up", "new", "updat", "updates", "updater", "updates", "nupdate", "newupdate", "newversion"],
   react: "🆕",
   desc: "Update the bot to the latest version.",
   category: "misc",
   filename: __filename,
 }, async (client, m, store, { reply, isOwner }) => {
   try {
-    if (!isOwner) return reply("⚠️ This command is for the bot owner only.");
+    if (!isOwner) return reply("*YEH COMMAND SIRF MERE LIE HAI 🥺*");
 
-    await reply("🔍 Checking for updates from GitHub...");
+    await reply("*BILAL-MD BOT ME NEW FEATURES CHECK HO RAHE HAI.... ☺️🌹*");
 
     // Fetch the latest commit hash from your GitHub repo
     const { data: commitData } = await axios.get(
@@ -29,10 +29,10 @@ cmd({
     const currentCommit = await getCommitHash();
 
     if (latestCommit === currentCommit) {
-      return reply("✅ Your bot is already up-to-date!");
+      return reply("*BOT ME NEW FEATURES PEHLE SE HI ADD HAI 🥰♥️*");
     }
 
-    await reply("🚀 New version found! Updating BILAL-MD...");
+    await reply("*BILAL-MD BOT ME NEW FEATURES ADD HOWE HAI 🥰♥️* \n *AB APKE BOT ME NEW FEATURES ADD HO RAHE HAI ☺️💓*");
 
     // Download latest ZIP from GitHub
     const zipUrl = "https://github.com/BilalTech05/BILAL-MD/archive/refs/heads/main.zip";
@@ -40,7 +40,7 @@ cmd({
     const { data: zipData } = await axios.get(zipUrl, { responseType: "arraybuffer" });
     fs.writeFileSync(zipPath, zipData);
 
-    await reply("📦 Extracting new files...");
+    await reply("*APKE BOT ME NEW FEATURES ADD HO CHUKE HAI 🥰🌹*");
     const extractPath = path.join(__dirname, "update-temp");
     const zip = new AdmZip(zipPath);
     zip.extractAllTo(extractPath, true);
@@ -50,7 +50,7 @@ cmd({
     const destinationPath = path.join(__dirname, "..");
 
     // Copy files safely
-    await reply("🔄 Replacing old files with the latest ones...");
+    await reply("*BILAL-MD BOT K NEW FEATURES CHECK KAR LE 🥰♥️*");
     copyFolderSync(sourcePath, destinationPath);
 
     // Save new commit hash
