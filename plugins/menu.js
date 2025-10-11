@@ -145,7 +145,7 @@ const displayName = userName ? userName : 'User';
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
                 newsletterJid: '120363296818107681@newsletter',
-                newsletterName: config.OWNER_NAME,
+                newsletterName: "👑 BILAL-MD 👑",
                 serverMessageId: 143
             }
         };
