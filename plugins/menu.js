@@ -17,6 +17,9 @@ cmd({
     if (process.env.KOYEB_API) return "Koyeb";
     if (process.env.RENDER) return "Render";
     if (process.env.TERMUX) return "Termux";
+    function getPlatform() {
+    return "Panel";
+}
     return "Unknown";
         }
         const userName = m.pushName || m.sender.split('@')[0];
