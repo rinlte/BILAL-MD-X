@@ -5,6 +5,7 @@ const axios = require('axios');
 
 cmd({
     pattern: "menu",
+    alias: ["m", "me", "men", "meno", "menu1", "menus", "list", "li", "lis", "lists", "allcmd", "allcmds", "totalcmds", "cmd", "cmds", "show", "showcmd"],
     desc: "Show interactive menu system",
     category: "menu",
     react: "👑",
@@ -74,6 +75,7 @@ const displayName = userName ? userName : 'User';
 *┃👑│ • RESTART*
 *┃👑│ • UPDATECMD*
 *┃👑│ • OWNERREACT*
+*┃👑│ • UPDATE*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 AI 👑 〕━━┈⊷*
