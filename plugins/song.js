@@ -3,7 +3,7 @@ const yts = require('yt-search');
 const { cmd } = require('../command');
 
 // =============================
-// 🎧 SONG DOWNLOAD COMMAND
+// 🎧 SONG DOWNLOAD COMMAND (Using PrinceTech API)
 // =============================
 cmd({
   pattern: "song",
@@ -33,30 +33,31 @@ cmd({
       caption: `🎶 *Sᴇᴀʀᴄʜɪɴɢ ʏᴏᴜʀ sᴏɴɢ...*\n\n*🎵 Tɪᴛʟᴇ:* ${video.title}\n*⏳ Dᴜʀᴀᴛɪᴏɴ:* ${video.timestamp}`
     }, { quoted: m });
 
-    // 3️⃣ Fetch from API
-    const apiUrl = `https://jawad-tech.vercel.app/download/yt?url=${encodeURIComponent(video.url)}`;
+    // 3️⃣ Fetch from PrinceTech API
+    const apiUrl = `https://api.princetechn.com/api/download/ytmp3?apikey=prince&url=${encodeURIComponent(video.url)}`;
     const res = await axios.get(apiUrl, {
       timeout: 30000,
       headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
     });
 
-    if (!res.data || !res.data.status) {
-      return reply("❌ Fᴀɪʟᴇᴅ ᴛᴏ ғᴇᴛᴄʜ ᴀᴜᴅɪᴏ. Tʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.");
+    // 4️⃣ Validate response
+    if (!res.data || !res.data.status || !res.data.result?.download) {
+      return reply("❌ Fᴀɪʟᴇᴅ ᴛᴏ ғᴇᴛᴄʜ sᴏɴɢ. Tʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.");
     }
 
-    const audioUrl = res.data.result.audio?.url || res.data.result.download || null;
-    if (!audioUrl) return reply("⚠️ Aᴜᴅɪᴏ ʟɪɴᴋ ɴᴏᴛ ғᴏᴜɴᴅ ғʀᴏᴍ ᴀᴘɪ ʀᴇsᴘᴏɴsᴇ.");
+    const audioUrl = res.data.result.download;
+    const title = res.data.result.title || video.title;
 
-    // 4️⃣ Fancy caption with fonts
+    // 5️⃣ Fancy caption
     const caption = `🎧 *Ｎｏｗ Ｐｌａｙｉｎｇ...*\n\n` +
-      `*🎵 Ｔｉｔｌｅ:* ${video.title}\n` +
+      `*🎵 Ｔｉｔｌｅ:* ${title}\n` +
       `*📺 Ｃｈａｎｎｅｌ:* ${video.author?.name || 'Unknown'}\n` +
       `*⏳ Ｄｕｒａｔｉｏｎ:* ${video.timestamp}\n` +
       `*👀 Ｖｉｅｗｓ:* ${video.views?.toLocaleString() || 'N/A'}\n` +
       `*🔗 Ｌｉｎｋ:* ${video.url}\n\n` +
-      `⚡ 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 *ＢＩＬＡＬ ＭＤ* ⚡`;
+      `⚡ 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 *ＢＩＬＡＬ ＭＤ × PRINCE TECH* ⚡`;
 
-    // 5️⃣ Send song details
+    // 6️⃣ Send song details
     await conn.sendMessage(from, {
       image: { url: video.thumbnail },
       caption,
@@ -66,11 +67,11 @@ cmd({
       }
     }, { quoted: m });
 
-    // 6️⃣ Send audio file
+    // 7️⃣ Send the audio
     await conn.sendMessage(from, {
       audio: { url: audioUrl },
       mimetype: "audio/mpeg",
-      fileName: `${video.title}.mp3`,
+      fileName: `${title}.mp3`,
       ptt: false
     }, { quoted: m });
 
