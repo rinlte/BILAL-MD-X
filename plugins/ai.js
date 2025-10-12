@@ -3,8 +3,8 @@ const fetch = require('node-fetch');
 const { cmd } = require('../command');
 
 cmd({
-  pattern: "gpt",
-  alias: ["ai", "gemini", "chatgpt", "openai", "sawal", "jawab", "jawab", "question", "answer", "g", "gp", "gpt1"],
+  pattern: "ai",
+  alias: ["ai", "gemini", "sawal", "jawab", "question", "answer", "g", "gp", "gpt1"],
   desc: "Chat with AI (GPT or Gemini)",
   category: "ai",
   react: "🤔",
