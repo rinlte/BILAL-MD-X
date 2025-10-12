@@ -3,12 +3,12 @@ const yts = require('yt-search');
 const { cmd } = require('../command');
 
 // =============================
-// 🎧 SONG DOWNLOAD (YTMUSIC MP3)
+// 🎧 SONG DOWNLOAD (STARLIGHTS MP3)
 // =============================
 cmd({
   pattern: "song",
   alias: ["music", "play", "audio"],
-  desc: "Download MP3 songs from YouTube via PrinceTech API",
+  desc: "Download songs from YouTube (Starlights API)",
   category: "download",
   react: "🎵",
   filename: __filename
@@ -33,16 +33,16 @@ cmd({
       caption: `🎶 *Fetching your song...*\n\n🎵 *Title:* ${video.title}\n⏳ *Duration:* ${video.timestamp}`
     }, { quoted: m });
 
-    // 🎧 Fetch audio from PrinceTech API
-    const apiUrl = `https://api.princetechn.com/api/download/ytmusic?apikey=prince&quality=mp3&url=${encodeURIComponent(video.url)}`;
+    // 🎧 Fetch audio from Starlights API
+    const apiUrl = `https://apis-starlights-team.koyeb.app/starlight/youtube-mp3?url=${encodeURIComponent(video.url)}&format=mp3`;
     const res = await axios.get(apiUrl, { timeout: 30000 });
 
     // ⚠️ Validate response
-    if (!res.data || !res.data.status || !res.data.result?.download) {
-      return reply("❌ Failed to fetch song. Try again later.");
+    if (!res.data || !res.data.result || !res.data.result.download_url) {
+      return reply("❌ Failed to fetch audio. Try again later.");
     }
 
-    const songUrl = res.data.result.download;
+    const audioUrl = res.data.result.download_url;
     const title = res.data.result.title || video.title;
 
     // ✨ Caption with details
@@ -52,18 +52,18 @@ cmd({
       `⏳ *Duration:* ${video.timestamp}\n` +
       `👀 *Views:* ${video.views?.toLocaleString() || 'N/A'}\n` +
       `🔗 *Link:* ${video.url}\n\n` +
-      `⚡ *Powered By BILAL-MD × PRINCE TECH* ⚡`;
+      `⚡ *Powered By BILAL-MD × STARLIGHTS TEAM* ⚡`;
 
-    // 🖼️ Send song info
+    // 🖼️ Send info
     await conn.sendMessage(from, {
       image: { url: video.thumbnail },
       caption,
       contextInfo: { forwardingScore: 999, isForwarded: true }
     }, { quoted: m });
 
-    // 🎶 Send the MP3 audio
+    // 🎵 Send the MP3 audio
     await conn.sendMessage(from, {
-      audio: { url: songUrl },
+      audio: { url: audioUrl },
       mimetype: "audio/mpeg",
       fileName: `${title}.mp3`,
       ptt: false
