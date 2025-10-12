@@ -17,7 +17,7 @@ cmd({
         if (!input || input.trim() === '') {
             await conn.sendPresenceUpdate('paused', from);
             await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
-            return reply('*AP NE READMORE TEXT BANANA HAI 🤔* \n *TO AP ESE LIKHO ☺️* \n *READMORE BILAL + MD* \n *AGAR AP ESE LIKHO GE TO APKA READMORE MSG BAN JAYE GA 🥰🌹*');
+            return reply('*AP NE READMORE TEXT BANANA HAI 🤔* \n *TO AP ESE LIKHO ☺️* \n\n*❮READMORE BILAL + MD❯* \n\n *AGAR AP ESE LIKHO GE TO APKA READMORE MSG BAN JAYE GA 🥰🌹*');
         }
 
         // Split using '+'
