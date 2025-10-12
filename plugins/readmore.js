@@ -3,24 +3,26 @@ const { cmd } = require('../command');
 cmd({
     pattern: 'readmore',
     alias: ['rm'],
-    desc: 'Generate a ReadMore text (without showing "readmore" word)',
+    desc: 'Generate a custom ReadMore text preserving line spaces',
     category: 'tools',
     react: '📄',
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
-        // Get full message text without command word
-        const input = m.text?.replace(/^(\.readmore|\.rm)\s*/i, '').trim();
-        if (!input) {
-            return reply('📘 Example:\n.readmore Hello | This is hidden text');
+        // Remove command name (.readmore or .rm)
+        const input = m.text?.replace(/^(\.readmore|\.rm)\s*/i, '');
+        if (!input || input.trim() === '') {
+            return reply('📘 Example:\n.readmore Hello\n\n\n| Hidden text');
         }
 
-        const [visible, hidden] = input.split('|').map(x => x.trim());
-        const more = String.fromCharCode(8206).repeat(4000); // invisible chars trigger readmore
+        // Split into visible & hidden parts
+        const [visible, hidden] = input.split('|');
+        const more = String.fromCharCode(8206).repeat(4000); // triggers collapse
 
-        const output = visible
-            ? `${visible}\n${more}\n${hidden || ''}`
-            : `${more}\n${hidden || ''}`;
+        // Preserve exact user-entered spacing (including newlines)
+        const output = hidden
+            ? `${visible || ''}${more}${hidden}`
+            : `${more}${visible || ''}`;
 
         await reply(output);
     } catch (err) {
