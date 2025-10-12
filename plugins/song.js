@@ -3,14 +3,14 @@ const yts = require('yt-search');
 const { cmd } = require('../command');
 
 // =============================
-// 🎬 VIDEO DOWNLOAD COMMAND (Using PrinceTech API)
+// 🎵 AUDIO DOWNLOAD COMMAND (Using PrinceTech API)
 // =============================
 cmd({
   pattern: "song",
-  alias: ["music", "play", "video"],
-  desc: "Download video from YouTube",
+  alias: ["music", "play", "audio"],
+  desc: "Download song (MP3) from YouTube",
   category: "download",
-  react: "🎥",
+  react: "🎧",
   filename: __filename
 }, async (conn, m, store, { from, q, reply }) => {
   try {
@@ -30,11 +30,11 @@ cmd({
     // 2️⃣ Notify user
     await conn.sendMessage(from, {
       image: { url: video.thumbnail },
-      caption: `🎬 *Fᴇᴛᴄʜɪɴɢ ʏᴏᴜʀ ᴠɪᴅᴇᴏ...*\n\n*🎵 Title:* ${video.title}\n*⏳ Duration:* ${video.timestamp}`
+      caption: `🎶 *Fetching your song...*\n\n*🎵 Title:* ${video.title}\n*⏳ Duration:* ${video.timestamp}`
     }, { quoted: m });
 
-    // 3️⃣ Fetch from PrinceTech MP4 API
-    const apiUrl = `https://api.princetechn.com/api/download/ytmp4?apikey=prince&url=${encodeURIComponent(video.url)}`;
+    // 3️⃣ Fetch from PrinceTech MP3 API
+    const apiUrl = `https://api.princetechn.com/api/download/ytmp3?apikey=prince&url=${encodeURIComponent(video.url)}`;
     const res = await axios.get(apiUrl, {
       timeout: 30000,
       headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
@@ -42,14 +42,14 @@ cmd({
 
     // 4️⃣ Validate response
     if (!res.data || !res.data.status || !res.data.result?.download) {
-      return reply("❌ Fᴀɪʟᴇᴅ ᴛᴏ ғᴇᴛᴄʜ ᴠɪᴅᴇᴏ. Tʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.");
+      return reply("❌ Failed to fetch audio. Try again later.");
     }
 
-    const videoUrl = res.data.result.download;
+    const audioUrl = res.data.result.download;
     const title = res.data.result.title || video.title;
 
     // 5️⃣ Fancy caption
-    const caption = `🎬 *Ｎｏｗ Ｐｌａｙｉｎｇ...*\n\n` +
+    const caption = `🎧 *Ｎｏｗ Ｐｌａｙｉｎｇ...*\n\n` +
       `*🎵 Ｔｉｔｌｅ:* ${title}\n` +
       `*📺 Ｃｈａｎｎｅｌ:* ${video.author?.name || 'Unknown'}\n` +
       `*⏳ Ｄｕｒａｔɪᴏɴ:* ${video.timestamp}\n` +
@@ -57,7 +57,7 @@ cmd({
       `*🔗 Ｌɪɴᴋ:* ${video.url}\n\n` +
       `⚡ 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 *ＢＩＬＡＬ ＭＤ × PRINCE TECH* ⚡`;
 
-    // 6️⃣ Send video details
+    // 6️⃣ Send song details
     await conn.sendMessage(from, {
       image: { url: video.thumbnail },
       caption,
@@ -67,16 +67,16 @@ cmd({
       }
     }, { quoted: m });
 
-    // 7️⃣ Send video file
+    // 7️⃣ Send audio file
     await conn.sendMessage(from, {
-      video: { url: videoUrl },
-      mimetype: "video/mp4",
-      fileName: `${title}.mp4`,
-      caption: `🎬 ${title}`,
+      audio: { url: audioUrl },
+      mimetype: "audio/mpeg",
+      fileName: `${title}.mp3`,
+      ptt: false
     }, { quoted: m });
 
   } catch (err) {
-    console.error("🎬 Video command error:", err);
-    reply("❌ Fᴀɪʟᴇᴅ ᴛᴏ ᴘʀᴏᴄᴇss ʏᴏᴜʀ ʀᴇǫᴜᴇsᴛ. Pʟᴇᴀsᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.");
+    console.error("🎵 Song command error:", err);
+    reply("❌ Failed to process your request. Please try again later.");
   }
 });
