@@ -1,105 +1,37 @@
-const { cmd } = require("../command");
-const axios = require("axios");
-const fs = require("fs");
+const axios = require('axios');
+const { cmd } = require('../command');
 
 cmd({
   pattern: "imagine",
-  alias: ["flux", "imagine"],
-  react: "🖼️",
-  desc: "Generate an image using AI.",
-  category: "main",
+  alias: ["aiphoto", "aiimg", "aiimage"],
+  desc: "Generate AI image from prompt",
+  category: "ai",
+  react: "🎨",
   filename: __filename
-}, async (conn, mek, m, { q, reply }) => {
+}, async (conn, m, store, { from, q, reply }) => {
   try {
-    if (!q) return reply("*APKO KON C PHOTOS CHAHYE TO ESE LIKHE ☺️♥️ \n *IMAGINE FLOWERS*");
+    if (!q) return reply("❌ *Please provide a prompt!*\nExample: `.aiimg futuristic city at night`");
 
-    await reply("_APKI PICS DOWNLOAD HO RAHI HAI THORA SA INTAZAR KARE...😊🌹_");
+    // ⏳ React while generating
+    await conn.sendMessage(from, { react: { text: "⏳", key: m.key } });
 
-    const apiUrl = `https://api.siputzx.my.id/api/ai/flux?prompt=${encodeURIComponent(q)}`;
+    // 🖼️ Image API
+    const res = await axios.get(`https://api.dreaded.site/api/imagine?prompt=${encodeURIComponent(q)}`);
 
-    const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
+    if (res.data?.result) {
+      await conn.sendMessage(from, {
+        image: { url: res.data.result },
+        caption: `🖼️ *AI Generated Image*\n\n💬 *Prompt:* ${q}\n⚡ *Powered by BILAL-MD*`
+      }, { quoted: m });
 
-    if (!response || !response.data) {
-      return reply("*APKI PHOTO NAHI MILI SORRY 😔*");
+      await conn.sendMessage(from, { react: { text: "✅", key: m.key } });
+    } else {
+      throw new Error("Image not returned");
     }
 
-    const imageBuffer = Buffer.from(response.data, "binary");
-
-    await conn.sendMessage(m.chat, {
-      image: imageBuffer,
-      caption: `*APKI PHOTO :❯* *${q}*`
-    });
-
-  } catch (error) {
-    console.error("FluxAI Error:", error);
-    reply(`An error occurred: ${error.response?.data?.message || error.message || "Unknown error"}`);
-  }
-});
-
-cmd({
-  pattern: "pic",
-  alias: ["sdiffusion", "imagrt"],
-  react: "🖼️",
-  desc: "Generate an image using AI.",
-  category: "main",
-  filename: __filename
-}, async (conn, mek, m, { q, reply }) => {
-  try {
-    if (!q) return reply("*APKO KOI PHOTO CHAHYE TONUSKA NAME LIKHO* \n *IMAGINE2 PAKISTANI FLAG*");
-
-    await reply("_APKI PHOTOS BAS THORI DER ME AA JAYE GE...☺️🌹_");
-
-    const apiUrl = `https://api.siputzx.my.id/api/ai/stable-diffusion?prompt=${encodeURIComponent(q)}`;
-
-    const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
-
-    if (!response || !response.data) {
-      return reply("*APKI PHOTO NAHI MIL RAHI SORRY 😔*");
-    }
-
-    const imageBuffer = Buffer.from(response.data, "binary");
-
-    await conn.sendMessage(m.chat, {
-      image: imageBuffer,
-      caption: `*APKI PHOTO :❯ *${q}*`
-    });
-
-  } catch (error) {
-    console.error("Error:", error);
-    reply(`An error occurred: ${error.response?.data?.message || error.message || "Unknown error"}`);
-  }
-});
-
-cmd({
-  pattern: "photo",
-  alias: ["stability", "imagi"],
-  react: "🖼️",
-  desc: "Generate an image using AI.",
-  category: "main",
-  filename: __filename
-}, async (conn, mek, m, { q, reply }) => {
-  try {
-    if (!q) return reply("*APKO KISI CHIZ KI PHOTO CHAHYE TO ESE LIKH*O \n *IMAGINE3 SKY PHOTOS");
-
-    await reply("_APKI PHOTO DOWNLOAD HO RAHI HAI....☺️_");
-
-    const apiUrl = `https://api.siputzx.my.id/api/ai/stabilityai?prompt=${encodeURIComponent(q)}`;
-
-    const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
-
-    if (!response || !response.data) {
-      return reply("*APKI PHOTO MENE DHUNDI BAHUT LEKIN NAHI MILI SORRY 😔*");
-    }
-
-    const imageBuffer = Buffer.from(response.data, "binary");
-
-    await conn.sendMessage(m.chat, {
-      image: imageBuffer,
-      caption: `APKI PHOTO:❯ *${q}*`
-    });
-
-  } catch (error) {
-    console.error("Error:", error);
-    reply(`An error occurred: ${error.response?.data?.message || error.message || "Unknown error"}`);
+  } catch (err) {
+    console.error("AI Image Error:", err);
+    await conn.sendMessage(from, { text: "❌ *Failed to generate image.* Try again later." }, { quoted: m });
+    await conn.sendMessage(from, { react: { text: "❌", key: m.key } });
   }
 });
