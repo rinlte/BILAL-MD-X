@@ -17,7 +17,7 @@ async (conn, mek, m, { from, isGroup, senderNumber, isAdmins, isBotAdmins, reply
         if (!isBotAdmins) return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAO ☺️❤️*");
 
         await conn.groupSettingUpdate(from, "announcement");
-        reply("*YEH GROUP AB BAND HO CHUKA HAI ☺️🌹*");
+        reply("*YEH GROUP AB BAND HO CHUKA HAI ☺️🌹* \n *AB AP SAB IS GROUP ME CHAT KAR SAKTE HAI 😇🌺* \n *AUR HA 🥺 IS GROUP ME LINKS ALLOWED NAHI TO LINK HARGIZ NAHI BHEJNA IS GROUP OK ☺️🌹*");
     } catch (e) {
         console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", e);
         reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
