@@ -1,65 +1,84 @@
-const axios = require("axios");
+const axios = require('axios');
+const fetch = require('node-fetch');
 const { cmd } = require('../command');
 
+// ===================================
+// 🤖 AI COMMAND (.gpt / .gemini)
+// ===================================
 cmd({
-  pattern: "ai",
-  alias: ["chatgpt", "ask", "openai", "brain", "question", "answer", "sawal", "jawab", "solution"],
-  desc: "AI se jawab lo (multi API fallback)",
+  pattern: "gpt",
+  alias: ["ai", "gemini", "chatgpt"],
+  desc: "Chat with AI (GPT or Gemini)",
   category: "ai",
-  react: "🤔"
-}, async (conn, mek, m, { body, from }) => {
+  react: "🤖",
+  filename: __filename
+}, async (conn, m, store, { from, q, reply }) => {
   try {
-    let query = body.replace(/^(ai|chatgpt|ask|openai|brain|question|answer|sawal|jawab|solution)\s*/i, "").trim();
-    if (!query) {
-      await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-      return conn.sendMessage(from, { text: "❌ Please enter a query.\n\nExample: ai who are you?" }, { quoted: mek });
-    }
+    if (!q) return reply("❌ *Please provide a question.*\n\nExample: `.gpt write a love poem`");
 
-    // react on user command msg 🤔
-    await conn.sendMessage(from, { react: { text: "🤔", key: mek.key } });
+    // 🤔 React while processing
+    await conn.sendMessage(from, {
+      react: { text: "🤖", key: m.key }
+    });
 
-    // fallback API list
-    const apis = [
-      `https://api.princetechn.com/api/ai/ai?apikey=prince&q=${encodeURIComponent(query)}`,
-      `https://api.princetechn.com/api/ai/chat?apikey=prince&q=${encodeURIComponent(query)}`,
-      `https://api.giftedapis.us.kg/ai/gpt?apikey=gifted&q=${encodeURIComponent(query)}`
-    ];
+    let answer = null;
 
-    let finalResponse = null;
-
-    for (let apiUrl of apis) {
+    // =======================
+    // 🔹 GPT API (Dreaded)
+    // =======================
+    if (m.body.startsWith('.gpt') || m.body.startsWith('gpt')) {
       try {
-        const { data } = await axios.get(apiUrl, { timeout: 10000 });
-
-        if (data.result && data.result.toString().trim()) {
-          finalResponse = data.result;
-        } else if (data.reply && data.reply.toString().trim()) {
-          finalResponse = data.reply;
-        } else if (data.answer && data.answer.toString().trim()) {
-          finalResponse = data.answer;
-        } else if (data.choices?.[0]?.message?.content) {
-          finalResponse = data.choices[0].message.content;
+        const res = await axios.get(`https://api.dreaded.site/api/chatgpt?text=${encodeURIComponent(q)}`);
+        if (res.data && res.data.success && res.data.result?.prompt) {
+          answer = res.data.result.prompt;
         }
-
-        if (finalResponse) break;
-      } catch (err) {
-        console.log("API failed:", apiUrl, err.message || err);
-        continue;
+      } catch (e) {
+        console.error("GPT API failed:", e);
       }
     }
 
-    if (finalResponse) {
-      const sent = await conn.sendMessage(from, { text: finalResponse }, { quoted: mek });
-      // reply msg per 😊 react
-      await conn.sendMessage(from, { react: { text: "😊", key: sent.key } });
-    } else {
-      await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-      await conn.sendMessage(from, { text: "❌ All APIs failed. Please try later." }, { quoted: mek });
+    // =======================
+    // 🔹 Gemini APIs (Fallback)
+    // =======================
+    if (!answer) {
+      const geminiAPIs = [
+        `https://vapis.my.id/api/gemini?q=${encodeURIComponent(q)}`,
+        `https://api.siputzx.my.id/api/ai/gemini-pro?content=${encodeURIComponent(q)}`,
+        `https://api.ryzendesu.vip/api/ai/gemini?text=${encodeURIComponent(q)}`,
+        `https://api.dreaded.site/api/gemini2?text=${encodeURIComponent(q)}`,
+        `https://api.giftedtech.my.id/api/ai/geminiai?apikey=gifted&q=${encodeURIComponent(q)}`,
+        `https://api.giftedtech.my.id/api/ai/geminiaipro?apikey=gifted&q=${encodeURIComponent(q)}`
+      ];
+
+      for (const api of geminiAPIs) {
+        try {
+          const r = await fetch(api);
+          const data = await r.json();
+
+          if (data.message || data.data || data.answer || data.result) {
+            answer = data.message || data.data || data.answer || data.result;
+            break;
+          }
+        } catch (err) {
+          continue;
+        }
+      }
     }
 
-  } catch (e) {
-    console.error("AI CMD Error:", e);
-    await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-    await conn.sendMessage(from, { text: "⚠️ Internal Error while fetching AI response." }, { quoted: mek });
+    // =======================
+    // 📤 Send the AI Response
+    // =======================
+    if (answer) {
+      await conn.sendMessage(from, {
+        text: `🤖 *AI Response:*\n\n${answer}`,
+        contextInfo: { quotedMessage: m.message }
+      }, { quoted: m });
+    } else {
+      reply("⚠️ Sorry, all AI APIs failed to respond. Please try again later.");
+    }
+
+  } catch (error) {
+    console.error("AI Command Error:", error);
+    reply("❌ Error occurred while processing your request.");
   }
 });
