@@ -5,28 +5,48 @@ cmd({
     alias: ['rm'],
     desc: 'Generate a custom ReadMore text preserving line spaces',
     category: 'tools',
-    react: '📄',
+    react: '🥺',
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
+        // Show "typing..." while processing
+        await conn.sendPresenceUpdate('composing', from);
+
         // Remove command name (.readmore or .rm)
         const input = m.text?.replace(/^(\.readmore|\.rm)\s*/i, '');
         if (!input || input.trim() === '') {
-            return reply('📘 Example:\n.readmore Hello\n\n\n| Hidden text');
+            await conn.sendPresenceUpdate('paused', from);
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply('*AP NE READMORE TEXT BANANA HAI 🤔* \n *TO AP ESE LIKHO ☺️* \n *READMORE BILAL + MD* \n *AGAR AP ESE LIKHO GE TO APKA READMORE MSG BAN JAYE GA 🥰🌹*');
         }
 
-        // Split into visible & hidden parts
-        const [visible, hidden] = input.split('|');
-        const more = String.fromCharCode(8206).repeat(4000); // triggers collapse
+        // Split using '+'
+        const [visible, hidden] = input.split('+');
+        const more = String.fromCharCode(8206).repeat(4000); // triggers readmore collapse
 
-        // Preserve exact user-entered spacing (including newlines)
+        // Preserve user-entered newlines
         const output = hidden
             ? `${visible || ''}${more}${hidden}`
             : `${more}${visible || ''}`;
 
+        // Stop typing before sending reply
+        await conn.sendPresenceUpdate('paused', from);
+
+        // Send final message
         await reply(output);
+
+        // React with success emoji 🌹
+        await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
+
     } catch (err) {
         console.error('❌ Error in readmore:', err.message);
-        reply('⚠️ Kuch ghalat ho gaya bhai, dubara try karo.');
+
+        // Stop typing
+        await conn.sendPresenceUpdate('paused', from);
+
+        // React with ⚠️ on error
+        await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
+
+        reply('*APKA READMORE TEXT NAHI BANA 😔💔*');
     }
 });
