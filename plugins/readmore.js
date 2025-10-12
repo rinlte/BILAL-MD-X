@@ -17,7 +17,13 @@ cmd({
         if (!input || input.trim() === '') {
             await conn.sendPresenceUpdate('paused', from);
             await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
-            return reply('*AP NE READMORE TEXT BANANA HAI* \n *TO AP ESE LIKHO ☺️♥️* \n\n*❮READMORE BILAL + MD❯* \n\n *AGAR AP ESE LIKHO GE TO APKA READMORE MSG BAN JAYE GA 🥰🌹*');
+
+            return reply(
+                '*AP NE READMORE TEXT BANANA HAI* \n' +
+                '*TO AP ESE LIKHO ☺️♥️* \n\n' +
+                '*❮READMORE BILAL + MD❯* \n\n' +
+                '*AGAR AP ESE LIKHO GE TO APKA READMORE MSG BAN JAYE GA 🥰🌹*'
+            );
         }
 
         // Split using '+'
@@ -35,7 +41,7 @@ cmd({
         // Send final message
         await reply(output);
 
-        // React with success emoji 🌹
+        // React with success emoji ☺️
         await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
 
     } catch (err) {
@@ -44,7 +50,7 @@ cmd({
         // Stop typing
         await conn.sendPresenceUpdate('paused', from);
 
-        // React with ⚠️ on error
+        // React with 😔 on error
         await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
 
         reply('*APKA READMORE TEXT NAHI BANA 😔💔*');
