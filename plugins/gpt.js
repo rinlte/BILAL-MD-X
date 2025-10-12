@@ -1,76 +1,70 @@
-const axios = require("axios");
+const axios = require('axios');
+const fetch = require('node-fetch');
 const { cmd } = require('../command');
 
 cmd({
   pattern: "gpt",
-  alias: ["brain", "question", "answer", "sawal", "jawab", "solution"],
-  desc: "AI se jawab lo (multi API fallback)",
+  alias: ["gemini", "openai", "ai", "ai1", "aisawal", "aiquestion"],
+  desc: "Chat with AI (GPT or Gemini)",
   category: "ai",
-  react: "🤔"
-}, async (conn, mek, m, { body, from }) => {
+  react: "🤔",
+  filename: __filename
+}, async (conn, m, store, { from, q, reply }) => {
   try {
-    let query = body.replace(/^(gpt|brain|question|answer|sawal|jawab|solution)\s*/i, "").trim();
-    if (!query) {
-      await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-      return conn.sendMessage(from, { text: "⚠️ Bhai, pehle apna sawal likho.\n\nExample: gpt Pakistan ka PM kaun hai?" }, { quoted: mek });
+    if (!q) return reply("*APKO KISI SAWAL KA JAWAB PUCHNA HAI TO ESE LIKHO ☺️🌹* \n *.AI ❮APNA SAWAL YAHA LIKHO❯* \n *TO APKO SAWAL KA JAWAB MIL JAYE GA ☺️💓*`");
+
+    // ⏳ React while processing
+    await conn.sendMessage(from, { react: { text: "🤔", key: m.key } });
+
+    let answer = null;
+
+    // ✅ Try GPT API first
+    try {
+      const res = await axios.get(`https://api.dreaded.site/api/chatgpt?text=${encodeURIComponent(q)}`);
+      if (res.data?.success && res.data?.result?.prompt) {
+        answer = res.data.result.prompt;
+      }
+    } catch (e) {
+      console.log("GPT API Failed:", e.message);
     }
 
-    // user ke command msg per react 🤔
-    await conn.sendMessage(from, { react: { text: "🤔", key: mek.key } });
+    // 🔄 Try Gemini APIs if GPT fails
+    if (!answer) {
+      const geminiAPIs = [
+        `https://vapis.my.id/api/gemini?q=${encodeURIComponent(q)}`,
+        `https://api.siputzx.my.id/api/ai/gemini-pro?content=${encodeURIComponent(q)}`,
+        `https://api.ryzendesu.vip/api/ai/gemini?text=${encodeURIComponent(q)}`,
+        `https://api.dreaded.site/api/gemini2?text=${encodeURIComponent(q)}`,
+        `https://api.giftedtech.my.id/api/ai/geminiai?apikey=gifted&q=${encodeURIComponent(q)}`,
+        `https://api.giftedtech.my.id/api/ai/geminiaipro?apikey=gifted&q=${encodeURIComponent(q)}`
+      ];
 
-    // typing indicator on
-    await conn.sendPresenceUpdate("composing", from);
-
-    // fallback API list
-    const apis = [
-      `https://api.princetechn.com/api/ai/vision?apikey=prince&url=https%3A%2F%2Ffiles.princetech.web.id%2Fimage%2Fmyprince.png&prompt=${encodeURIComponent(query)}`,
-      `https://api.princetechn.com/api/ai/mistral?apikey=prince&q=${encodeURIComponent(query)}`,
-      `https://api.princetechn.com/api/ai/gpt4o-mini?apikey=prince&q=${encodeURIComponent(query)}`,
-      `https://api.princetechn.com/api/ai/openai?apikey=prince&q=${encodeURIComponent(query)}`,
-      `https://api.princetechn.com/api/ai/gpt4?apikey=prince&q=${encodeURIComponent(query)}`,
-      `https://api.princetechn.com/api/ai/gpt4o?apikey=prince&q=${encodeURIComponent(query)}`,
-      `https://api.princetechn.com/api/ai/gpt?apikey=prince&q=${encodeURIComponent(query)}`
-    ];
-
-    let finalResponse = null;
-
-    for (let apiUrl of apis) {
-      try {
-        const { data } = await axios.get(apiUrl, { timeout: 15000 });
-
-        if (data.result && data.result.toString().trim()) {
-          finalResponse = data.result;
-        } else if (data.reply && data.reply.toString().trim()) {
-          finalResponse = data.reply;
-        } else if (data.answer && data.answer.toString().trim()) {
-          finalResponse = data.answer;
-        } else if (data.choices?.[0]?.message?.content) {
-          finalResponse = data.choices[0].message.content;
+      for (const api of geminiAPIs) {
+        try {
+          const r = await fetch(api);
+          const data = await r.json();
+          if (data.message || data.data || data.answer || data.result) {
+            answer = data.message || data.data || data.answer || data.result;
+            break;
+          }
+        } catch (err) {
+          continue;
         }
-
-        if (finalResponse) break;
-      } catch (err) {
-        console.log("❌ API fail:", apiUrl, err.message || err);
-        continue;
       }
     }
 
-    // typing indicator off
-    await conn.sendPresenceUpdate("paused", from);
-
-    if (finalResponse) {
-      const sent = await conn.sendMessage(from, { text: finalResponse }, { quoted: mek });
-      // reply per 😊 react
-      await conn.sendMessage(from, { react: { text: "😊", key: sent.key } });
+    // 📤 Send AI reply
+    if (answer) {
+      await conn.sendMessage(from, { text: `*APKE SAWAL KA JAWAB 🥰🌹*\n\n${answer}` }, { quoted: m });
+      await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
     } else {
-      await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-      await conn.sendMessage(from, { text: "❌ Bhai, sari APIs fail ho gayi. Thora der baad try karo." }, { quoted: mek });
+      await reply("*APKE SAWAL KA JAWAB NAHI MERE PASS 🥺🌹*");
+      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
     }
 
-  } catch (e) {
-    console.error("GPT CMD Error:", e);
-    await conn.sendPresenceUpdate("paused", from);
-    await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-    await conn.sendMessage(from, { text: "⚠️ Bhai, bot ke andar error aa gaya hai." }, { quoted: mek });
+  } catch (error) {
+    console.error("*APKE SAWAL KA JAWAB NAHI MERE PASS 🥺🌹*", error);
+    await conn.sendMessage(from, { text: "*APKE SAWAL KA JAWAB NAHI MERE PASS 🥺🌹*" }, { quoted: m });
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
   }
 });
