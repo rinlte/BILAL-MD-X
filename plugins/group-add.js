@@ -16,13 +16,13 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
 
         if (!isGroup) {
             await conn.sendMessage(from, { react: { text: "🤐", key: m.key } });
-            return reply("*YEH COMMAND SIRF GROUPS ME USE KARE ☺️*");
+            return reply("*YEH COMMAND SIRF GROUPS ME USE KARE 🤐*");
         }
 
         const groupMetadata = await conn.groupMetadata(from);
         const participants = groupMetadata.participants.map(p => p.id);
 
-        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP MEADD KARNA HAI 🥺💞* \n *TO AP ESE LIKHO ☺️♥️* \n \n *ADD +9230xxxx* \n \n *IS NUMBER KI JAGAH AP NE JIS KO ADD KARNA HAI 😇🌹* \n *USKA NUMBER COMMAND ❮ADD❯ KE BAD LIKHO 🥰💓* \n *TO WO NUMBER IS GROUP ME ADD KAR DIYA JAYE GA ☺️♥️*");
+        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP MEADD KARNA HAI 🥺💞* \n *TO AP ESE LIKHO ☺️♥️* \n \n *❮ADD +9230xxxx❯* \n \n *IS NUMBER KI JAGAH AP NE JIS KO ADD KARNA HAI 😇🌹* \n *USKA NUMBER COMMAND ❮ADD❯ KE BAD LIKHO 🥰💓* \n *TO WO NUMBER IS GROUP ME ADD KAR DIYA JAYE GA ☺️♥️*");
 
         // Clean and prepare numbers
         let numbers = q.split(',')
@@ -31,7 +31,7 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
 
         if (numbers.length === 0) {
             await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
-            return reply("*YEH NUMBER IS GROUP ME PEHLE SE MOJUD HAI ☺️*");
+            return reply("*YEH NUMBER IS GROUP ME PEHLE SE MOJUD HAI 😃*");
         }
 
         let users = (await Promise.all(
@@ -45,7 +45,7 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
 
         if (users.length === 0) {
             await conn.sendMessage(from, { react: { text: "😫", key: m.key } });
-            return reply("*IS NUMBER PER WHATSAPP NAHI BANI HUI ☺️*");
+            return reply("*IS NUMBER PER WHATSAPP NAHI BANI HUI 😫*");
         }
 
         // Try to add users
@@ -72,7 +72,7 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
             const invite_code = content.attrs.code;
             const invite_code_exp = content.attrs.expiration;
 
-            let teks = `✳️ Cannot add @${jid.split('@')[0]} because they only allow contacts to add them.`;
+            let teks = `ADD NAHI HUWA 🥺 @${jid.split('@')[0]} Q K IS GROUP ME SIRF ADMINS CONTACTS KO ADD KAR SAKTE HAI 🥺💓*`;
             await conn.sendMessage(from, { text: teks, mentions: [jid] }, { quoted: mek });
             await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
 
