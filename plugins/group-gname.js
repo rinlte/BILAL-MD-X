@@ -31,7 +31,7 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, args, q, reply }) =
         await conn.groupUpdateSubject(from, q);
 
         // Reply with updated name
-        const updatedMsg = `*GROUP KA NAME CHANGE HO GAYA HAI ☺️❤️*\n\n${q}`;
+        const updatedMsg = `*GROUP KA NAME CHANGE HO CHUKA HAI 🥺* \n *AB YEH 👇 NAME HAI GROUP KA OK ☺️\n\n${q}`;
         await reply(updatedMsg);
 
         // React command message after successful update
