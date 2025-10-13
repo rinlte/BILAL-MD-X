@@ -35,7 +35,7 @@ async (conn, m, { reply, react }) => {
 
     try {
         // 📨 Message before block
-        await reply(`*AP MUJHE BAHUT TANG KAR RAHE HAI 😡 IS LIE MENE APKO BLOCK KAR DIYA 😒*`);
+        await reply(`*AP MUJHE BAHUT TANG KAR RAHE HAI IS LIE MENE APKO BLOCK KAR DIYA 😒*`);
 
         // 🔒 Block after delay
         setTimeout(async () => {
