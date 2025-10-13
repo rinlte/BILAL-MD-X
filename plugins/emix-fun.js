@@ -16,24 +16,20 @@ cmd({
         // React command msg 🥺
         await conn.sendMessage(mek.chat, { react: { text: "🥺", key: mek.key } });
 
-        // Waiting message
-        waitMsg = await conn.sendMessage(mek.chat, { text: "*EMOJIE MIX STICKER BAN RAHA HAI....☺️*" });
+        // Agar sirf .emix likha ho
+        if (!q) return reply("*ESE LIKHO* \n *EMIX 😍,😇*");
 
-        if (!q || !q.includes(",")) {
-            await conn.sendMessage(mek.chat, { delete: waitMsg.key });
-            return reply("*ESE LIKHO* \n *EMIX 😍,😇*");
-        }
+        if (!q.includes(",")) return reply("*ESE LIKHO* \n *EMIX 😍,😇*");
 
         let [emoji1, emoji2] = q.split(",").map(e => e.trim());
-        if (!emoji1 || !emoji2) {
-            await conn.sendMessage(mek.chat, { delete: waitMsg.key });
-            return reply("*DONO EMOJIES K DARMYAN ME COMMA LAGAO 🥺*");
-        }
+        if (!emoji1 || !emoji2) return reply("*DONO EMOJIES K DARMYAN ME COMMA LAGAO 🥺*");
+
+        // Waiting message
+        waitMsg = await conn.sendMessage(mek.chat, { text: `*EMOJIE MIX STICKER BAN RAHA HAI....☺️*` });
 
         let imageUrl = await fetchEmix(emoji1, emoji2);
-
         if (!imageUrl) {
-            await conn.sendMessage(mek.chat, { delete: waitMsg.key });
+            if (waitMsg) await conn.sendMessage(mek.chat, { delete: waitMsg.key });
             await conn.sendMessage(mek.chat, { react: { text: "😔", key: mek.key } });
             return reply("*DUBARA KOSHISH KARE 🥺🌹*");
         }
@@ -59,9 +55,7 @@ cmd({
 
     } catch (e) {
         console.error("*DUBARA KOSHISH KARE 🥺🌹*", e.message);
-        // Delete waiting msg
         if (waitMsg) await conn.sendMessage(mek.chat, { delete: waitMsg.key });
-        // React error 😔
         await conn.sendMessage(mek.chat, { react: { text: "😔", key: mek.key } });
         reply(`*DUBARA KOSHISH KARE 🥺🌹* ${e.message}`);
     }
