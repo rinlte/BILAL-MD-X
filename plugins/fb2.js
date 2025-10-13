@@ -62,7 +62,7 @@ cmd({
   react: "🥺",
   filename: __filename
 }, async (conn, mek, m, { from, q, reply }) => {
-  if (!q) return reply("*AP KO KOI FACEBOOK VIDEO DOWNLOAD KARNI HAI 🥺* \n *TO AP ESE LIKHO ☺️ \n \n *FB2 ❮APKI FACEBOOK VIDEO KA LINK❯* \n \n*TO APKI FACEBOOK VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 😇💓*");
+  if (!q) return reply("*AP KO KOI FACEBOOK VIDEO DOWNLOAD KARNI HAI 🤔* \n *TO AP ESE LIKHO ☺️🌹* \n \n *FB2 ❮APKI FACEBOOK VIDEO KA LINK❯* \n \n*TO APKI FACEBOOK VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 😇💓*");
   await handleFbDownload(conn, from, mek, q);
 });
 
