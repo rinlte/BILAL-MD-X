@@ -37,11 +37,11 @@ async function handleFbDownload(conn, from, mek, url) {
     await conn.sendMessage(from, {
       video: { url: videoUrl },
       mimetype: "video/mp4",
-      caption: "*👑BY :❯ BILAL-MD👑*"
+      caption: "*👑 BY :❯ BILAL-MD 👑*"
     }, { quoted: mek });
 
     // success react
-    try { await conn.sendMessage(from, { react: { text: "✅", key: mek.key } }); } catch(e){}
+    try { await conn.sendMessage(from, { react: { text: "😍", key: mek.key } }); } catch(e){}
 
     // delete waiting
     try { if(waitMsg?.key) await conn.sendMessage(from, { delete: waitMsg.key }); } catch(e){}
@@ -59,7 +59,7 @@ cmd({
   alias: ["fbb2", "fbvideo2"],
   desc: "Download FB video HD/SD",
   category: "download",
-  react: "🎥",
+  react: "🥺",
   filename: __filename
 }, async (conn, mek, m, { from, q, reply }) => {
   if (!q) return reply("*AP KO KOI FACEBOOK VIDEO DOWNLOAD KARNI HAI ☺️* \n *TO AP ESE LIKHO 🌹 \n \n *FB2 ❮APKI FACEBOOK VIDEO KA LINK❯ \n \n*TO APKI FACEBOOK VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE*");
