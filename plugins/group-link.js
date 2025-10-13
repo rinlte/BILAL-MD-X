@@ -51,7 +51,7 @@ cmd({
         const inviteLink = `https://chat.whatsapp.com/${inviteCode}`;
 
         // Reply with the link
-        await reply(`*YEH RAHA GROUP KA LINK 🥰* \n *AP IS LINK KO APNE FRIENDS KO BHEJO AUR BOLO YEH GROUP JOIN KARE ☺️♥️*\n${inviteLink}`);
+        await reply(`*YEH RAHA GROUP KA LINK 🥺* \n *AP IS LINK KO APNE FRIENDS KO BHEJO AUR BOLO YEH GROUP JOIN KARE ☺️♥️*\n${inviteLink}`);
 
         // React message after successful link retrieval ☺️
         await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
