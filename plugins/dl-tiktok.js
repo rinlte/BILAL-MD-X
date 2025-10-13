@@ -6,35 +6,53 @@ cmd({
   alias: ["ttdl", "tt", "tiktokdl"],
   desc: "Download TikTok video without watermark",
   category: "downloader",
-  react: "🎵",
+  react: "🥺",
   filename: __filename
-}, async (conn, mek, m, { from, args, q, reply }) => {
+}, async (conn, mek, m, { from, q, reply }) => {
   try {
-    if (!q) return reply("*KISI BHI TIKTOK VIDEO KA LINK COPY KAR LO AUR ESE LIKHO ☺️❤️* \n\n\n *.TIKTOK ❮APK TIKTOK VIDEO KA LINK❯*");
-    if (!q.includes("tiktok.com")) return reply("*YEH TIKTOK VIDEO KA LINK NAHI 😏*");
+    // Command msg react 🥺
+    await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
 
-    reply("*APKI TIKTOK VIDEO DOWNLOAD HO RAHI HAI ☺️❤️*");
+    if (!q) return reply("*KISI BHI TIKTOK VIDEO KA LINK COPY KAR LO AUR ESE LIKHO ☺️❤️*\n\n*.TIKTOK ❮APK TIKTOK VIDEO KA LINK❯*");
+    
+    if (!q.includes("tiktok.com")) {
+      // Galat link react 😫
+      await conn.sendMessage(from, { react: { text: "😫", key: mek.key } });
+      return reply("*YEH TIKTOK VIDEO KA LINK NAHI 😫*");
+    }
 
-    const apiUrl = `https:                                               
+    // Download progress msg
+    const progressMsg = await conn.sendMessage(from, { text: "*APKI TIKTOK VIDEO DOWNLOAD HO RAHI HAI....☺️*" });
+
+    // API call
+    const apiUrl = `https://kaiz-apis.gleeze.com/api/tiktok-dl?url=${q}`;
     const { data } = await axios.get(apiUrl);
 
-    if (!data.status || !data.data) return reply("*APKI VIDEO NAHI MILI SORRY 😔*");
+    if (!data.status || !data.data) {
+      // URL fetch fail react 😫
+      await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
+      return reply("*APKI VIDEO NAHI MILI SORRY 😔*");
+    }
 
-    const { title, like, comment, share, author, meta } = data.data;
-    const videoUrl = meta.media.find(v => v.type === "video").org;
+    // URL fetch success react 😫
+    await conn.sendMessage(from, { react: { text: "😫", key: mek.key } });
 
-    const caption = `//kaiz-apis.gleeze.com/api/tiktok-dl?url=${q}`;
-    const { data } = await axios.get(apiUrl);
+    const videoUrl = data.data.meta.media.find(v => v.type === "video").org;
+    const caption = "*👑 BY :❯ BILAL-MD 👑*";
 
-    if (!data.status || !data.data) return reply("*APKI VIDEO NAHI MILI SORRY 😔*");
-
-    const { title, like, comment, share, author, meta } = data.data;
-    const videoUrl = meta.media.find(v => v.type === "video").org;
-
-    const caption = `👑 BILAL-MD WHATSAPP BOT 👑`;
-
+    // Send video
     await conn.sendMessage(from, { video: { url: videoUrl }, caption: caption }, { quoted: mek });
+
+    // Delete progress message
+    await conn.sendMessage(from, { delete: progressMsg.key });
+
+    // Command msg react ☺️
+    await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } });
+
   } catch (e) {
+    console.error(e);
+    // Error react 😔
+    await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
     reply("*APKI VIDEO NAHI MILI SORRY 😔*");
   }
 });
