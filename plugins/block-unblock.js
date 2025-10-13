@@ -2,78 +2,65 @@ const { cmd } = require('../command');
 
 cmd({
     pattern: "block",
-    desc: "Blocks a person",
+    desc: "Block the current chat user (only in inbox)",
     category: "owner",
-    react: "🙂",
+    react: "😈",
     filename: __filename
 },
-async (conn, m, { reply, q, react }) => {
-    // Get the bot owner's number dynamically
+async (conn, m, { reply, react }) => {
     const botOwner = conn.user.id.split(":")[0] + "@s.whatsapp.net";
-    
+
+    // Only bot owner can use
     if (m.sender !== botOwner) {
         await react("🙋🏻");
         return reply("*YE COMMAND SIRF MERE LIE HAI OK ☺️🌹*");
     }
 
-    let jid;
-    if (m.quoted) {
-        jid = m.quoted.sender; // If replying to a message, get sender JID
-    } else if (m.mentionedJid.length > 0) {
-        jid = m.mentionedJid[0]; // If mentioning a user, get their JID
-    } else if (q && q.includes("@")) {
-        jid = q.replace(/[@\s]/g, '') + "@s.whatsapp.net"; // If manually typing a JID
-    } else {
-        await react("+🤔");
-        return reply("*AP NE KISE BLOCK KARNA CHAHTE HAI PEHLE USE MENTION KARO ☺️*");
+    // Only works in private chat
+    if (!m.chat.endsWith("@s.whatsapp.net")) {
+        await react("🤔");
+        return reply("*YE COMMAND SIRF INBOX CHAT ME CHALE GI ☺️*");
     }
 
     try {
-        await conn.updateBlockStatus(jid, "block");
+        await conn.updateBlockStatus(m.chat, "block");
         await react("😡");
-        reply(`MENE APKO BLOCK KAR DYA @${jid.split("@")[0]}`, { mentions: [jid] });
-    } catch (error) {
-        console.error("ERROR", error);
+        reply(`*MENE APKO BLOCK KAR DIYA @${m.chat.split("@")[0]}*`, { mentions: [m.chat] });
+    } catch (err) {
+        console.error("BLOCK ERROR:", err);
         await react("🥺");
-        reply("*AP THORI DER ME BLOCK HO JAYE GE*");
+        reply("*BLOCK KARTE HUE ERROR AYA 😔*");
     }
 });
 
+
 cmd({
     pattern: "unblock",
-    desc: "Unblocks a person",
+    desc: "Unblock the current chat user (only in inbox)",
     category: "owner",
     react: "😃",
     filename: __filename
 },
-async (conn, m, { reply, q, react }) => {
-    // Get the bot owner's number dynamically
+async (conn, m, { reply, react }) => {
     const botOwner = conn.user.id.split(":")[0] + "@s.whatsapp.net";
 
     if (m.sender !== botOwner) {
         await react("🙋🏻");
-        return reply("*YEH COMMAND SIRF MERE LIE HAI ☺️🌹*");
+        return reply("*YE COMMAND SIRF MERE LIE HAI OK ☺️🌹*");
     }
 
-    let jid;
-    if (m.quoted) {
-        jid = m.quoted.sender;
-    } else if (m.mentionedJid.length > 0) {
-        jid = m.mentionedJid[0];
-    } else if (q && q.includes("@")) {
-        jid = q.replace(/[@\s]/g, '') + "@s.whatsapp.net";
-    } else {
-        await react("❌");
-        return reply("*AP NE KISE UNBLOCK KARNA CHAHTE HAI PEHLE USE MENTION KARO ☺️*");
+    if (!m.chat.endsWith("@s.whatsapp.net")) {
+        await react("🤔");
+        return reply("*YE COMMAND SIRF INBOX CHAT ME CHALE GI ☺️*");
     }
 
     try {
-        await conn.updateBlockStatus(jid, "unblock");
+        await conn.updateBlockStatus(m.chat, "unblock");
         await react("☺️");
-        reply(`MENE APKO UNBLOCK KAR DIA @${jid.split("@")[0]}`, { mentions: [jid] });
-    } catch (error) {
-        console.error("ERROR", error);
-        await react("😊");
-        reply("*AP THORI DER ME UNBLOCK HO JAYE GE ☺️🌹*");
+        reply(`*MENE APKO UNBLOCK KAR DIYA @${m.chat.split("@")[0]}*`, { mentions: [m.chat] });
+    } catch (err) {
+        console.error("UNBLOCK ERROR:", err);
+        await react("🥺");
+        reply("*UNBLOCK KARTE HUE ERROR AYA 😔*");
     }
-});           
+});
