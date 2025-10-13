@@ -11,19 +11,28 @@ cmd({
 }, 
 async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
     try {
-        if (!isGroup) return reply("*YEH COMMAND SIRF GROUPS ME USE KARE ☺️*");
+        // React command msg 🥺
+        await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
+
+        if (!isGroup) {
+            await conn.sendMessage(from, { react: { text: "🤐", key: m.key } });
+            return reply("*YEH COMMAND SIRF GROUPS ME USE KARE ☺️*");
+        }
 
         const groupMetadata = await conn.groupMetadata(from);
         const participants = groupMetadata.participants.map(p => p.id);
 
-        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP MEADD KARNA HAI 🥺* \n TO AP ESE LIKHO ☺️♥️* \n \n *ADD +9230xxxx* \n \n IS NUMBER KI JAGAH AP NE JIS KO ADD KARNA HAI TO USKA NUMBER COMMAND ❮ADD❯ KE BAD LIKHO 🥰♥️* \n *TO WO NUMBER IS GROUP ME ADD KAR DIYA JAYE GA ☺️♥️");
+        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP ME ADD KARNA HAI 🥺* \nTO AP ESE LIKHO ☺️♥️* \n\n*ADD +9230xxxx*");
 
         // Clean and prepare numbers
         let numbers = q.split(',')
             .map(v => v.replace(/[^0-9]/g, ''))
             .filter(v => v.length > 4 && v.length < 20 && !participants.includes(v + "@s.whatsapp.net"));
 
-        if (numbers.length === 0) return reply("*YEH NUMBER IS GROUP ME PEHLE SE MOJUD HAI ☺️*");
+        if (numbers.length === 0) {
+            await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
+            return reply("*YEH NUMBER IS GROUP ME PEHLE SE MOJUD HAI ☺️*");
+        }
 
         let users = (await Promise.all(
             numbers.map(async v => [
@@ -34,7 +43,10 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
         .filter(v => v[1][0]?.exists)
         .map(v => v[0] + "@s.whatsapp.net");
 
-        if (users.length === 0) return reply("IS NUMBER PER WHATSAPP NAHI BANI HUI 🥺*");
+        if (users.length === 0) {
+            await conn.sendMessage(from, { react: { text: "😫", key: m.key } });
+            return reply("*IS NUMBER PER WHATSAPP NAHI BANI HUI ☺️*");
+        }
 
         // Try to add users
         const response = await conn.query({
@@ -62,20 +74,23 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
 
             let teks = `✳️ Cannot add @${jid.split('@')[0]} because they only allow contacts to add them.`;
             await conn.sendMessage(from, { text: teks, mentions: [jid] }, { quoted: mek });
+            await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
 
-            // Agar chaho to auto invite bhej do
+            // Optional: auto invite
             // await conn.sendGroupV4Invite(from, jid, invite_code, invite_code_exp, groupMetadata.subject, 'Invitation to join group', jpegThumbnail)
         }
 
         if (users.length > 0) {
             await conn.sendMessage(from, {
-                text: `*YEH NUMBER IS GROUP ME ADD HO CHUKA HAI* \n *MOST WELCOME NEW MEMBER ☺️♥️* \n${users.map(u => "@" + u.split("@")[0]).join(", ")}`,
+                text: `*YEH NUMBER IS GROUP ME ADD HO CHUKA HAI* \n*MOST WELCOME NEW MEMBER ☺️♥️* \n${users.map(u => "@" + u.split("@")[0]).join(", ")}`,
                 mentions: users
             }, { quoted: mek });
+            await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
         }
 
     } catch (e) {
         console.error("Add command error:", e);
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
         reply("❌ Failed to add user(s).");
     }
 });
