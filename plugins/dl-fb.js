@@ -1,37 +1,3 @@
-const axios = require("axios");
-const fs = require("fs");
-const path = require("path");
-const { cmd } = require("../command");
-
-async function downloadFacebookVideo(url) {
-    const apiUrl = `https://api.princetechn.com/api/download/facebook?apikey=prince&url=${encodeURIComponent(url)}`;
-    const res = await axios.get(apiUrl, { timeout: 40000 });
-
-    if (!res.data || res.data.status !== 200 || !res.data.success || !res.data.result) {
-        throw new Error("Invalid API response");
-    }
-
-    return res.data.result.hd_video || res.data.result.sd_video;
-}
-
-async function saveVideo(url) {
-    const tmpDir = path.join(process.cwd(), "tmp");
-    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
-
-    const filePath = path.join(tmpDir, `fb_${Date.now()}.mp4`);
-    const response = await axios({ url, method: "GET", responseType: "stream" });
-
-    const writer = fs.createWriteStream(filePath);
-    response.data.pipe(writer);
-
-    await new Promise((resolve, reject) => {
-        writer.on("finish", resolve);
-        writer.on("error", reject);
-    });
-
-    return filePath;
-}
-
 // -------------------------
 // Command: .fb <url>
 // -------------------------
@@ -46,9 +12,11 @@ cmd({
         if (!url) return conn.sendMessage(m.chat, { text: "*APKO FACEBOOK KI VIDEO DOWNLOAD KARNA HAI 🤔*\n*TOH AP AISE LIKHO ☺️🌹* \n\n *FB ❮APKI FACEBOOK VIDEO KA LINK❯* \n \n *TO APKI FACEBOOK VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰🌹*" }, { quoted: mek });
         if (!url.includes("facebook.com")) return conn.sendMessage(m.chat, { text: "⚠️ Invalid Facebook URL." }, { quoted: mek });
 
+        // ✅ Pehle command/link message pe 🥺 react
+        await conn.sendMessage(m.chat, { react: { text: "🥺", key: mek.key } });
+
         // Waiting message
         const waitMsg = await conn.sendMessage(m.chat, { text: "*APKI FACEBOOK VIDEO DOWNLOAD HO RAHI HAI....☺️🌹*" }, { quoted: mek });
-        await conn.sendMessage(m.chat, { react: { text: "🥺", key: waitMsg.key } });
 
         const fbvid = await downloadFacebookVideo(url);
         const filePath = await saveVideo(fbvid);
@@ -60,8 +28,11 @@ cmd({
             caption: "BY :❯ BILAL-MD"
         }, { quoted: mek });
 
-        // React on command/link message
-        await conn.sendMessage(m.chat, { react: { text: "☺️", key: mek.key } });
+        // ✅ Video sent → command/link message react update to ☺️
+        try {
+            // Delete previous react (not all libs support direct edit, so we just send new react)
+            await conn.sendMessage(m.chat, { react: { text: "☺️", key: mek.key } });
+        } catch(e){}
 
         // Delete waiting message
         await conn.sendMessage(m.chat, { delete: waitMsg.key });
@@ -84,9 +55,11 @@ cmd({
         const url = body.match(/https?:\/\/[^\s]+/i)[0];
         if (!url) return;
 
+        // ✅ Pehle command/link message pe 🥺 react
+        await conn.sendMessage(m.chat, { react: { text: "🥺", key: mek.key } });
+
         // Waiting message
         const waitMsg = await conn.sendMessage(m.chat, { text: "*APKI FACEBOOK VIDEO DOWNLOAD HO RAHI HAI....☺️🌹*" }, { quoted: mek });
-        await conn.sendMessage(m.chat, { react: { text: "🥺", key: waitMsg.key } });
 
         const fbvid = await downloadFacebookVideo(url);
         const filePath = await saveVideo(fbvid);
@@ -98,8 +71,10 @@ cmd({
             caption: "BY :❯ BILAL-MD"
         }, { quoted: mek });
 
-        // React on original link message
-        await conn.sendMessage(m.chat, { react: { text: "☺️", key: mek.key } });
+        // ✅ Video sent → command/link message react update to ☺️
+        try {
+            await conn.sendMessage(m.chat, { react: { text: "☺️", key: mek.key } });
+        } catch(e){}
 
         // Delete waiting message
         await conn.sendMessage(m.chat, { delete: waitMsg.key });
