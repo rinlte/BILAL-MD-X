@@ -1,6 +1,5 @@
 const { cmd } = require('../command');
 
-
 // 🔒 BLOCK COMMAND
 cmd({
     pattern: "block",
@@ -23,11 +22,11 @@ async (conn, m, { reply, react }) => {
     // ✅ Group reply
     if (m.quoted) {
         jid = m.quoted.sender;
-    } 
+    }
     // ✅ Inbox me likha
     else if (m.chat.endsWith("@s.whatsapp.net")) {
         jid = m.chat;
-    } 
+    }
     else {
         await react("🤔");
         return reply("*INBOX ME YA KISI KA MSG REPLY KARKE LIKHO 'block' ☺️*");
@@ -51,8 +50,7 @@ async (conn, m, { reply, react }) => {
 });
 
 
-
-// 🔓 UNBLOCK COMMAND
+// 🔓 UNBLOCK COMMAND (FIXED)
 cmd({
     pattern: "unblock",
     desc: "Unblock user (reply in group or direct in inbox)",
@@ -74,29 +72,21 @@ async (conn, m, { reply, react }) => {
     // ✅ Group reply
     if (m.quoted) {
         jid = m.quoted.sender;
-    } 
+    }
     // ✅ Inbox me likha
     else if (m.chat.endsWith("@s.whatsapp.net")) {
         jid = m.chat;
-    } 
+    }
     else {
         await react("🤔");
         return reply("*INBOX ME YA KISI KA MSG REPLY KARKE LIKHO 'unblock' ☺️*");
     }
 
     try {
-        // ✅ Pehle check karo banda blocked hai ya nahi
-        const blockList = await conn.fetchBlocklist();
-
-        if (blockList.includes(jid)) {
-            await conn.updateBlockStatus(jid, "unblock");
-            await react("😄");
-            reply(`*MENE APKO UNBLOCK KAR DIYA @${jid.split("@")[0]} ☺️💓*`, { mentions: [jid] });
-        } else {
-            await react("🤔");
-            reply(`*YE BANDA ABHI BLOCK NAHI HAI @${jid.split("@")[0]}*`, { mentions: [jid] });
-        }
-
+        // 🔓 Direct unblock without checking list
+        await conn.updateBlockStatus(jid, "unblock");
+        await react("☺️");
+        reply(`*MENE APKO UNBLOCK KAR DIYA @${jid.split("@")[0]} ☺️💓*`, { mentions: [jid] });
     } catch (err) {
         console.error("UNBLOCK ERROR:", err);
         await react("🥺");
