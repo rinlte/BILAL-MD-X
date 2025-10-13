@@ -6,33 +6,34 @@ cmd({
   alias: ["runtime", "up"],
   desc: "Show bot uptime live",
   category: "main",
-  react: "☺️",
+  react: "⏱️",
   filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
   try {
-    // Pehle react
-    await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } });
+    // React on command
+    await conn.sendMessage(from, { react: { text: "⏱️", key: mek.key } });
 
-    // Initial uptime message
+    // Send initial uptime message
     let uptimeSeconds = process.uptime();
-    const msg = await conn.sendMessage(from, {
+    const sentMsg = await conn.sendMessage(from, {
       text: `*👑 UPTIME:❯ ${runtime(uptimeSeconds)} 👑*`
     }, { quoted: mek });
 
-    // Interval: update every 5 seconds
+    // Update interval every 5 seconds
     const interval = setInterval(async () => {
       try {
         uptimeSeconds = process.uptime();
-        const text = `*👑 UPTIME:❯ ${runtime(uptimeSeconds)} 👑*`;
+        const newText = `*👑 UPTIME:❯ ${runtime(uptimeSeconds)} 👑*`;
 
-        // Edit the same message
-        await conn.sendMessage(from, { text }, { quoted: mek, edit: msg.key });
+        // Try editing the same message
+        await conn.sendMessage(from, { text: newText }, { quoted: mek, edit: sentMsg.key });
       } catch (err) {
-        console.error("Edit uptime error:", err);
+        // Agar edit fail ho jaye, ignore kar do
+        console.error("Edit uptime error:", err.message);
       }
     }, 5000);
 
-    // Stop interval after 30 minutes
+    // Stop after 30 minutes
     setTimeout(() => clearInterval(interval), 30 * 60 * 1000);
 
   } catch (e) {
