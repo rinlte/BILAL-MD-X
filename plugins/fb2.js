@@ -1,10 +1,9 @@
-const axios = require("axios");
 const { cmd } = require('../command');
 const { fetchJson } = require('../lib/functions');
 
 const api = `https://nethu-api-ashy.vercel.app`;
 
-// Helper: Facebook link detect
+// Facebook link detect
 function extractFacebookLink(text) {
   if (!text) return null;
   const regex = /(https?:\/\/(?:www\.)?(?:facebook\.com|fb\.watch|fb\.com)\/[^\s]+)/i;
@@ -13,86 +12,80 @@ function extractFacebookLink(text) {
 }
 
 // Core download handler
-async function handleFbDownload({ conn, from, mek, q }) {
+async function handleFbDownload(conn, from, mek, url) {
   try {
-    const fbLink = extractFacebookLink(q);
-    if (!fbLink) return;
+    if (!url) return;
 
-    // React & waiting message
+    // react downloading
     try { await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } }); } catch(e){}
-    let waitMsg = null;
+
+    // waiting message
+    let waitMsg;
     try { waitMsg = await conn.sendMessage(from, { text: "*APKI FACEBOOK KI VIDEO DOWNLOAD HO RAHI HAI....😇🌹*" }, { quoted: mek }); } catch(e){}
 
-    // Fetch API
-    const fb = await fetchJson(`${api}/download/fbdown?url=${encodeURIComponent(fbLink)}`);
+    // fetch video info
+    const fb = await fetchJson(`${api}/download/fbdown?url=${encodeURIComponent(url)}`);
 
-    // No video case
-    if (!fb || !fb.result || (!fb.result.hd && !fb.result.sd)) {
-      try { if (waitMsg?.key) await conn.sendMessage(from, { delete: waitMsg.key }); } catch(e){}
+    if (!fb?.result || (!fb.result.hd && !fb.result.sd)) {
+      try { if(waitMsg?.key) await conn.sendMessage(from, { delete: waitMsg.key }); } catch(e){}
       try { await conn.sendMessage(from, { react: { text: "😔", key: mek.key } }); } catch(e){}
       return conn.sendMessage(from, { text: "*APKI FACEBOOK VIDEO NAHI MILI 😔*", quoted: mek });
     }
 
-    // HD first, fallback SD
     const videoUrl = fb.result.hd || fb.result.sd;
 
-    // Send video
     await conn.sendMessage(from, {
       video: { url: videoUrl },
       mimetype: "video/mp4",
       caption: "*👑 BILAL-MD WHATSAPP BOT 👑*"
     }, { quoted: mek });
 
-    // Success react
+    // success react
     try { await conn.sendMessage(from, { react: { text: "✅", key: mek.key } }); } catch(e){}
 
-    // Delete waiting message
-    try { if (waitMsg?.key) await conn.sendMessage(from, { delete: waitMsg.key }); } catch(e){}
+    // delete waiting
+    try { if(waitMsg?.key) await conn.sendMessage(from, { delete: waitMsg.key }); } catch(e){}
 
   } catch (err) {
-    console.error("handleFbDownload error:", err);
+    console.error("FB Download error:", err);
     try { await conn.sendMessage(from, { react: { text: "😔", key: mek.key } }); } catch(e){}
-    try { conn.sendMessage(from, { text: "*APKI FACEBOOK VIDEO NAHI MILI 😔*", quoted: mek }); } catch(e){}
+    try { await conn.sendMessage(from, { text: "*APKI FACEBOOK VIDEO NAHI MILI 😔*", quoted: mek }); } catch(e){}
   }
 }
 
-/**
- * 1) Command: fb2
- */
+// Command fb2
 cmd({
   pattern: "fb2",
   alias: ["fbb2", "fbvideo2"],
-  desc: "Download Facebook videos (HD/SD fallback)",
+  desc: "Download FB video HD/SD",
   category: "download",
   react: "🎥",
   filename: __filename
 }, async (conn, mek, m, { from, q, reply }) => {
-  if (!q) {
-    return reply("*AP KO KOI FACEBOOK KI VIDEO DOWNLOAD KARNI HAI TO US VIDEO KA LINK COPY KAR LO AUR AISE LIKHO:* \n\n`fb2 <video_link>`\n\n*TOH APKI VIDEO DOWNLOAD HO JAYE GI AUR YAHAN SEND KAR DI JAYE GI.*");
-  }
-  await handleFbDownload({ conn, from, mek, q });
+  if (!q) return reply("*AP KO KOI FACEBOOK VIDEO DOWNLOAD KARNI HAI TO LINK BHEJO:* \n`fb2 <link>`");
+  await handleFbDownload(conn, from, mek, q);
 });
 
-/**
- * 2) Auto-scan incoming messages (without command)
- */
+// Auto-scan any incoming text
 cmd({
   on: "message",
   filename: __filename
-}, async (conn, mek, m, { from }) => {
+}, async (conn, mek, m) => {
   try {
-    const body = (m && (m.text || m.message && (m.message.conversation || m.message.extendedTextMessage?.text))) || "";
+    // Extract text from all possible message types
+    const body = m.text || m.message?.conversation || m.message?.extendedTextMessage?.text;
     if (!body) return;
 
-    // Ignore if user typed a command (starts with . ! / #)
+    // Ignore commands
     const firstChar = body.trim().charAt(0);
     if ([".", "!", "/", "#"].includes(firstChar)) return;
 
     const fbLink = extractFacebookLink(body);
-    if (!fbLink) return; // not facebook link -> ignore
+    if (!fbLink) return; // not FB
 
-    await handleFbDownload({ conn, from, mek, q: fbLink });
+    await handleFbDownload(conn, m.from, mek, fbLink);
+
   } catch (err) {
-    console.error("auto-scan err:", err);
+    console.error("Auto FB scan error:", err);
   }
 });
