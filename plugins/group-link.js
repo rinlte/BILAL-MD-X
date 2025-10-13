@@ -10,40 +10,55 @@ cmd({
     pattern: "invite",
     alias: ["glink", "grouplink"],
     desc: "Get group invite link.",
-    category: "group", // Already group
+    category: "group",
     filename: __filename,
 }, async (conn, mek, m, { from, quoted, body, args, q, isGroup, sender, reply }) => {
     try {
-        // Ensure this is being used in a group
-        if (!isGroup) return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
+        // React command message 🥺
+        await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
-        // Get the sender's number
+        // Check if used in group
+        if (!isGroup) {
+            await conn.sendMessage(from, { react: { text: "😫", key: m.key } });
+            return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
+        }
+
+        // Get group metadata and admins
         const senderNumber = sender.split('@')[0];
         const botNumber = conn.user.id.split(':')[0];
-        
-        // Check if the bot is an admin
-        const groupMetadata = isGroup ? await conn.groupMetadata(from) : '';
-        const groupAdmins = groupMetadata ? groupMetadata.participants.filter(member => member.admin) : [];
-        const isBotAdmins = isGroup ? groupAdmins.some(admin => admin.id === botNumber + '@s.whatsapp.net') : false;
-        
-        if (!isBotAdmins) return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI ☺️❤️*");
+        const groupMetadata = await conn.groupMetadata(from);
+        const groupAdmins = groupMetadata.participants.filter(member => member.admin);
 
-        // Check if the sender is an admin
-        const isAdmins = isGroup ? groupAdmins.some(admin => admin.id === sender) : false;
-        if (!isAdmins) return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAO ☺️❤️*");
+        const isBotAdmins = groupAdmins.some(admin => admin.id === botNumber + '@s.whatsapp.net');
+        if (!isBotAdmins) {
+            await conn.sendMessage(from, { react: { text: "😎", key: m.key } });
+            return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAO ☺️❤️*");
+        }
 
-        // Get the invite code and generate the link
+        const isAdmins = groupAdmins.some(admin => admin.id === sender);
+        if (!isAdmins) {
+            await conn.sendMessage(from, { react: { text: "🤐", key: m.key } });
+            return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI ☺️❤️*");
+        }
+
+        // Get invite code and link
         const inviteCode = await conn.groupInviteCode(from);
-        if (!inviteCode) return reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
+        if (!inviteCode) {
+            await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+            return reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
+        }
 
         const inviteLink = `https://chat.whatsapp.com/${inviteCode}`;
 
-        // Reply with the invite link
-        return reply(`* 🌹 GROUP INVITED LINK 🌹* \n${inviteLink}`);
-        
+        // Reply with the link
+        await reply(`*YEH RAHA GROUP KA LINK 🥰* \n *AP IS LINK KO APNE FRIENDS KO BHEJO AUR BOLO YEH GROUP JOIN KARE ☺️♥️*\n${inviteLink}`);
+
+        // React message after successful link retrieval ☺️
+        await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+
     } catch (error) {
         console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", error);
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
         reply(`*DUBARA KOSHISH KAREIN 🥺❤️* ${error.message || "Unknown error"}`);
     }
 });
-
