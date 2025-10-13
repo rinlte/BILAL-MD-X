@@ -41,7 +41,7 @@ async function handleFbDownload(conn, from, mek, url) {
     }, { quoted: mek });
 
     // success react
-    try { await conn.sendMessage(from, { react: { text: "😍", key: mek.key } }); } catch(e){}
+    try { await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } }); } catch(e){}
 
     // delete waiting
     try { if(waitMsg?.key) await conn.sendMessage(from, { delete: waitMsg.key }); } catch(e){}
