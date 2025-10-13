@@ -15,7 +15,7 @@ cmd({
   filename: __filename
 }, async (conn, mek, m, { from, sender, reply }) => {
   try {
-    const status = `*ASSALAMUALAIKUM ☺️* \n *KESE HAI AP 🥰* \n *UMEED HAI KE AP SAB KHARIYAT SE HOGE 😇 \n *ALLAH AP SAB KO HAMESHA KHUSH RAKHE AMEEN 🤲💓*`;
+    const status = `*ASSALAMUALAIKUM ☺️* \n *KESE HAI AP 🥰* \n *UMEED HAI KE AP SAB KHARIYAT SE HOGE AUR BEHTAR BHI HOGE😇* \n *ALLAH AP SAB KO HAMESHA KHUSH RAKHE AMEEN 🤲💓*`;
     await conn.sendMessage(from, { text: status });
   } catch (e) {
     console.error("*GGG.....🥺💓*", e);
