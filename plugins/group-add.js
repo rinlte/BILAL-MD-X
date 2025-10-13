@@ -6,7 +6,7 @@ cmd({
     pattern: "add",
     desc: "Add a user to the group (admin only)",
     category: "group",
-    react: "➕",
+    react: "🥺",
     filename: __filename
 }, 
 async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
@@ -22,7 +22,7 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
         const groupMetadata = await conn.groupMetadata(from);
         const participants = groupMetadata.participants.map(p => p.id);
 
-        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP MEADD KARNA HAI 🥺* \n TO AP ESE LIKHO ☺️♥️* \n \n *ADD +9230xxxx* \n \n *IS NUMBER KI JAGAH AP NE JIS KO ADD KARNA HAI 😇* \n *USKA NUMBER COMMAND ❮ADD❯ KE BAD LIKHO 🥰♥️* \n *TO WO NUMBER IS GROUP ME ADD KAR DIYA JAYE GA ☺️♥️*");
+        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP MEADD KARNA HAI 🥺💞* \n *TO AP ESE LIKHO ☺️♥️* \n \n *ADD +9230xxxx* \n \n *IS NUMBER KI JAGAH AP NE JIS KO ADD KARNA HAI 😇🌹* \n *USKA NUMBER COMMAND ❮ADD❯ KE BAD LIKHO 🥰💓* \n *TO WO NUMBER IS GROUP ME ADD KAR DIYA JAYE GA ☺️♥️*");
 
         // Clean and prepare numbers
         let numbers = q.split(',')
@@ -89,8 +89,8 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
         }
 
     } catch (e) {
-        console.error("Add command error:", e);
+        console.error("*YEH NUMBER GROUP ME ADD NAHI HO RAHA 🥺*", e);
         await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-        reply("❌ Failed to add user(s).");
+        reply("*YEH NUMBER GROUP ME ADD NAHI HO RAHA 🥺*");
     }
 });
