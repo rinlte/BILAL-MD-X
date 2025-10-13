@@ -19,7 +19,7 @@ cmd({
     if (!q) return reply("*AGAR AP NE KOI APP DOWNLOAD KARNI HAI 🥺* \n *TO AP ESE LIKHO 😇* \n\n *APK ❮APKI APP KA NAME❯* \n\n *TO APKI APPLICATION DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE*");
 
     // Waiting message
-    waitMsg = await conn.sendMessage(from, { text: "*APKI APK DOWNLOAD HO RAHI HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GE TO YAHA PER BHEJ DE JAYE GE ☺️🌹**" });
+    waitMsg = await conn.sendMessage(from, { text: "*APKI APK DOWNLOAD HO RAHI HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GE TO YAHA PER BHEJ DE JAYE GE 😇* \n THORA SA INTAZAR KARE...☺️*" });
 
     const apiUrl = `http://ws75.aptoide.com/api/7/apps/search/query=${q}/limit=1`;
     const response = await axios.get(apiUrl);
