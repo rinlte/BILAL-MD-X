@@ -13,24 +13,24 @@ cmd({
 }, async (conn, mek, m, { args, q, reply }) => {
     try {
         if (!q.includes(",")) {
-            return reply("❌ *Usage:* .emix 😂,🙂\n_Send two emojis separated by a comma._");
+            return reply("*ESE LIKHO* \n *EMIX 😍,😇");
         }
 
         let [emoji1, emoji2] = q.split(",").map(e => e.trim());
 
         if (!emoji1 || !emoji2) {
-            return reply("❌ Please provide two emojis separated by a comma.");
+            return reply("*DONO EMOJIES K DARMYAN ME COMMA LAGAO 🥺*");
         }
 
         let imageUrl = await fetchEmix(emoji1, emoji2);
 
         if (!imageUrl) {
-            return reply("❌ Could not generate emoji mix. Try different emojis.");
+            return reply("*DUBARA KOSHISH KARE 🥺🌹*");
         }
 
         let buffer = await getBuffer(imageUrl);
         let sticker = new Sticker(buffer, {
-            pack: "Emoji Mix",
+            pack: "MADE BY",
             author: "BILAL-MD",
             type: StickerTypes.FULL,
             categories: ["🤩", "🎉"],
@@ -42,8 +42,8 @@ cmd({
         await conn.sendMessage(mek.chat, { sticker: stickerBuffer }, { quoted: mek });
 
     } catch (e) {
-        console.error("Error in .emix command:", e.message);
-        reply(`❌ Could not generate emoji mix: ${e.message}`);
+        console.error("*DUBARA KOSHISH KARE 🥺🌹*", e.message);
+        reply(`*DUBARA KOSHISH KARE 🥺🌹* ${e.message}`);
     }
 });
           
