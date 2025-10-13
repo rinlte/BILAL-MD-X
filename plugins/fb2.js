@@ -27,10 +27,10 @@ async(conn, mek, m, {
     return reply("*APKI VIDEO NAHI MILI SORRY 😔*(");
   }
 
-  let caption = `*👑 BILAL-MD 👑*
+  let caption = `*👑 BILAL-MD WHATSAPP BOT👑*
 
 *🔰 FACEBOOK VIDEO 🔰*
-*🔰 LINK :❯ ${q}`;
+*🔰 LINK 🔰* \n ${q}`;
 
 
   if (fb.result.thumb) {
