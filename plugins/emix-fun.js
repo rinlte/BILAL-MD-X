@@ -13,7 +13,7 @@ cmd({
 }, async (conn, mek, m, { args, q, reply }) => {
     try {
         if (!q.includes(",")) {
-            return reply("*ESE LIKHO* \n *EMIX 😍,😇");
+            return reply("*ESE LIKHO* \n *EMIX 😍,😇*");
         }
 
         let [emoji1, emoji2] = q.split(",").map(e => e.trim());
