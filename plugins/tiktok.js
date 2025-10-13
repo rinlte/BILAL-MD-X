@@ -15,7 +15,7 @@ async (conn, mek, m, { from, args, q, reply }) => {
         // React command msg 🥺
         await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
 
-        if (!q) return reply("*AGAR AP NE TIKTOK KI VIDEO DOWNLOAD KARNI HAI 🥺💓* \n *TO AP ESE LIKHO 😇♥️* \n\n*TIKTOK ❮APKI TIKTOK VIDEO KA LINK❯*");
+        if (!q) return reply("*AGAR AP NE TIKTOK KI VIDEO DOWNLOAD KARNI HAI 🥺💓* \n *TO AP ESE LIKHO 😇♥️* \n \n *TIKTOK ❮APKI TIKTOK VIDEO KA LINK❯* \n\n *AP APNI TIKTOK VIDEO KA LINK COMMAND ❮TIKTOK❯ LIKH KER ☺️* \n *USKE AGE APNI TIKTOK VIDEO KA LINK PASTE KAR DO 😊* \n *TO APKI TIKTOK VIDEO DOWNLOAD KARNE KE BAAD 😍* \n *YAHA BHEJ DE JAYE GE 🥰*");
         if (!q.includes("tiktok.com")) {
             await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
             return reply("*DUBARA KOSHISH KARE 🥺*");
