@@ -43,7 +43,7 @@ cmd({
 }, async (conn, mek, m, { args }) => {
     try {
         const url = args[0];
-        if (!url) return conn.sendMessage(m.chat, { text: "*APKO FACEBOOK KI VIDEO DOWNLOAD KARNA HAI 😊*\nTOH AISE LIKHO: `FB <link>`" }, { quoted: mek });
+        if (!url) return conn.sendMessage(m.chat, { text: "*APKO FACEBOOK KI VIDEO DOWNLOAD KARNA HAI 🤔*\n*TOH AP AISE LIKHO ☺️🌹* \n\n *FB ❮APKI FACEBOOK VIDEO KA LINK❯* \n \n *TO APKI FACEBOOK VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰🌹*" }, { quoted: mek });
         if (!url.includes("facebook.com")) return conn.sendMessage(m.chat, { text: "⚠️ Invalid Facebook URL." }, { quoted: mek });
 
         // Waiting message
