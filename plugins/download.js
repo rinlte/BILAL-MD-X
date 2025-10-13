@@ -180,7 +180,7 @@ cmd({
       document: { url: app.file.path_alt },
       fileName: `${app.name}.apk`,
       mimetype: "application/vnd.android.package-archive",
-      caption: `${app.name} (${appSize} MB) \n *👑 BILAL-MD WHATSAPP BOT 👑*`
+      caption: `${app.name} (${appSize} MB) \n *👑 BILAL-MD 👑*`
     }, { quoted: m });
 
   } catch (error) {
