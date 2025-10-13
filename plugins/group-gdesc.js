@@ -5,7 +5,7 @@ const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, 
 cmd({
     pattern: "updategdesc",
     alias: ["upgdesc", "gdesc", "gcdesc", "gdescr", "updategdesc", "changegdesc", "gdescrypt", "gdescri"],
-    react: "🌹",
+    react: "🥺",
     desc: "Change the group description.",
     category: "group",
     filename: __filename
@@ -31,7 +31,7 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, args, q, reply }) =
         await conn.groupUpdateDescription(from, q);
 
         // Reply with updated message
-        const updatedMsg = `*IS GROUP KI DESCRIPTION ME YEH MSG ADD HO CHUKA HAI*\n\n${q}`;
+        const updatedMsg = `*IS GROUP KI DESCRIPTION ME YEH MSG ADD HO CHUKA HAI ☺️♥️*\n\n${q}`;
         await reply(updatedMsg);
 
         // React command message ☺️ after successful update
