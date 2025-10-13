@@ -29,11 +29,13 @@ cmd({
       return reply("*YEH TIKTOK VIDEO KA LINK NAHI 😏*");
     }
 
-    // API call
-    const apiUrl = `https://kaiz-apis.gleeze.com/api/tiktok-dl?url=${q}`;
+    // ==========================
+    // API call update
+    // ==========================
+    const apiUrl = `https://api.princetechn.com/api/download/tiktok?apikey=prince&url=${encodeURIComponent(q)}`;
     const { data } = await axios.get(apiUrl);
 
-    if (!data.status || !data.data) {
+    if (!data.status || !data.result) {
       // URL fetch fail react 😫
       await conn.sendMessage(from, { react: { text: "😫", key: mek.key } });
       await conn.sendMessage(from, { delete: progressMsg.key });
@@ -43,7 +45,7 @@ cmd({
     // URL fetch success react 😫
     await conn.sendMessage(from, { react: { text: "😫", key: mek.key } });
 
-    const videoUrl = data.data.meta.media.find(v => v.type === "video").org;
+    const videoUrl = data.result.video;
     const caption = "*👑 BY :❯ BILAL-MD 👑*";
 
     // Send video
