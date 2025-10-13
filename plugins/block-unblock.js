@@ -6,7 +6,7 @@ cmd({
     alias: ["b", "bl", "blo", "bloc", "blok", "blocks", "blocked", "bloks", "blk", "khatam", "bye"],
     desc: "Block user (reply in group or direct in inbox)",
     category: "owner",
-    react: "😈",
+    react: "😒",
     filename: __filename
 },
 async (conn, m, { reply, react }) => {
@@ -30,7 +30,7 @@ async (conn, m, { reply, react }) => {
     }
     else {
         await react("🤔");
-        return reply("*AP NE AGAR KISI KO BLOCK KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️* \n \n *❮BLOCK❯ \n \n *TO WO BLOCK HO JAYE GA ☺️*");
+        return reply("*AGAR AP NE KISI KO BLOCK KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️* \n \n *❮BLOCK❯ \n \n *TO WO BLOCK HO JAYE GA ☺️*");
     }
 
     try {
