@@ -157,20 +157,21 @@ cmd({
 // APK download
 cmd({
   pattern: "apk",
+  alias: ["app", "apps", "application", "ap"],
   desc: "Download APK from Aptoide.",
   category: "download",
   filename: __filename
 }, async (conn, m, store, { from, q, reply }) => {
   try {
-    if (!q) return reply("*APKO APPLICATION KA NAME LIKHO*");
+    if (!q) return reply("*AGAR AP NE KOI APP DOWNLOAD KARNI HAI ☺️ \n *TO AP ESE LIKHO 😇* \n \n *APK ❮APKI APP KA.NAME❯* \n\n *TO APKI APP DOWNLOAD HO JAYE GE ☺️💓*");
 
-    await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+    await conn.sendMessage(from, { react: { text: "🌹", key: m.key } });
 
     const apiUrl = `http://ws75.aptoide.com/api/7/apps/search/query=${q}/limit=1`;
     const response = await axios.get(apiUrl);
     const data = response.data;
 
-    if (!data || !data.datalist || !data.datalist.list.length) return reply("*APPLICATION NAHI MILI*");
+    if (!data || !data.datalist || !data.datalist.list.length) return reply("*APKI APK NAHI MILI SORRY 😔*");
 
     const app = data.datalist.list[0];
     const appSize = (app.size / 1048576).toFixed(2);
@@ -179,12 +180,12 @@ cmd({
       document: { url: app.file.path_alt },
       fileName: `${app.name}.apk`,
       mimetype: "application/vnd.android.package-archive",
-      caption: `📥 Downloading ${app.name} (${appSize} MB)...`
+      caption: `DOWNLOADING ${app.name} (${appSize} MB)...`
     }, { quoted: m });
 
   } catch (error) {
-    console.error("Error APK:", error);
-    reply("❌ Error while downloading APK.");
+    console.error("*DUBARA KOSHISH KAREIN 🥺💓* \n *APP NAHI MIL RAHI 😔*", error);
+    reply("*DUBARA KOSHISH KAREIN 🥺💓* \n *APP NAHI MIL RAHI 😔*");
   }
 });
 
