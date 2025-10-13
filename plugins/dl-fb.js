@@ -4,7 +4,6 @@ const path = require("path");
 const { cmd } = require("../command");
 
 async function downloadFacebookVideo(url) {
-    // API Call
     const apiUrl = `https://api.princetechn.com/api/download/facebook?apikey=prince&url=${encodeURIComponent(url)}`;
     const res = await axios.get(apiUrl, { timeout: 40000 });
 
@@ -38,25 +37,34 @@ async function saveVideo(url) {
 // -------------------------
 cmd({
     pattern: "fb",
-    alias: ["facebook", "fb1", "fb2", "fbdl", "fbvideo", "facebookvideo", "lite", "fbvideo", "fvid", "fvide", "fvideo", "fbdlvideo"],
+    alias: ["facebook", "fb1", "fb2", "fbdl", "fbvideo", "facebookvideo", "lite", "fvid", "fvide", "fvideo", "fbdlvideo"],
     desc: "Download Facebook videos",
     category: "downloader"
 }, async (conn, mek, m, { args }) => {
     try {
         const url = args[0];
-        if (!url) return conn.sendMessage(m.chat, { text: "*APKO FACEBOOK KI VIDEO DOWNLOAD KARNI HAI 😊* \n *TO ESE LIKHO ....🌹 \n *FB https://www.facebook.com/share/r/1M8iCXHNor/* \n * BAS COMMAND ❮FB❯ LIKH KER USKE AGE APNI FACEBOOK VIDEO KA LINK PASTE KR DO APKI VIDEO DOWNLOAD HO KAR IDHAR BHEJ DI JAYE GE 🥰🌺❤️" }, { quoted: mek });
+        if (!url) return conn.sendMessage(m.chat, { text: "*APKO FACEBOOK KI VIDEO DOWNLOAD KARNA HAI 😊*\nTOH AISE LIKHO: `FB <link>`" }, { quoted: mek });
         if (!url.includes("facebook.com")) return conn.sendMessage(m.chat, { text: "⚠️ Invalid Facebook URL." }, { quoted: mek });
 
-        await conn.sendMessage(m.chat, { react: { text: "⏳", key: mek.key } });
+        // Waiting message
+        const waitMsg = await conn.sendMessage(m.chat, { text: "*APKI FACEBOOK VIDEO DOWNLOAD HO RAHI HAI....☺️🌹*" }, { quoted: mek });
+        await conn.sendMessage(m.chat, { react: { text: "🥺", key: waitMsg.key } });
 
         const fbvid = await downloadFacebookVideo(url);
         const filePath = await saveVideo(fbvid);
 
+        // Send video
         await conn.sendMessage(m.chat, {
             video: { url: filePath },
             mimetype: "video/mp4",
-            caption: "YEH LO APKI VIDEO DOWNLOAD KAR DI MENE 😊❤️"
+            caption: "BY :❯ BILAL-MD"
         }, { quoted: mek });
+
+        // React on command/link message
+        await conn.sendMessage(m.chat, { react: { text: "☺️", key: mek.key } });
+
+        // Delete waiting message
+        await conn.sendMessage(m.chat, { delete: waitMsg.key });
 
         fs.unlinkSync(filePath);
     } catch (e) {
@@ -76,19 +84,29 @@ cmd({
         const url = body.match(/https?:\/\/[^\s]+/i)[0];
         if (!url) return;
 
-        await conn.sendMessage(m.chat, { react: { text: "⏳", key: mek.key } });
+        // Waiting message
+        const waitMsg = await conn.sendMessage(m.chat, { text: "*APKI FACEBOOK VIDEO DOWNLOAD HO RAHI HAI....☺️🌹*" }, { quoted: mek });
+        await conn.sendMessage(m.chat, { react: { text: "🥺", key: waitMsg.key } });
 
         const fbvid = await downloadFacebookVideo(url);
         const filePath = await saveVideo(fbvid);
 
+        // Send video
         await conn.sendMessage(m.chat, {
             video: { url: filePath },
             mimetype: "video/mp4",
-            caption: "YEH LO APKI VIDEO MENE DOWNLOAD KAR DI HAI 😊❤️"
+            caption: "BY :❯ BILAL-MD"
         }, { quoted: mek });
+
+        // React on original link message
+        await conn.sendMessage(m.chat, { react: { text: "☺️", key: mek.key } });
+
+        // Delete waiting message
+        await conn.sendMessage(m.chat, { delete: waitMsg.key });
 
         fs.unlinkSync(filePath);
     } catch (e) {
         console.error("FB AutoDL Error:", e);
+        conn.sendMessage(m.chat, { text: "APKI VIDEO NAHI MILI SORRY 🥺❤️." }, { quoted: mek });
     }
 });
