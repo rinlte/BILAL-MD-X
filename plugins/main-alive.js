@@ -15,9 +15,9 @@ cmd({
   filename: __filename
 }, async (conn, mek, m, { from, sender, reply }) => {
   try {
-    const status = `*GG...☺️* \n*ME IDHAR HI HOO APKE PAS 🌹* \n*APKI HELP KE LIE ☺️🌹* \n*KOI BHI HELP CHAHYE TO MUJHE BATANA 🥰🦋*`;
+    const status = `*ASSALAMUALAIKUM ☺️* \n *KESE HAI AP 🥰* \n *ALLAH AP SAB KO HAMESHA KHUSH RAKHE AMEEN 🤲💓*`;
     await conn.sendMessage(from, { text: status });
   } catch (e) {
-    console.error("⚠️ MERE BOT ME KOI ERROR HAI — AP PARSHAN NA HO, YEH PROBLEM JALDI FIX HO JAYEGI ⚙️", e);
+    console.error("*GGG.....🥺💓*", e);
   }
 });
