@@ -14,7 +14,7 @@ async (conn, m, { reply, react }) => {
 
     // 🧠 Agar owner nahi hai
     if (m.sender !== botOwner) {
-        await react("🙋🏻");
+        await react("🤐");
         return reply("*YEH COMMAND SIRF MERE LIE HAI ☺️*");
     }
 
