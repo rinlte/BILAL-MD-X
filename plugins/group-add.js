@@ -22,7 +22,7 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
         const groupMetadata = await conn.groupMetadata(from);
         const participants = groupMetadata.participants.map(p => p.id);
 
-        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP ME ADD KARNA HAI 🥺* \nTO AP ESE LIKHO ☺️♥️* \n\n*ADD +9230xxxx*");
+        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP MEADD KARNA HAI 🥺* \n TO AP ESE LIKHO ☺️♥️* \n \n *ADD +9230xxxx* \n \n *IS NUMBER KI JAGAH AP NE JIS KO ADD KARNA HAI 😇* \n *USKA NUMBER COMMAND ❮ADD❯ KE BAD LIKHO 🥰♥️* \n *TO WO NUMBER IS GROUP ME ADD KAR DIYA JAYE GA ☺️♥️*");
 
         // Clean and prepare numbers
         let numbers = q.split(',')
