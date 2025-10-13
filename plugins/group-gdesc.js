@@ -39,6 +39,8 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, args, q, reply }) =
 
     } catch (e) {
         console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", e);
+        // React with 😔 on error
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
         reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
     }
 });
