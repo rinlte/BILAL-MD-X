@@ -2,19 +2,20 @@ const axios = require('axios');
 const yts = require('yt-search');
 const { cmd } = require('../command');
 
-// =============================
-// 🎧 SONG DOWNLOAD (STARLIGHTS MP3)
-// =============================
 cmd({
   pattern: "song",
   alias: ["music", "play", "audio"],
-  desc: "Download songs from YouTube (Starlights API)",
+  desc: "Download songs from YouTube (Delirius API)",
   category: "download",
   react: "🎵",
   filename: __filename
 }, async (conn, m, store, { from, q, reply }) => {
+  let waitMsg; // reference for waiting message
   try {
     if (!q) return reply("❌ *Usage:* .song Shape of You or paste YouTube link");
+
+    // React command msg 🥺
+    await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
     // 🔍 YouTube search or direct link
     let video;
@@ -22,46 +23,48 @@ cmd({
       video = { url: q };
     } else {
       const search = await yts(q);
-      if (!search || !search.videos.length)
+      if (!search || !search.videos.length) {
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
         return reply("❌ No results found for your query.");
+      }
       video = search.videos[0];
     }
 
-    // 🕒 Notify user
-    await conn.sendMessage(from, {
-      image: { url: video.thumbnail },
-      caption: `🎶 *Fetching your song...*\n\n🎵 *Title:* ${video.title}\n⏳ *Duration:* ${video.timestamp}`
-    }, { quoted: m });
+    // Waiting message
+    waitMsg = await conn.sendMessage(from, { text: "*APKA SONG DOWNLOAD HO RAHI HAI ☺️*\n*JAB DOWNLOAD COMPLETE HO JAYE GE TO YAHA BHEJ DE JAYE GE 🥰*" });
 
-    // 🎧 Fetch audio from Starlights API
-    const apiUrl = `https://apis-starlights-team.koyeb.app/starlight/youtube-mp3?url=${encodeURIComponent(video.url)}&format=mp3`;
+    // 🎧 Fetch audio from Delirius API
+    const apiUrl = `https://delirius-apiofc.vercel.app/download/ytmp3?url=${encodeURIComponent(video.url)}`;
     const res = await axios.get(apiUrl, { timeout: 30000 });
 
-    // ⚠️ Validate response
-    if (!res.data || !res.data.result || !res.data.result.download_url) {
-      return reply("❌ Failed to fetch audio. Try again later.");
+    if (!res.data || !res.data.url) {
+      if (waitMsg) await conn.sendMessage(from, { delete: waitMsg.key });
+      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+      return reply("*DUBARA KOSHISH KARE 🥺*");
     }
 
-    const audioUrl = res.data.result.download_url;
-    const title = res.data.result.title || video.title;
+    const audioUrl = res.data.url;
+    const title = res.data.title || video.title;
 
-    // ✨ Caption with details
+    // Delete waiting message
+    if (waitMsg) await conn.sendMessage(from, { delete: waitMsg.key });
+
+    // Send audio info
     const caption = `🎧 *Ｎｏｗ Ｐｌａｙɪɴɢ...*\n\n` +
       `🎵 *Title:* ${title}\n` +
       `📺 *Channel:* ${video.author?.name || 'Unknown'}\n` +
       `⏳ *Duration:* ${video.timestamp}\n` +
       `👀 *Views:* ${video.views?.toLocaleString() || 'N/A'}\n` +
       `🔗 *Link:* ${video.url}\n\n` +
-      `⚡ *Powered By BILAL-MD × STARLIGHTS TEAM* ⚡`;
+      `⚡ *Powered By BILAL-MD × DELIRIUS API* ⚡`;
 
-    // 🖼️ Send info
     await conn.sendMessage(from, {
       image: { url: video.thumbnail },
       caption,
       contextInfo: { forwardingScore: 999, isForwarded: true }
     }, { quoted: m });
 
-    // 🎵 Send the MP3 audio
+    // Send the MP3 audio
     await conn.sendMessage(from, {
       audio: { url: audioUrl },
       mimetype: "audio/mpeg",
@@ -69,8 +72,13 @@ cmd({
       ptt: false
     }, { quoted: m });
 
+    // React command message after success ☺️
+    await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+
   } catch (err) {
     console.error("🎵 Song command error:", err);
-    reply("❌ Error fetching song. Please try again later.");
+    if (waitMsg) await conn.sendMessage(from, { delete: waitMsg.key });
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+    reply("*DUBARA KOSHISH KARE 🥺*");
   }
 });
