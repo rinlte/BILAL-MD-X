@@ -1,44 +1,43 @@
-const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 const { cmd } = require("../command");
 
+// File jahan state save hogi
+const STATE_PATH = path.join(__dirname, "../data/autorecord.json");
+
+// Default state
+let autorecordState = { enabled: true };
+
+// Load ya create file
+try {
+  if (fs.existsSync(STATE_PATH)) {
+    autorecordState = JSON.parse(fs.readFileSync(STATE_PATH));
+  } else {
+    fs.writeFileSync(STATE_PATH, JSON.stringify(autorecordState, null, 2));
+  }
+} catch (err) {
+  console.error("Error loading autorecord state:", err);
+}
+
+// Command to turn ON/OFF
 cmd({
   pattern: "autorecord",
-  desc: "Turn auto recording ON or OFF from WhatsApp",
+  desc: "Turn auto recording ON or OFF",
   category: "tools",
   react: "🎙️",
-  filename: __filename
+  filename: __filename,
 }, async (conn, mek, m, { from, q, reply }) => {
-  try {
-    if (!process.env.HEROKU_API || !process.env.HEROKU_APP_NAME) {
-      return reply("⚠️ Heroku vars missing!\nAdd HEROKU_API & HEROKU_APP_NAME in Config Vars.");
-    }
+  if (!q) return reply("📝 Use like:\n.autorecord on\n.autorecord off");
 
-    if (!q) return reply("📝 Use like:\n.autorecord on\n.autorecord off");
+  const value = q.toLowerCase();
+  if (value === "on") autorecordState.enabled = true;
+  else if (value === "off") autorecordState.enabled = false;
+  else return reply("❌ Sirf 'on' ya 'off' likho.");
 
-    const value = q.toLowerCase() === "on" ? "true" : "false";
-    const url = `https://api.heroku.com/apps/${process.env.HEROKU_APP_NAME}/config-vars`;
+  fs.writeFileSync(STATE_PATH, JSON.stringify(autorecordState, null, 2));
 
-    await reply("⏳ Updating AUTO_RECORDING setting on Heroku...");
-    await conn.sendMessage(from, { react: { text: "🔁", key: mek.key } });
-
-    await axios.patch(
-      url,
-      { AUTO_RECORDING: value },
-      {
-        headers: {
-          Accept: "application/vnd.heroku+json; version=3",
-          Authorization: `Bearer ${process.env.HEROKU_API}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    await reply(`✅ AUTO_RECORDING is now *${value.toUpperCase()}*`);
-    await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
-
-  } catch (err) {
-    console.error("❌ Error:", err);
-    await reply("⚠️ Kuch ghalat ho gaya bhai, dubara try karo.");
-    await conn.sendMessage(from, { react: { text: "❌", key: mek.key } });
-  }
+  await reply(`✅ Auto Recording is now *${value.toUpperCase()}*`);
+  await conn.sendMessage(from, { react: { text: "🎧", key: mek.key } });
 });
+
+module.exports = { autorecordState };
