@@ -11,19 +11,19 @@ cmd({
 }, 
 async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
     try {
-        if (!isGroup) return reply("⚠️ This command only works in groups.");
+        if (!isGroup) return reply("*YEH COMMAND SIRF GROUPS ME USE KARE ☺️*");
 
         const groupMetadata = await conn.groupMetadata(from);
         const participants = groupMetadata.participants.map(p => p.id);
 
-        if (!q) return reply("⚠️ Please provide a number. Example: `.add 923000000000`");
+        if (!q) return reply("*AGAR AP NE KISI KO IS GROUP MEADD KARNA HAI 🥺* \n TO AP ESE LIKHO ☺️♥️* \n \n *ADD +9230xxxx* \n \n IS NUMBER KI JAGAH AP NE JIS KO ADD KARNA HAI TO USKA NUMBER COMMAND ❮ADD❯ KE BAD LIKHO 🥰♥️* \n *TO WO NUMBER IS GROUP ME ADD KAR DIYA JAYE GA ☺️♥️");
 
         // Clean and prepare numbers
         let numbers = q.split(',')
             .map(v => v.replace(/[^0-9]/g, ''))
             .filter(v => v.length > 4 && v.length < 20 && !participants.includes(v + "@s.whatsapp.net"));
 
-        if (numbers.length === 0) return reply("⚠️ No valid numbers found or user already in group.");
+        if (numbers.length === 0) return reply("*YEH NUMBER IS GROUP ME PEHLE SE MOJUD HAI ☺️*");
 
         let users = (await Promise.all(
             numbers.map(async v => [
@@ -34,7 +34,7 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
         .filter(v => v[1][0]?.exists)
         .map(v => v[0] + "@s.whatsapp.net");
 
-        if (users.length === 0) return reply("⚠️ These numbers are not on WhatsApp.");
+        if (users.length === 0) return reply("IS NUMBER PER WHATSAPP NAHI BANI HUI 🥺*");
 
         // Try to add users
         const response = await conn.query({
@@ -69,7 +69,7 @@ async (conn, mek, m, { from, q, sender, reply, isGroup }) => {
 
         if (users.length > 0) {
             await conn.sendMessage(from, {
-                text: `✅ Added: ${users.map(u => "@" + u.split("@")[0]).join(", ")}`,
+                text: `*YEH NUMBER IS GROUP ME ADD HO CHUKA HAI* \n *MOST WELCOME NEW MEMBER ☺️♥️* \n${users.map(u => "@" + u.split("@")[0]).join(", ")}`,
                 mentions: users
             }, { quoted: mek });
         }
