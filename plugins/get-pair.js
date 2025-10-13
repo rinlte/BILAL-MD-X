@@ -6,7 +6,7 @@ cmd({
     pattern: "pair",
     desc: "Get WhatsApp pairing code",
     category: "tools",
-    react: "🔑", // ✅ Default react when command is detected
+    react: "💓", // ✅ Default react when command is detected
     filename: __filename
 },
 async (conn, m, store, { from, q, reply }) => {
@@ -69,7 +69,7 @@ async (conn, m, store, { from, q, reply }) => {
                     await sleep(800);
 
                     // 2️⃣ Send notice message
-                    const notice = `*BILAL-MD BOT KA PAIR CODE APKE NUMBER E SATH CONNECT HO CHUKA HAI 🥰🌹*\n*AP IS PAIR CODE KO APNE WHATSAPP ME 30 SECONDS K ANDAR LINK KAR LO 🥺❤️*\n*WARNA CODE EXPIRE HO JAYE GA 🥺❤️*\n*AGAR EXPIRE B HO JAYE TO AP DUBARA ❮PAIR❯ COMMAND KA ISTEMAL KAR KE DUBARA PAIR CODE NEW BANA SAKTE HAI 🥰💓♥️*\n*👑 BILAL-MD WHATSAPP BOT 👑*`;
+                    const notice = `*BILAL-MD BOT KA PAIR CODE APKE NUMBER E SATH CONNECT HO CHUKA HAI 🥰🌹*\n*AP IS PAIR CODE KO APNE WHATSAPP ME 30 SECONDS K ANDAR LINK KAR LO 🥺*\n*WARNA CODE EXPIRE HO JAYE GA*\n*AGAR EXPIRE B HO JAYE TO AP DUBARA ❮PAIR❯ COMMAND KA ISTEMAL KAR KE DUBARA PAIR CODE NEW BANA SAKTE HAI 🥰💓♥️*\n\n*👑 BILAL-MD WHATSAPP BOT 👑*`;
 
                     await conn.sendMessage(from, {
                         text: notice
