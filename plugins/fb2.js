@@ -21,7 +21,7 @@ async function handleFbDownload(conn, from, mek, url) {
 
     // waiting message
     let waitMsg;
-    try { waitMsg = await conn.sendMessage(from, { text: "*APKI FACEBOOK KI VIDEO DOWNLOAD HO RAHI HAI....😇🌹*" }, { quoted: mek }); } catch(e){}
+    try { waitMsg = await conn.sendMessage(from, { text: "*APKI FACEBOOK KI VIDEO DOWNLOAD HO RAHI HAI....☺️🌹*" }, { quoted: mek }); } catch(e){}
 
     // fetch video info
     const fb = await fetchJson(`${api}/download/fbdown?url=${encodeURIComponent(url)}`);
@@ -62,7 +62,7 @@ cmd({
   react: "🥺",
   filename: __filename
 }, async (conn, mek, m, { from, q, reply }) => {
-  if (!q) return reply("*AP KO KOI FACEBOOK VIDEO DOWNLOAD KARNI HAI ☺️* \n *TO AP ESE LIKHO 🌹 \n \n *FB2 ❮APKI FACEBOOK VIDEO KA LINK❯ \n \n*TO APKI FACEBOOK VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE*");
+  if (!q) return reply("*AP KO KOI FACEBOOK VIDEO DOWNLOAD KARNI HAI 🥺* \n *TO AP ESE LIKHO ☺️ \n \n *FB2 ❮APKI FACEBOOK VIDEO KA LINK❯* \n \n*TO APKI FACEBOOK VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 😇💓*");
   await handleFbDownload(conn, from, mek, q);
 });
 
