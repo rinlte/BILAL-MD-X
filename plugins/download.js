@@ -163,7 +163,7 @@ cmd({
   filename: __filename
 }, async (conn, m, store, { from, q, reply }) => {
   try {
-    if (!q) return reply("*AGAR AP NE KOI APP DOWNLOAD KARNI HAI ☺️ \n *TO AP ESE LIKHO 😇* \n \n *APK ❮APKI APP KA.NAME❯* \n\n *TO APKI APP DOWNLOAD HO JAYE GE ☺️💓*");
+    if (!q) return reply("*AGAR AP NE KOI APP DOWNLOAD KARNI HAI 🥺* \n *TO AP ESE LIKHO 😇* \n \n *APK ❮APKI APP KA.NAME❯* \n\n *TO APKI APPLICATION DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE ☺️💓*");
 
     await conn.sendMessage(from, { react: { text: "🌹", key: m.key } });
 
