@@ -1,7 +1,6 @@
 const { cmd } = require('../command');
 const axios = require('axios');
 
-// Heroku credentials (environment variables)
 const HEROKU_API_KEY = process.env.HEROKU_API_KEY;
 const HEROKU_APP_NAME = process.env.HEROKU_APP_NAME;
 
@@ -14,27 +13,35 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, sender, reply, isCreator }) => {
     try {
-        // Only bot owner can use
-        if (!isCreator) return reply('⚠️ Sirf bot owner is command ka use kar sakta hai.');
+        console.log('💡 setvar command triggered by', sender);
 
-        if (!HEROKU_API_KEY || !HEROKU_APP_NAME)
+        if (!isCreator) {
+            console.log('⛔ Not owner');
+            return reply('⚠️ Sirf bot owner is command ka use kar sakta hai.');
+        }
+
+        if (!HEROKU_API_KEY || !HEROKU_APP_NAME) {
+            console.log('❌ Missing Heroku credentials');
             return reply('❌ Heroku API key ya App name set nahi hai.\n\nSet karo pehle:\nHEROKU_API_KEY & HEROKU_APP_NAME');
+        }
 
         const input = m.text.split(' ').slice(1).join(' ');
         if (!input || !input.includes('=')) {
+            console.log('⚠️ Invalid input');
             return reply('📘 Example:\n.setvar API_KEY=12345');
         }
 
-        // Extract key and value
         const [key, value] = input.split('=');
-        if (!key || !value) return reply('❌ Format ghalat hai.\nExample: `.setvar NAME=VALUE`');
+        if (!key || !value) {
+            console.log('⚠️ Missing key/value');
+            return reply('❌ Format ghalat hai.\nExample: `.setvar NAME=VALUE`');
+        }
 
         await conn.sendPresenceUpdate('composing', from);
 
-        // API URL
         const url = `https://api.heroku.com/apps/${HEROKU_APP_NAME}/config-vars`;
+        console.log('🌐 Sending PATCH to:', url);
 
-        // Update var
         const res = await axios.patch(
             url,
             { [key.trim()]: value.trim() },
@@ -47,14 +54,16 @@ cmd({
             }
         );
 
+        console.log('✅ Response:', res.status, res.data);
+
         await conn.sendPresenceUpdate('paused', from);
-        await reply(`✅ Successfully set Heroku var:\n\n*${key.trim()} = ${value.trim()}*`);
+        await reply(`✅ *Successfully set Heroku var:*\n\n${key.trim()} = ${value.trim()}`);
         await conn.sendMessage(from, { react: { text: '✅', key: m.key } });
 
     } catch (err) {
-        console.error('❌ Error setting var:', err.message);
+        console.error('❌ Error in setvar:', err.response?.data || err.message);
         await conn.sendPresenceUpdate('paused', from);
         await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
-        reply(`⚠️ Error: ${err.message}`);
+        reply(`⚠️ Error: ${err.response?.data?.message || err.message}`);
     }
 });
