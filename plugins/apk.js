@@ -38,7 +38,7 @@ cmd({
       document: { url: app.file.path_alt },
       fileName: `${app.name}.apk`,
       mimetype: "application/vnd.android.package-archive",
-      caption: `${app.name} (${appSize} MB) \n *👑 BILAL-MD 👑*`
+      caption: `*👑 APK NAME 👑* \n ${app.name} \n *👑 APK MB 👑*\n (${appSize} MB) \n\n *👑 BILAL-MD 👑*`
     }, { quoted: m });
 
     // Delete waiting message
