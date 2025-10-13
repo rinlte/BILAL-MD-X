@@ -3,10 +3,10 @@ const { runtime } = require('../lib/functions');
 
 cmd({
   pattern: "uptime",
-  alias: ["runtime", "upt", "upti", "uptim", "uptimes", "ut", "utime"],
+  alias: ["runtime", "upt", "upti", "uptim", "uptimes", "ut", "utime", "u"],
   desc: "Show bot uptime",
   category: "main",
-  react: "⏱️",
+  react: "☺️",
   filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
   try {
