@@ -3,6 +3,9 @@ const { fetchEmix } = require("../lib/emix-utils");
 const { getBuffer } = require("../lib/functions");
 const { Sticker, StickerTypes } = require("wa-sticker-formatter");
 
+// Regex to match emojis
+const emojiRegex = /\p{Extended_Pictographic}/gu;
+
 cmd({
     pattern: "emix",
     desc: "Combine two emojis into a sticker.",
@@ -11,25 +14,23 @@ cmd({
     use: ".emix 😍😇 or .emix 😍,😇",
     filename: __filename,
 }, async (conn, mek, m, { q, reply }) => {
-    let waitMsg; // reference to waiting message
+    let waitMsg;
     try {
         // React command msg 🥺
         await conn.sendMessage(mek.chat, { react: { text: "🥺", key: mek.key } });
 
-        // Agar sirf .emix likha ho
         if (!q) return reply("*ESE LIKHO* \n *EMIX 😍,😇*");
 
         let emoji1, emoji2;
 
         if (q.includes(",")) {
-            // Agar comma se diya ho
             [emoji1, emoji2] = q.split(",").map(e => e.trim());
-        } else if (q.length >= 2) {
-            // Agar direct dono emojis diye ho bina comma
-            [emoji1, emoji2] = Array.from(q);
+        } else {
+            // Extract first two emojis using regex
+            const emojis = q.match(emojiRegex);
+            if (!emojis || emojis.length < 2) return reply("*DONO EMOJIES K DARMYAN COMMA YA DONO EMOJIES BANAO 🥺*");
+            [emoji1, emoji2] = emojis;
         }
-
-        if (!emoji1 || !emoji2) return reply("*DONO EMOJIES K DARMYAN COMMA YA DONO EMOJIES BANAO 🥺*");
 
         // Waiting message
         waitMsg = await conn.sendMessage(mek.chat, { text: `*EMOJIE MIX STICKER BAN RAHA HAI....☺️*` });
