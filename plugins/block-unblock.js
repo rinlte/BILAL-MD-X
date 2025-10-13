@@ -57,7 +57,7 @@ cmd({
     alias: ["unb", "unbl", "unblo", "unblock", "unblok", "unblocks", "unblocked", "unbloks", "unblk"],
     desc: "Unblock user (reply in group or direct in inbox)",
     category: "owner",
-    react: "😃",
+    react: "🤐",
     filename: __filename
 },
 async (conn, m, { reply, react }) => {
