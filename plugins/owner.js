@@ -13,7 +13,7 @@ cmd({
     const ownerNumber = config.OWNER_NUMBER || "0000000000";
 
     // 💬 Send text reply only
-    const msgText = `*👑 MY OWNER NAME:* ${ownerName}\n*📞 OWNER NUMBER:* wa.me/${ownerNumber}`;
+    const msgText = `*👑 OWNER NAME 👑* \n *${ownerName}* \n*👑 OWNER NUMBER 👑* \n *${ownerNumber}*`;
 
     await conn.sendMessage(from, { text: msgText }, { quoted: mek });
 
