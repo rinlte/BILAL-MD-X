@@ -15,10 +15,17 @@ cmd({
 
         // 🧾 Input validation
         if (!message.quoted)
-            return await client.sendMessage(from, { text: "*KISI STICKER KO REPLY KARO 🥺* \n *AUR ESE LIKHO ☺️* \n \n *❮STOIMG❯* \n \n *JAB ESE LIKHO GE TO APKA STICKER PHOTO ME BADAL JAYE GA ☺️💓" }, { quoted: message });
+            return await client.sendMessage(from, { 
+                text: "*KISI STICKER KO REPLY KARO 🥺* \n *AUR ESE LIKHO ☺️* \n \n *❮STOIMG❯* \n \n *JAB ESE LIKHO GE TO APKA STICKER PHOTO ME BADAL JAYE GA ☺️💓*" 
+            }, { quoted: message });
 
-        if (message.quoted.mtype !== 'stickerMessage')
-            return await client.sendMessage(from, { text: "SURF STICKER KO MENTION REPLY KR KE 🥺* \n *FIR YEH LIKHO ☺️🌹* \n *❮STOIMG❯*" }, { quoted: message });
+        if (message.quoted.mtype !== 'stickerMessage') {
+            // 😫 React jab user ne sticker mention nahi kiya
+            await client.sendMessage(from, { react: { text: "😫", key: message.key } });
+            return await client.sendMessage(from, { 
+                text: "*SIRF STICKER KO MENTION REPLY KR KE 🥺* \n *FIR YEH LIKHO ☺️🌹* \n *❮STOIMG❯*" 
+            }, { quoted: message });
+        }
 
         // 🕒 Waiting message
         const waitMsg = await client.sendMessage(from, {
