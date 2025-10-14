@@ -15,7 +15,7 @@ cmd({
   alias: ['ytmp4', 'mp4', 'ytv', 'vi', 'v', 'vid', 'vide', 'videos', 'ytvi', 'ytvid', 'ytvide', 'ytvideos', 'searchyt', 'download', 'get', 'need', 'search'],
   desc: 'Download YouTube video using Izumi API (auto document fallback).',
   category: 'download',
-  react: '📥',
+  react: '🥺',
   filename: __filename
 },
 async (conn, mek, m, { from, args, reply, quoted }) => {
