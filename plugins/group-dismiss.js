@@ -40,7 +40,7 @@ async(conn, mek, m, {
         number = q.replace(/[@\s]/g, '');
     } else {
         await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
-        return reply("*AP NE KIS MEMBER KO ADMINS KI POST SE DISSMISS KARNA HAI 🥺* \n *US ADMIN KO MENTION YA USKE MSG KO REPLY KARO ☺️* \n *AUR ESE LIKHO 🥺* \n\n *❮DEMOTE❯* \n \n *TO US ADMIN KO ADMIN KI POST SE HATA DYA JAYE GA 😇");
+        return reply("*AP NE KIS MEMBER KO ADMINS KI POST SE DISSMISS KARNA HAI 🥺* \n *US ADMIN KO MENTION YA USKE MSG KO REPLY KARO ☺️* \n *AUR ESE LIKHO 🥺* \n\n *❮DEMOTE❯* \n \n *TO US ADMIN KO ADMIN KI POST SE HATA DYA JAYE GA 😇🌹*");
     }
 
     if (number === botNumber) {
