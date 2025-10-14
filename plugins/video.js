@@ -24,12 +24,13 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
     await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
     if (!args[0] && !quoted) {
-      return reply(
-        "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
-        "*TO AP ESE LIKHO 😇*\n\n" +
-        "*VIDEO ❮APKE VIDEO KA NAM❯*\n\n" +
-        "*AP COMMAND ❮VIDEO❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰💞*"
-      );
+      return conn.sendMessage(from, {
+        text: "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
+              "*TO AP ESE LIKHO 😇*\n\n" +
+              "*VIDEO ❮APKE VIDEO KA NAM❯*\n\n" +
+              "*AP COMMAND ❮VIDEO❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰💞*",
+        quoted: m
+      });
     }
 
     let provided = args.join(' ').trim() || (quoted && (quoted.text || quoted.caption)) || '';
@@ -46,7 +47,10 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       const search = await yts(provided);
       if (!search?.all?.length) {
         await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-        return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
+        return conn.sendMessage(from, {
+          text: "*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*",
+          quoted: m
+        });
       }
       ytUrl = search.all[0].url;
     }
@@ -57,7 +61,10 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
     if (!data?.status || !data?.result?.download) {
       await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
       if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-      return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
+      return conn.sendMessage(from, {
+        text: "*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*",
+        quoted: m
+      });
     }
 
     const { title, thumbnail, metadata, author, download } = data.result;
@@ -78,7 +85,10 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
     } catch (err) {
-      await reply(`*APKI VIDEO BAHUT BARI HAI 🥺 MUJHSW DOWNLOAD NAHI HO RAHI 😔*`);
+      await conn.sendMessage(from, {
+        text: "*APKI VIDEO BAHUT BARI HAI 🥺 MUJHSW DOWNLOAD NAHI HO RAHI 😔*",
+        quoted: m
+      });
       await conn.sendMessage(from, {
         document: { url: download },
         mimetype: 'video/mp4',
@@ -94,6 +104,9 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
     console.error('video cmd error =>', e?.message || e);
     if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-    reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
+    await conn.sendMessage(from, {
+      text: "*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*",
+      quoted: m
+    });
   }
 });
