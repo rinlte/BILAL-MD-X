@@ -24,7 +24,7 @@ async(conn, mek, m, {
     // Check if the user is an admin
     if (!isAdmins) {
         await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
-        return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI AP ADMIN NAHI HO 🥺*");
+        return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI AP IS GROUP ME ADMIN NAHI HO 🥺*");
     }
 
     // Check if the bot is an admin
