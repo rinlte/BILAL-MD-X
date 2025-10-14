@@ -5,7 +5,7 @@ cmd({
     alias: ["p", "makeadmin", "admin"],
     desc: "Promotes a member to group admin",
     category: "admin",
-    react: "👑",
+    react: "🥺",
     filename: __filename
 },
 async(conn, mek, m, {
@@ -13,7 +13,7 @@ async(conn, mek, m, {
 }) => {
 
     // ✅ Har msg pe react 👑
-    await conn.sendMessage(from, { react: { text: "👑", key: m.key } });
+    await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
     // Check if the command is used in a group
     if (!isGroup) {
@@ -24,7 +24,7 @@ async(conn, mek, m, {
     // Check if the user is an admin
     if (!isAdmins) {
         await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
-        return reply("*YEH COMMAND SRF GROUP ADMINS USE KAR SAKTE HAI 🥺 AP ADMIN NAHI HO 🥺💔*");
+        return reply("*YEH COMMAND SRF GROUP ADMINS USE KAR SAKTE HAI AP ADMIN NAHI HO 🥺*");
     }
 
     // Check if the bot is an admin
