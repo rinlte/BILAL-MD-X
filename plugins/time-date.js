@@ -20,7 +20,7 @@ async (conn, mek, m, { reply, from }) => {
 
         // 🕒 Send message + react on user message
         await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
-        reply(`*PAKISTAN ME ABHI YEH TIME HAI 🥰🌹* \n *${localTime}*`);
+        reply(`*PAKISTAN ME ABHI YEH TIME HAI 🥰* \n *${localTime}*`);
 
     } catch (e) {
         console.error("*DUBARA KOSHISH KARE 🥺*", e);
@@ -51,7 +51,7 @@ async (conn, mek, m, { reply, from }) => {
 
         // 📅 Send message + react on user message
         await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
-        reply(`*PAKISTAN ME AJ KI DATE YEH HAI 🥰🌹* \n *${currentDate}*`);
+        reply(`*PAKISTAN ME AJ KI DATE YEH HAI 🥰* \n *${currentDate}*`);
 
     } catch (e) {
         console.error("*DUBARA KOSHISH KARE 🥺*", e);
