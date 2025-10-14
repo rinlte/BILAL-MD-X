@@ -1,84 +1,106 @@
+const { cmd } = require('../command');
 const axios = require('axios');
 const yts = require('yt-search');
-const { cmd } = require('../command');
+
+function extractUrl(text = '') {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[\w\-?=&%.#\/]+)|(youtube\.com\/[\w\-?=&%.#\/]+)/i;
+  const match = text.match(urlRegex);
+  if (!match) return null;
+  return match[0].startsWith('http') ? match[0] : `https://${match[0]}`;
+}
 
 cmd({
-  pattern: "song",
-  alias: ["music", "play", "audio"],
-  desc: "Download songs from YouTube (Delirius API)",
-  category: "download",
-  react: "🎵",
+  pattern: 'play',
+  alias: ['song', 'music', 'audio', 'yta', 'ytmp3'],
+  desc: 'Download YouTube audio using Izumi API.',
+  category: 'download',
+  react: '🎧',
   filename: __filename
-}, async (conn, m, store, { from, q, reply }) => {
-  let waitMsg; // reference for waiting message
+},
+async (conn, mek, m, { from, args, reply, quoted }) => {
+  let waitingMsg;
   try {
-    if (!q) return reply("❌ *Usage:* .song Shape of You or paste YouTube link");
-
-    // React command msg 🥺
     await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
-    // 🔍 YouTube search or direct link
-    let video;
-    if (q.includes("youtube.com") || q.includes("youtu.be")) {
-      video = { url: q };
-    } else {
-      const search = await yts(q);
-      if (!search || !search.videos.length) {
+    if (!args[0]) {
+      return reply(
+        "*AP KO KOI GAANA SUNNA HAI 🥺*\n" +
+        "*TO AP ESE LIKHO 😇*\n\n" +
+        "*PLAY ❮APKE GAANE KA NAM❯*\n\n" +
+        "*AP COMMAND ❮PLAY❯ LIKH KAR USKE AGE APNA GAANA KA NAM LIKH DO ☺️ FIR ME WO GAANA DOWNLOAD KAR KE YAHA BHEJ DUNGA 🥰💞*"
+      );
+    }
+
+    let provided = args.join(' ').trim() || (quoted && (quoted.text || quoted.caption)) || '';
+    let ytUrl = extractUrl(provided);
+
+    waitingMsg = await conn.sendMessage(
+      from,
+      { text: "*APKA GAANA DOWNLOAD HO RAHA HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GA ☺️ TO YAHA BHEJ DIYA JAYE GA 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
+      { quoted: m }
+    );
+    await conn.sendMessage(from, { react: { text: "🎵", key: m.key } });
+
+    if (!ytUrl) {
+      const search = await yts(provided);
+      if (!search?.all?.length) {
         await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-        return reply("❌ No results found for your query.");
+        return reply("*APKA GAANA MUJHE NAHI MILA 🥺*\n*DUBARA KOSHISH KARE 🥺*");
       }
-      video = search.videos[0];
+      ytUrl = search.all[0].url;
     }
 
-    // Waiting message
-    waitMsg = await conn.sendMessage(from, { text: "*APKA SONG DOWNLOAD HO RAHI HAI ☺️*\n*JAB DOWNLOAD COMPLETE HO JAYE GE TO YAHA BHEJ DE JAYE GE 🥰*" });
+    const apiUrl = `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(ytUrl)}&format=mp3`;
+    const { data } = await axios.get(apiUrl, { headers: { accept: '*/*' }, timeout: 30000 });
 
-    // 🎧 Fetch audio from Delirius API
-    const apiUrl = `https://delirius-apiofc.vercel.app/download/ytmp3?url=${encodeURIComponent(video.url)}`;
-    const res = await axios.get(apiUrl, { timeout: 30000 });
-
-    if (!res.data || !res.data.url) {
-      if (waitMsg) await conn.sendMessage(from, { delete: waitMsg.key });
+    if (!data?.status || !data?.result?.download) {
       await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-      return reply("*DUBARA KOSHISH KARE 🥺*");
+      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+      return reply("*APKA GAANA DOWNLOAD NAHI HO PA RAHA 🥺*\n*DUBARA KOSHISH KARE 🥺*");
     }
 
-    const audioUrl = res.data.url;
-    const title = res.data.title || video.title;
+    const { title, thumbnail, author, metadata, download } = data.result;
 
-    // Delete waiting message
-    if (waitMsg) await conn.sendMessage(from, { delete: waitMsg.key });
+    // 🔹 Thumbnail caption (audio info)
+    const thumbCaption = `__________________________________\n*👑 AUDIO KA NAME 👑* \n ${title}\n*\n👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}\n\n👑 VIEWS:❯ ${metadata?.view || '—'}\n\n👑 LIKES :❯ ${metadata?.like || '—'}\n\n👑 TIME:❯ ${metadata?.duration || '—'}\n__________________________________*`;
 
-    // Send audio info
-    const caption = `🎧 *Ｎｏｗ Ｐｌａｙɪɴɢ...*\n\n` +
-      `🎵 *Title:* ${title}\n` +
-      `📺 *Channel:* ${video.author?.name || 'Unknown'}\n` +
-      `⏳ *Duration:* ${video.timestamp}\n` +
-      `👀 *Views:* ${video.views?.toLocaleString() || 'N/A'}\n` +
-      `🔗 *Link:* ${video.url}\n\n` +
-      `⚡ *Powered By BILAL-MD × DELIRIUS API* ⚡`;
+    await conn.sendMessage(from, { image: { url: thumbnail }, caption: thumbCaption }, { quoted: m });
 
-    await conn.sendMessage(from, {
-      image: { url: video.thumbnail },
-      caption,
-      contextInfo: { forwardingScore: 999, isForwarded: true }
-    }, { quoted: m });
+    try {
+      // 🔹 Final audio caption (downloaded message)
+      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}\n\nMENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*\n 👑 BY :❯ BILAL-MD 👑\n`;
 
-    // Send the MP3 audio
-    await conn.sendMessage(from, {
-      audio: { url: audioUrl },
-      mimetype: "audio/mpeg",
-      fileName: `${title}.mp3`,
-      ptt: false
-    }, { quoted: m });
+      await conn.sendMessage(from, {
+        audio: { url: download },
+        mimetype: 'audio/mpeg',
+        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`,
+        ptt: false,
+        caption: finalCaption
+      }, { quoted: m });
 
-    // React command message after success ☺️
-    await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+      await conn.sendMessage(from, { delete: waitingMsg.key });
+      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
-  } catch (err) {
-    console.error("🎵 Song command error:", err);
-    if (waitMsg) await conn.sendMessage(from, { delete: waitMsg.key });
+    } catch (err) {
+      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}\n\nMENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*\n 👑 BY :❯ BILAL-MD 👑\n`;
+
+      await reply(`*GAANA BAHUT BARA HAI 🥺 AB ME USE DOCUMENT FORM ME BHEJ RAHA HU 💌*`);
+      await conn.sendMessage(from, {
+        document: { url: download },
+        mimetype: 'audio/mpeg',
+        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`,
+        caption: finalCaption
+      }, { quoted: m });
+
+      await conn.sendMessage(from, { delete: waitingMsg.key });
+      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
+    }
+
+  } catch (e) {
+    console.error('play cmd error =>', e?.message || e);
+    if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-    reply("*DUBARA KOSHISH KARE 🥺*");
+    reply("*APKA GAANA MUJHE NAHI MILA 🥺*\n*DUBARA KOSHISH KARE 🥺*");
   }
 });
