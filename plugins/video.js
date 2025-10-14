@@ -12,7 +12,7 @@ function extractUrl(text = '') {
 
 cmd({
   pattern: 'video',
-  alias: ['ytmp4', 'mp40'],
+  alias: ['ytmp4', 'mp4', 'ytv', 'vi', 'v', 'vid', 'vide', 'videos', 'ytvi', 'ytvid', 'ytvide', 'ytvideos', 'searchyt', 'download', 'get', 'need', 'search'],
   desc: 'Download YouTube video using Izumi API (auto document fallback).',
   category: 'download',
   react: '📥',
@@ -62,7 +62,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
 
     const { title, thumbnail, metadata, author, download } = data.result;
 
-    const caption = `*__________________________________*\n*👑 VIDEO KA NAME 👑* \n ${title}*\n*__________________________________*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n*__________________________________*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*__________________________________*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*__________________________________*\n*TIME:❯ *${metadata?.duration || '—'}*\n*__________________________________*`;
+    const caption = `*__________________________________*\n*👑 VIDEO KA NAME 👑* \n *${title}*\n*__________________________________*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n*__________________________________*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*__________________________________*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*__________________________________*\n*👑 TIME:❯ ${metadata?.duration || '—'}*\n*__________________________________*`;
 
     await conn.sendMessage(from, { image: { url: thumbnail }, caption }, { quoted: m });
 
