@@ -94,7 +94,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
         document: { url: download },
         mimetype: 'video/mp4',
         fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp4`,
-        caption: `${title}\n\n *_________________________________*\n*👑 VIDEO KKA NAME 👑* \n*${title}*\n*_________________________________*\n*MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*_________________________________*\n *👑 BY :❯ BILAL-MD 👑*\n*_________________________________*`
+        caption: `${title}\n\n *_________________________________*\n*👑 VIDEO KA NAME 👑* \n*${title}*\n*_________________________________*\n*MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*_________________________________*\n *👑 BY :❯ BILAL-MD 👑*\n*_________________________________*`
       }, { quoted: m });
 
       await conn.sendMessage(from, { delete: waitingMsg.key });
