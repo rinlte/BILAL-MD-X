@@ -14,7 +14,7 @@ cmd({
       return reply(
         "*APKO APKE NAME KA FANCY TEXT BANANA HAI ☺️♥️*\n" +
         "*TO AP ESE LIKHO 🥰🌹*\n\n" +
-        "*❮FANCY BILAL-MD❯*\n" +
+        "*❮FANCY BILAL-MD❯*\n\n" +
         "*JAB ESE LIKHE GE TO APKA NAMES FANCY TEXT ME SHOW HOGE ☺️♥️*"
       );
     }
