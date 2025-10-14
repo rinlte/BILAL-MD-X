@@ -45,7 +45,7 @@ async(conn, mek, m, {
 
     if (number === botNumber) {
         await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
-        return reply("*SORRY G IS MEMBER KO ADMIN NAHI BANA SAKTE 🥺🌹*");
+        return reply("*YEH GROUP ME PEHLE SE ADMIN HAI ☺️*");
     }
 
     const jid = number + "@s.whatsapp.net";
