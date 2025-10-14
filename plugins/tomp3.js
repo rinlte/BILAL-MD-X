@@ -11,7 +11,7 @@ cmd({
     // 🎯 Input validation
     if (!match.quoted) {
         return await client.sendMessage(from, {
-            text: "*KISI BHI VIDEO KO MENTION KARO 🥺* \n *AUR ESE LIKHO ☺️* \n \n  *❮TOMP3❯* \n \n *TO WO VIDEO AUDIO ME BADAL JAYE GE 🥰🌹*"
+            text: "*KISI BHI VIDEO KO MENTION KARO 🥺* \n *AUR ESE LIKHO ☺️* \n \n  *❮TOMP3❯* \n \n *TO WO VIDEO AUDIO ME BADAL JAYE GE 🥰*"
         }, { quoted: message });
     }
 
