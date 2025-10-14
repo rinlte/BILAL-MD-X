@@ -62,7 +62,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
 
     const { title, thumbnail, metadata, author, download } = data.result;
 
-    const caption = `*👑 ${title}*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*TIME:❯ *${metadata?.duration || '—'}*\n\n*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 THORA SA INTAZAR KAREIN ☺️♥️*`;
+    const caption = `*__________________________________*\n*👑 VIDEO KA NAME 👑* \n ${title}*\n*__________________________________*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n*__________________________________*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*__________________________________*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*__________________________________*\n*TIME:❯ *${metadata?.duration || '—'}*\n*__________________________________*`;
 
     await conn.sendMessage(from, { image: { url: thumbnail }, caption }, { quoted: m });
 
