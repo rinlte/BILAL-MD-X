@@ -69,12 +69,8 @@ const displayName = userName ? userName : 'User';
 *╭━━〔 👑 USER 👑 〕━━┈⊷*
 *┃👑│ • BLOCK*
 *┃👑│ • UNBLOCK*
-*┃👑│ • FULLPP*
-*┃👑│ • SETPP*
 *┃👑│ • GETPP*
 *┃👑│ • RESTART*
-*┃👑│ • UPDATECMD*
-*┃👑│ • OWNERREACT*
 *┃👑│ • UPDATE*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
