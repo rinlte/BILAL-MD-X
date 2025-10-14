@@ -117,7 +117,8 @@ const displayName = userName ? userName : 'User';
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 XTRA 👑 〕━━┈⊷*
-*┃👑│ • TIMENOW*
+*┃👑│ • TIME*
+*┃👑│ • DATE*
 *┃👑│ • SS*
 *┃👑│ • READMORE*
 *┃👑│ • TINYURL*
