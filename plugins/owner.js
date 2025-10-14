@@ -3,29 +3,25 @@ const { cmd } = require('../command');
 
 cmd({
   pattern: "owner",
-  desc: "Show bot owner contact",
+  desc: "Show bot owner contact info",
   category: "info",
-  react: "👑",
+  react: "😎",
   filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
   try {
-    const vcard = `
-BEGIN:VCARD
-VERSION:3.0
-FN:${config.BOT_NAME || "Bot Owner"}
-TEL;waid=${config.OWNER_NUMBER}:${config.OWNER_NUMBER}
-END:VCARD
-`;
+    const ownerName = config.BOT_NAME || "Bot Owner";
+    const ownerNumber = config.OWNER_NUMBER || "0000000000";
 
-    await conn.sendMessage(from, {
-      contacts: {
-        displayName: config.BOT_NAME || "Bot Owner",
-        contacts: [{ vcard }]
-      }
-    }, { quoted: mek });
+    // 💬 Send text reply only
+    const msgText = `*👑 MY OWNER NAME:* ${ownerName}\n*📞 OWNER NUMBER:* wa.me/${ownerNumber}`;
+
+    await conn.sendMessage(from, { text: msgText }, { quoted: mek });
+
+    // 😎 React on command message
+    await conn.sendMessage(from, { react: { text: "😎", key: m.key } });
 
   } catch (err) {
     console.error("❌ Owner command error:", err);
-    reply("❌ Failed to send owner contact!");
+    reply("❌ Failed to show owner info!");
   }
 });
