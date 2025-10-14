@@ -13,28 +13,18 @@ function extractUrl(text = '') {
 cmd({
   pattern: 'video',
   alias: ['ytmp4', 'mp4', 'ytv', 'vi', 'v', 'vid', 'vide', 'videos', 'ytvi', 'ytvid', 'ytvide', 'ytvideos', 'searchyt', 'download', 'get', 'need', 'search'],
-  desc: 'Download YouTube video using Izumi API (auto document fallback).',
+  desc: 'Download YouTube video (multi-quality) using Izumi API.',
   category: 'download',
   react: '📥',
   filename: __filename
 },
 async (conn, mek, m, { from, args, reply, quoted }) => {
   let waitingMsg;
+
   try {
     await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
-    // 🟢 ye new condition add ki gayi hai
     if (!args[0]) {
-      return reply(
-        "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
-        "*TO AP ESE LIKHO 😇*\n\n" +
-        "*VIDEO ❮APKE VIDEO KA NAM❯*\n\n" +
-        "*AP COMMAND ❮VIDEO❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰💞*"
-      );
-    }
-    // 🟢 bas yahi line add hui hai, aur kuch nahi chhueda
-
-    if (!args[0] && !quoted) {
       return reply(
         "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
         "*TO AP ESE LIKHO 😇*\n\n" +
@@ -62,44 +52,54 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       ytUrl = search.all[0].url;
     }
 
-    const apiUrl = `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(ytUrl)}&format=360`;
+    const apiUrl = `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(ytUrl)}`;
     const { data } = await axios.get(apiUrl, { headers: { accept: '*/*' }, timeout: 30000 });
 
-    if (!data?.status || !data?.result?.download) {
+    if (!data?.status || !data?.result?.formats?.length) {
       await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
       if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
       return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
     }
 
-    const { title, thumbnail, metadata, author, download } = data.result;
+    const { title, thumbnail, author, formats } = data.result;
 
-    const caption = `*__________________________________*\n*👑 VIDEO KA NAME 👑* \n *${title}*\n*__________________________________*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n*__________________________________*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*__________________________________*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*__________________________________*\n*👑 TIME:❯ ${metadata?.duration || '—'}*\n*__________________________________*`;
+    // 🎥 Quality options banate hain
+    let qualityList = `*👑 ${title}*\n\n📊 *Available Qualities:*\n\n`;
+    formats.forEach((f, i) => {
+      qualityList += `*${i + 1}.* ${f.quality || 'Unknown'} - ${f.size || 'Unknown size'}\n`;
+    });
+    qualityList += `\n*Reply me number likhe jis quality ki video chahiye ☺️*`;
 
-    await conn.sendMessage(from, { image: { url: thumbnail }, caption }, { quoted: m });
+    await conn.sendMessage(from, { image: { url: thumbnail }, caption: qualityList }, { quoted: m });
 
-    try {
-      await conn.sendMessage(from, {
-        video: { url: download },
-        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp4`,
-        mimetype: 'video/mp4',
-        caption: `${title}\n\n *MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️🌹* \n *👑 BY :❯ BILAL-MD 👑*`
-      }, { quoted: m });
+    // 🕒 Wait for user reply
+    const response = await conn.waitForMessage(m.chat, (msg) => msg.key.fromMe === false && /^\d+$/.test(msg.message.conversation?.trim()), { timeout: 30000 });
 
+    if (!response) {
+      await reply("*AP NE KOI OPTION NAHI DIYA 🥺*");
       await conn.sendMessage(from, { delete: waitingMsg.key });
-      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
-
-    } catch (err) {
-      await reply(`*APKI VIDEO BAHUT BARI HAI 🥺 MUJHSW DOWNLOAD NAHI HO RAHI 😔*`);
-      await conn.sendMessage(from, {
-        document: { url: download },
-        mimetype: 'video/mp4',
-        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp4`,
-        caption: `${title}\n\n *MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️🌹* \n *👑 BY :❯ BILAL-MD 👑*`
-      }, { quoted: m });
-
-      await conn.sendMessage(from, { delete: waitingMsg.key });
-      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
+      return;
     }
+
+    const choice = parseInt(response.message.conversation.trim());
+    const selected = formats[choice - 1];
+    if (!selected) {
+      await reply("*GALAT OPTION 🥺 DUBARA KOSHISH KARE 🥺*");
+      await conn.sendMessage(from, { delete: waitingMsg.key });
+      return;
+    }
+
+    await reply(`*✅ Downloading ${selected.quality} (${selected.size})...*`);
+
+    await conn.sendMessage(from, {
+      video: { url: selected.download },
+      fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}_${selected.quality}.mp4`,
+      mimetype: 'video/mp4',
+      caption: `🎬 *${title}*\n👑 *Quality:* ${selected.quality}\n📦 *Size:* ${selected.size}\n\n*MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️🌹*\n*👑 BY :❯ BILAL-MD 👑*`
+    }, { quoted: m });
+
+    await conn.sendMessage(from, { delete: waitingMsg.key });
+    await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
   } catch (e) {
     console.error('video cmd error =>', e?.message || e);
