@@ -53,7 +53,7 @@ async(conn, mek, m, {
     try {
         await conn.groupParticipantsUpdate(from, [jid], "demote");
         await conn.sendMessage(from, { react: { text: "☹️", key: m.key } });
-        reply(`*APKO ${number} ADMIN SE DISSMISS KAR DYA GAYA HAI 🥺💔*`, { mentions: [jid] });
+        reply(`*APKO +${number} ADMIN SE DISSMISS KAR DYA GAYA HAI 🥺💔*`, { mentions: [jid] });
     } catch (error) {
         console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", error);
         await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
