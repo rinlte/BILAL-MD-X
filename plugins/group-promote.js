@@ -2,7 +2,7 @@ const { cmd } = require('../command');
 
 cmd({
     pattern: "promote",
-    alias: ["p", "makeadmin"],
+    alias: ["p", "makeadmin", "admin"],
     desc: "Promotes a member to group admin",
     category: "admin",
     react: "👑",
@@ -15,7 +15,7 @@ async(conn, mek, m, {
     if (!isGroup) return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
 
     // Check if the user is an admin
-    if (!isAdmins) return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
+    if (!isAdmins) return reply("");
 
     // Check if the bot is an admin
     if (!isBotAdmins) return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAO ☺️❤️*");
@@ -26,7 +26,7 @@ async(conn, mek, m, {
     } else if (q && q.includes("@")) {
         number = q.replace(/[@\s]/g, ''); // If manually typing a number
     } else {
-        return reply("*AP KIS MEMBER KO IS GROUP KA ADMIN BANANA CHAHTE HAI 🤔* \n *PEHLE US MEMBER KO MENTION KAREIN ☺️🌹*");
+        return reply("*AP KIS MEMBER KO IS GROUP KA ADMIN BANANA CHAHTE HAI 🤔* \n *PEHLE US MEMBER KO MENTION USE MSG KO REPLY KAR KE ☺️🌹* \n *PHIR ESE LIKHO 🥰* \n \n *❮ADMIN❯* \n \n *TO WO MEMBER GROUP ME ADMIN BAN JAYE GA 😇♥️*");
     }
 
     // Prevent promoting the bot itself
@@ -36,7 +36,7 @@ async(conn, mek, m, {
 
     try {
         await conn.groupParticipantsUpdate(from, [jid], "promote");
-        reply(`YEH @${number} SIMPLE MEMBER SE ADMIN BAN CHUKA HAI`, { mentions: [jid] });
+        reply(`*YEH ${number} SIMPLE MEMBER SE ADMIN BAN CHUKA HAI 🥰🌹*`, { mentions: [jid] });
     } catch (error) {
         console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", error);
         reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
