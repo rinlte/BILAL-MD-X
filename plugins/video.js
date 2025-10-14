@@ -1,108 +1,104 @@
+const { cmd } = require('../command');
 const axios = require('axios');
 const yts = require('yt-search');
-const { cmd } = require('../command');
 
-// =============================
-// 📌 VIDEO DOWNLOAD COMMAND (manual use)
-// =============================
+function extractUrl(text = '') {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[\w\-?=&%.#\/]+)|(youtube\.com\/[\w\-?=&%.#\/]+)/i;
+  const match = text.match(urlRegex);
+  if (!match) return null;
+  return match[0].startsWith('http') ? match[0] : `https://${match[0]}`;
+}
+
 cmd({
-    pattern: "video",
-    alias: ["vid", "ytv"],
-    desc: "Download video from YouTube",
-    category: "download",
-    react: "🎬",
-    filename: __filename
-}, async (conn, m, store, { from, q, reply }) => {
+  pattern: 'video',
+  alias: ['ytmp4', 'mp40'],
+  desc: 'Download YouTube video using Izumi API (auto document fallback).',
+  category: 'download',
+  react: '📥',
+  filename: __filename
+},
+async (conn, mek, m, { from, args, reply, quoted }) => {
+  try {
+    // 🥺 Command start hone par react
+    await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
+
+    // 💬 Agar koi link ya name na diya ho
+    if (!args[0] && !quoted) {
+      return reply(
+        "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
+        "*TO AP ESE LIKHO 😇*\n\n" +
+        "*VIDEO ❮APKE VIDEO KA NAM❯*\n\n" +
+        "*AP COMMAND ❮VIDEO❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰💞*"
+      );
+    }
+
+    let provided = args.join(' ').trim() || (quoted && (quoted.text || quoted.caption)) || '';
+    let ytUrl = extractUrl(provided);
+
+    // 😃 Waiting message send karo
+    const waitingMsg = await conn.sendMessage(
+      from,
+      { text: "*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GE ☺️ TO YAHA PER BHEJ DE JAYE GE 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
+      { quoted: m }
+    );
+    await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
+
+    if (!ytUrl) {
+      const search = await yts(provided);
+      if (!search?.all?.length) {
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+        return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*AP DUBARA APNI VIDEO DOWNLOAD KARO ☺️*");
+      }
+      ytUrl = search.all[0].url;
+    }
+
+    const apiUrl = `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(ytUrl)}&format=360`;
+    const { data } = await axios.get(apiUrl, { headers: { accept: '*/*' }, timeout: 30000 });
+
+    if (!data?.status || !data?.result?.download) {
+      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+      return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*AP DUBARA APNI VIDEO DOWNLOAD KARO ☺️*");
+    }
+
+    const { title, thumbnail, metadata, author, download } = data.result;
+
+    const caption = `*🎬 ${title}*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*TIME:❯ *${metadata?.duration || '—'}*\n\n*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 THORA SA INTAZAR KAREIN ☺️♥️*`;
+
+    // 🖼️ Thumbnail preview
+    await conn.sendMessage(from, { image: { url: thumbnail }, caption }, { quoted: m });
+
+    // 🎞️ Try sending video first
     try {
-        if (!q) return reply("❌ Usage: *.video despacito*");
+      await conn.sendMessage(from, {
+        video: { url: download },
+        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp4`,
+        mimetype: 'video/mp4',
+        caption: `${title}\n\n *MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️🌹* \n *👑 BY :❯ BILAL-MD 👑*`
+      }, { quoted: m });
 
-        let video;
-        if (q.includes("youtube.com") || q.includes("youtu.be")) {
-            video = { url: q };
-        } else {
-            const search = await yts(q);
-            if (!search || !search.videos.length) return reply("❌ No results found.");
-            video = search.videos[0];
-        }
-
-        // Inform user
-        await conn.sendMessage(from, {
-            image: { url: video.thumbnail },
-            caption: `🎬 *Downloading Video:*\n📌 Title: ${video.title}\n⏱ Duration: ${video.timestamp}`
-        }, { quoted: m });
-
-        // API link
-        const apiUrl = `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(video.url)}&format=mp4`;
-
-        const res = await axios.get(apiUrl, {
-            timeout: 30000,
-            headers: { "User-Agent": "Mozilla/5.0" }
-        });
-
-        if (!res.data || !res.data.result || !res.data.result.download) {
-            return reply("⚠️ API failed to return a valid video link.");
-        }
-
-        const videoData = res.data.result;
-
-        // Send video
-        await conn.sendMessage(from, {
-            video: { url: videoData.download },
-            mimetype: "video/mp4",
-            fileName: `${videoData.title || video.title || 'video'}.mp4`,
-            caption: `✅ *Here is your video*\n📌 Title: ${videoData.title || video.title}`
-        }, { quoted: m });
+      // ✅ Download complete hone ke baad waiting msg delete + react
+      await conn.sendMessage(from, { delete: waitingMsg.key });
+      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
     } catch (err) {
-        console.error("Video command error:", err);
-        reply("❌ Failed to download video. Try again later.");
+      // ⚠️ Fallback → send as document
+      await reply(`*APKI VIDEO BAHUT BARI HAI 🥺 MUJHSW DOWNLOAD NAHI HO RAHI 😔*`);
+      await conn.sendMessage(from, {
+        document: { url: download },
+        mimetype: 'video/mp4',
+        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp4`,
+        caption: `${title}\n\n *MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️🌹* \n *👑 BY :❯ BILAL-MD 👑*`
+      }, { quoted: m });
+
+      // ✅ Document bhejne ke baad bhi waiting msg delete
+      await conn.sendMessage(from, { delete: waitingMsg.key });
+      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
     }
+
+  } catch (e) {
+    console.error('video cmd error =>', e?.message || e);
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+    reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*AP DUBARA APNI VIDEO DOWNLOAD KARO ☺️*");
+  }
 });
-
-// =============================
-// 📌 AUTO YOUTUBE URL HANDLER
-// =============================
-module.exports = function setupYoutubeAuto(conn) {
-    conn.ev.on("messages.upsert", async (msgData) => {
-        try {
-            const msg = msgData.messages[0];
-            if (!msg?.message?.conversation) return;
-
-            const text = msg.message.conversation;
-            if (!text.includes("youtube.com") && !text.includes("youtu.be")) return;
-
-            const from = msg.key.remoteJid;
-            const url = text.trim();
-
-            // Inform user
-            await conn.sendMessage(from, {
-                text: `🎬 *YouTube Link Detected!*\n⏳ Downloading video...`
-            }, { quoted: msg });
-
-            // API call
-            const apiUrl = `https://izumiiiiiiii.dpdns.org/downloader/youtube?url=${encodeURIComponent(url)}&format=mp4`;
-
-            const res = await axios.get(apiUrl, {
-                timeout: 30000,
-                headers: { "User-Agent": "Mozilla/5.0" }
-            });
-
-            if (!res.data || !res.data.result || !res.data.result.download) {
-                return conn.sendMessage(from, { text: "⚠️ API failed to return a valid video link." }, { quoted: msg });
-            }
-
-            const videoData = res.data.result;
-
-            // Send video
-            await conn.sendMessage(from, {
-                video: { url: videoData.download },
-                mimetype: "video/mp4",
-                fileName: `${videoData.title || 'youtube-video'}.mp4`,
-                caption: `✅ *Auto Download Complete*\n📌 Title: ${videoData.title || 'Unknown'}`
-            }, { quoted: msg });
-
-        } catch (e) {
-            console.error("Auto YouTube download error:", e);
-        }
-    });
-};
