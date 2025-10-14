@@ -58,15 +58,12 @@ const displayName = userName ? userName : 'User';
 *┃👑│ • PROMOTE*
 *┃👑│ • DEMOTE*
 *┃👑│ • DISMISS*
-*┃👑│ • REVOKE*
 *┃👑│ • MUTE*
 *┃👑│ • UNMUTE*
 *┃👑│ • LOCKGC*
 *┃👑│ • UNLOCKGC*
-*┃👑│ • TAG*
-*┃👑│ • HIDETAG*
 *┃👑│ • TAGALL*
-*┃👑│ • TAGADMINS*
+*┃👑│ • HTAG*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 USER 👑 〕━━┈⊷*
