@@ -19,11 +19,10 @@ cmd({
   filename: __filename
 },
 async (conn, mek, m, { from, args, reply, quoted }) => {
+  let waitingMsg;
   try {
-    // 🥺 Command start hone par react
     await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
-    // 💬 Agar koi link ya name na diya ho
     if (!args[0] && !quoted) {
       return reply(
         "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
@@ -36,8 +35,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
     let provided = args.join(' ').trim() || (quoted && (quoted.text || quoted.caption)) || '';
     let ytUrl = extractUrl(provided);
 
-    // 😃 Waiting message send karo
-    const waitingMsg = await conn.sendMessage(
+    waitingMsg = await conn.sendMessage(
       from,
       { text: "*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GE ☺️ TO YAHA PER BHEJ DE JAYE GE 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
       { quoted: m }
@@ -48,7 +46,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       const search = await yts(provided);
       if (!search?.all?.length) {
         await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-        return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*AP DUBARA APNI VIDEO DOWNLOAD KARO ☺️*");
+        return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
       }
       ytUrl = search.all[0].url;
     }
@@ -58,17 +56,16 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
 
     if (!data?.status || !data?.result?.download) {
       await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-      return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*AP DUBARA APNI VIDEO DOWNLOAD KARO ☺️*");
+      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+      return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
     }
 
     const { title, thumbnail, metadata, author, download } = data.result;
 
-    const caption = `*🎬 ${title}*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*TIME:❯ *${metadata?.duration || '—'}*\n\n*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 THORA SA INTAZAR KAREIN ☺️♥️*`;
+    const caption = `*👑 ${title}*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*TIME:❯ *${metadata?.duration || '—'}*\n\n*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 THORA SA INTAZAR KAREIN ☺️♥️*`;
 
-    // 🖼️ Thumbnail preview
     await conn.sendMessage(from, { image: { url: thumbnail }, caption }, { quoted: m });
 
-    // 🎞️ Try sending video first
     try {
       await conn.sendMessage(from, {
         video: { url: download },
@@ -77,12 +74,10 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
         caption: `${title}\n\n *MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️🌹* \n *👑 BY :❯ BILAL-MD 👑*`
       }, { quoted: m });
 
-      // ✅ Download complete hone ke baad waiting msg delete + react
       await conn.sendMessage(from, { delete: waitingMsg.key });
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
     } catch (err) {
-      // ⚠️ Fallback → send as document
       await reply(`*APKI VIDEO BAHUT BARI HAI 🥺 MUJHSW DOWNLOAD NAHI HO RAHI 😔*`);
       await conn.sendMessage(from, {
         document: { url: download },
@@ -91,14 +86,14 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
         caption: `${title}\n\n *MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️🌹* \n *👑 BY :❯ BILAL-MD 👑*`
       }, { quoted: m });
 
-      // ✅ Document bhejne ke baad bhi waiting msg delete
       await conn.sendMessage(from, { delete: waitingMsg.key });
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
     }
 
   } catch (e) {
     console.error('video cmd error =>', e?.message || e);
+    if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-    reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*AP DUBARA APNI VIDEO DOWNLOAD KARO ☺️*");
+    reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
   }
 });
