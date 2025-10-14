@@ -3,7 +3,7 @@ const { cmd } = require("../command");
 
 cmd({
   pattern: "fancy",
-  alias: ["font", "style", "textfont", "fancyname", "ftext", "fancymsg"],
+  alias: ["font", "style", "textfont", "fancyname", "ftext", "fancymsg", "fonts"],
   react: "🥺",
   desc: "Convert text into various fancy fonts.",
   category: "tools",
@@ -12,7 +12,7 @@ cmd({
   try {
     if (!q) {
       return reply(
-        "*APKO APKE NAME KA FANCY TEXT BANANA HAI ☺️♥️*\n" +
+        "*APKO APNE NAME KO FANCY TEXT ME STYLISH BANANA HAI ☺️♥️*\n" +
         "*TO AP ESE LIKHO 🥰🌹*\n\n" +
         "*❮FANCY BILAL-MD❯*\n\n" +
         "*JAB ESE LIKHE GE TO APKA NAMES FANCY TEXT ME SHOW HOGE ☺️♥️*"
