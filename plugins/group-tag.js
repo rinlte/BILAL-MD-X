@@ -1,6 +1,5 @@
 const { cmd } = require('../command');
 
-// Fixed & Created By JawadTechX
 cmd({
   pattern: "hidetag",
   alias: ["tag", "h"],  
@@ -15,39 +14,49 @@ async (conn, mek, m, {
   participants, reply
 }) => {
   try {
+    // 🥺 Command start hone pe react
+    await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
+
     const isUrl = (url) => {
       return /https?:\/\/(www\.)?[\w\-@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([\w\-@:%_\+.~#?&//=]*)/.test(url);
     };
 
-    if (!isGroup) return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
-    if (!isAdmins && !isCreator) return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI ☺️❤️*");
+    if (!isGroup) {
+      await conn.sendMessage(from, { react: { text: "😫", key: m.key } });
+      return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
+    }
+    if (!isAdmins && !isCreator) {
+      await conn.sendMessage(from, { react: { text: "😫", key: m.key } });
+      return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI ☺️❤️*");
+    }
 
     const mentionAll = { mentions: participants.map(u => u.id) };
 
-    // If no message or reply is provided
     if (!q && !m.quoted) {
+      await conn.sendMessage(from, { react: { text: "😅", key: m.key } });
       return reply("*AP IS COMMAND SE GROUP KE ALL MEMBERS KO TAG KAR SAKTE HAI ☺️🌹*");
     }
 
-    // If a reply to a message
     if (m.quoted) {
       const type = m.quoted.mtype || '';
-      
-      // If it's a text message (extendedTextMessage)
+      let buffer, content;
+
       if (type === 'extendedTextMessage') {
+        await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
         return await conn.sendMessage(from, {
           text: m.quoted.text || '*DUBARA KOSHISH KAREIN 🥺❤️*',
           ...mentionAll
         }, { quoted: mek });
       }
 
-      // Handle media messages
       if (['imageMessage', 'videoMessage', 'audioMessage', 'stickerMessage', 'documentMessage'].includes(type)) {
         try {
-          const buffer = await m.quoted.download?.();
-          if (!buffer) return reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
+          buffer = await m.quoted.download?.();
+          if (!buffer) {
+            await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+            return reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
+          }
 
-          let content;
           switch (type) {
             case "imageMessage":
               content = { image: buffer, caption: m.quoted.text || "PHOTO", ...mentionAll };
@@ -83,40 +92,34 @@ async (conn, mek, m, {
           }
 
           if (content) {
+            await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
             return await conn.sendMessage(from, content, { quoted: mek });
           }
         } catch (e) {
+          await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
           console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", e);
           return reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
         }
       }
 
-      // Fallback for any other message type
+      await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
       return await conn.sendMessage(from, {
         text: m.quoted.text || "📨 Message",
         ...mentionAll
       }, { quoted: mek });
     }
 
-    // If no quoted message, but a direct message is sent
     if (q) {
-      // If the direct message is a URL, send it as a message
-      if (isUrl(q)) {
-        return await conn.sendMessage(from, {
-          text: q,
-          ...mentionAll
-        }, { quoted: mek });
-      }
-
-      // Otherwise, just send the text without the command name
-      await conn.sendMessage(from, {
-        text: q, // Sends the message without the command name
-        ...mentionAll
-      }, { quoted: mek });
+      await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+      await conn.sendMessage(from, { text: q, ...mentionAll }, { quoted: mek });
     }
+
+    // ✅ Jab successfully ho jaye to final react
+    await conn.sendMessage(from, { react: { text: "💞", key: m.key } });
 
   } catch (e) {
     console.error(e);
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
     reply(`❌ *Error Occurred !!*\n\n${e.message}`);
   }
 });
