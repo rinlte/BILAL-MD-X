@@ -6,7 +6,6 @@ cmd({
     alias: ['toaudio', 'tosong', 'tomusic'], // ✅ alias added
     desc: 'Convert video to audio (mp3)',
     category: 'audio',
-    react: '🥺',
     filename: __filename
 }, async (client, match, message, { from }) => {
     // 🎯 Input validation
