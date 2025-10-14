@@ -3,7 +3,7 @@ const { cmd } = require("../command");
 
 cmd({
   pattern: "fancy",
-  alias: ["font", "style"],
+  alias: ["font", "style", "textfont", "fancyname", "ftext", "fancymsg"],
   react: "🥺",
   desc: "Convert text into various fancy fonts.",
   category: "tools",
@@ -11,25 +11,38 @@ cmd({
 }, async (conn, m, store, { from, quoted, args, q, reply }) => {
   try {
     if (!q) {
-      return reply("*APKO APKE NAME KA FANCY TEXT BANANA HAI ☺️♥️* \n *TO AP ESE LIKHO 🥰🌹\n\n *❮FANCY BILAL-MD❯* \n *JAB ESE LIKHE GE TO APKA NAMES FANCY TEXT ME SHOW HOGE ☺️♥️*");
+      return reply(
+        "*APKO APKE NAME KA FANCY TEXT BANANA HAI ☺️♥️*\n" +
+        "*TO AP ESE LIKHO 🥰🌹*\n\n" +
+        "*❮FANCY BILAL-MD❯*\n" +
+        "*JAB ESE LIKHE GE TO APKA NAMES FANCY TEXT ME SHOW HOGE ☺️♥️*"
+      );
     }
 
     const apiUrl = `https://www.dark-yasiya-api.site/other/font?text=${encodeURIComponent(q)}`;
     const response = await axios.get(apiUrl);
 
     if (!response.data.status || !response.data.result) {
-      return reply("❌ Error fetching fonts. Please try again later.");
+      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+      return reply("*DUBARA KOSHISH KARE 🥺💓*");
     }
 
-    // ✅ Sirf font text show karega (name nahi)
+    // ✅ Sirf font text show karega
     const fonts = response.data.result.map(item => item.result).join("\n\n");
 
-    const resultText = `*APKE NAME KE FANCY TEXT ☺️💞*\n\n${fonts}\n\n *👑 BILAL-MD WHATSAPP BOT 👑*`;
+    const resultText = `*APKE NAME KE FANCY TEXT ☺️💞*\n\n${fonts}\n\n*👑 BILAL-MD WHATSAPP BOT 👑*`;
 
+    // Send fancy text result
     await conn.sendMessage(from, { text: resultText }, { quoted: m });
 
+    // 😊 Success reaction
+    await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+
   } catch (error) {
-    console.error("*DUBARA KOSHISH KARE 🥺💓*", error.message);
+    console.error("❌ Fancy command error:", error.message);
+
+    // 😔 Error reaction + message
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
     reply("*DUBARA KOSHISH KARE 🥺💓*");
   }
 });
