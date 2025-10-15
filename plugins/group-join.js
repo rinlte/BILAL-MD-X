@@ -39,7 +39,7 @@ cmd({
         // Agar link invalid hai
         if (!groupLink) {
             await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️❤️*\n\n*.JOIN ❮GROUP LINK❯* \n\n *JAB AP ESE LIKHO GE 🥺 TO AP GROUP ME JOIN HO JAO GE 🥰💞*");
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️*\n\n*.JOIN ❮GROUP LINK❯* \n\n *JAB AP ESE LIKHO GE 🥺 TO AP GROUP ME JOIN HO JAO GE 🥰*");
         }
 
         // Accept group invite
