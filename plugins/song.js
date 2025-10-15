@@ -19,7 +19,7 @@ cmd({
   filename: __filename
 },
 async (conn, mek, m, { from, args, reply, quoted }) => {
-  let waitingMsg;
+  let waitingMsg, thumbMsg;
   try {
     await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
@@ -65,39 +65,43 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
     // 🔹 Thumbnail caption (audio info)
     const thumbCaption = `*__________________________________*\n*👑 AUDIO KA NAME 👑*\n *${title}*\n*__________________________________*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n*__________________________________*\n*👑 VIEWS:❯ ${metadata?.view || '—'}*\n*__________________________________*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*__________________________________*\n*👑 TIME:❯ ${metadata?.duration || '—'}*\n*__________________________________*`;
 
-    const thumbMsg = await conn.sendMessage(from, { image: { url: thumbnail }, caption: thumbCaption }, { quoted: m });
+    thumbMsg = await conn.sendMessage(from, { image: { url: thumbnail }, caption: thumbCaption }, { quoted: m });
 
     try {
       // 🔹 Final audio caption (downloaded message)
-      const finalCaption = `*_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}\n\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*\n 👑 BY :❯ BILAL-MD 👑\n`;
+      const finalCaption = `*_________________________________*\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*_________________________________* \n*MENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*_________________________________* \n*👑 BY :❯ BILAL-MD 👑*`;
 
       await conn.sendMessage(from, {
         audio: { url: download },
         mimetype: 'audio/mpeg',
         fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`,
-        ptt: false,
-        caption: finalCaption
+        ptt: false
       }, { quoted: m });
 
-      // delete waiting and thumbnail messages
-      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-      if (thumbMsg) await conn.sendMessage(from, { delete: thumbMsg.key });
+      // Caption message alag bhejna (audio ke baad)
+      await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
 
+      // waiting msg delete (success hone ke baad)
+      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+
+      // ✅ thumbnail msg delete nahi hoga (success hone ke baad)
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
     } catch (err) {
-      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*__________________________________*\n 👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
+      // agar error aaye to thumbnail msg delete ho jaye
+      if (thumbMsg) await conn.sendMessage(from, { delete: thumbMsg.key });
+
+      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*__________________________________*\n👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
 
       await reply(`*APKA AUDO BAHUT BARI HAI 🥺 IS LIE DUCUMENT ME SEND HO RAHI HAI ☺️♥️*`);
       await conn.sendMessage(from, {
         document: { url: download },
         mimetype: 'audio/mpeg',
-        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`,
-        caption: finalCaption
+        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`
       }, { quoted: m });
 
+      await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
       if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-      if (thumbMsg) await conn.sendMessage(from, { delete: thumbMsg.key });
 
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
     }
@@ -105,6 +109,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
   } catch (e) {
     console.error('play cmd error =>', e?.message || e);
     if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+    if (thumbMsg) await conn.sendMessage(from, { delete: thumbMsg.key });
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
     reply("*APKA GAANA MUJHE NAHI MILA 🥺*\n*DUBARA KOSHISH KARE 🥺*");
   }
