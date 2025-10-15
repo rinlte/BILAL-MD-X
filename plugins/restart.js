@@ -14,7 +14,7 @@ async (conn, mek, m, { reply, isCreator }) => {
         }
 
         // Command pe 🥺 react
-        await conn.sendMessage(m.chat, { react: { text: '🥺', key: m.key } });
+        await conn.sendMessage(m.chat, { react: { text: '☺️', key: m.key } });
 
         // Waiting msg
         const waitingMsg = await conn.sendMessage(m.chat, { text: "*👑 BILAL-MD WHATSAPP BOT 👑* \n*RESTART HO RAHA HAI...☺️🌹*" });
