@@ -13,7 +13,7 @@ cmd({
     if (!args[0]) {
       return reply(
         `*AP KO KISI WEBSITE KA SCREENSHOT CHAHYE 🥺*\n\n` +
-        `*TO AP US WEBSITE KA LINK COPY KAR LO 😊* \n*PPHIR ESE LIKHO ☺️*\n\n*SS ❮APKI WEBSITE KA LINK❯*\n\n` +
+        `*TO AP US WEBSITE KA LINK COPY KAR LO* \n*PPHIR ESE LIKHO ☺️*\n\n*SS ❮APKI WEBSITE KA LINK❯*\n\n` +
         `*JAB AP ESE LIKHO GE 🥺 TO US WEBSITE KA SCREENSHOT ☺️ YAHA PER SEND KAR DIA JAYE GA 🌹*\n\n` +
         `*👑 BILAL-MD WHATSAPP BOT 👑*`
       );
