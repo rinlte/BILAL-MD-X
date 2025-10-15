@@ -26,14 +26,14 @@ cmd({
           key: msg.key,
           type: 14,
           editedMessage: {
-            conversation: `*👑 UPTIME :❯ ${up}*`
+            conversation: `*👑 UPTIME :❯ ${up} 👑*`
           }
         }
       }, {});
     }
 
   } catch (e) {
-    console.error("Uptime Error:", e);
-    reply(`❌ Error: ${e.message}`);
+    console.error("*DUBARA ❮UPTIME❯ LIKHO 🥺*", e);
+    reply(`*DUBARA ❮UPTIME❯ LIKHO 🥺* ${e.message}`);
   }
 });
