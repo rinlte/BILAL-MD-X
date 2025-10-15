@@ -106,12 +106,13 @@ const displayName = userName ? userName : 'User';
 
 *╭━━〔 👑 CONVERTER 👑 〕━━┈⊷*
 *┃👑│ • STICKER*
-*┃👑│ • S2IMG*
+*┃👑│ • STOIMG*
 *┃👑│ • TAKE*
 *┃👑│ • TOMP3*
 *┃👑│ • FANCY*
 *┃👑│ • TRT*
 *┃👑│ • EMIX*
+*┃👑│ • ATTP*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 XTRA 👑 〕━━┈⊷*
