@@ -6,7 +6,7 @@ const { sleep } = require('../lib/functions');
 
 cmd({
   pattern: "screenshot",
-  react: "🌐",
+  react: "☺️",
   alias: ["ss", "ssweb"],
   desc: "Capture a full-page screenshot of a website.",
   category: "main",
@@ -15,8 +15,8 @@ cmd({
 }, async (conn, mek, msg, { from, args, reply }) => {
   try {
     const url = args[0];
-    if (!url) return reply("❌ Please provide a URL\nExample: .screenshot https://google.com");
-    if (!url.startsWith("http")) return reply("❌ URL must start with http:// or https://");
+    if (!url) return reply("*APKO KISI WEBSITE KA SCREENSHOT CHAHYE 🥺* \n *TO AP ESE LIKHO ☺️* \n \n*SS ❮APKI WEBSITE KA LINK❯* \n\n*JAB AP ESE LIKHO GE 🥺 TO APKI WEBSITE KA SCREENSHOT LE KER ☺️ YAHA PER BHEJ DIYA JAYE GA 🥰*");
+    if (!url.startsWith("http")) return reply("*AP NE GHALAT LINK LIKHA HAI 🥺*");
 
     // ASCII loading bars with percentage
     const loadingBars = [
@@ -34,7 +34,7 @@ cmd({
 
     // Send initial message
     const loadingMsg = await conn.sendMessage(from, {
-        text: "🔄 Starting screenshot capture...\n✦ Please wait..."
+        text: "*WEBSITE KA SCREENSHOT LIA JA RAHA HAI...☺️*"
     }, { quoted: mek });
 
     // Animate loading progress
@@ -58,7 +58,7 @@ cmd({
             key: loadingMsg.key,
             type: 14,
             editedMessage: {
-                conversation: "✅ Screenshot Captured!\n✦ Sending now..."
+                conversation: "*WEBSITE KA SCREENSHOT LE LIA GAYA HAI ☺️* \n*YAHA PER SEND KIA JA RAHA HAI....🥰*"
             }
         }
     }, {});
@@ -68,13 +68,13 @@ cmd({
     // Send the actual screenshot
     await conn.sendMessage(from, {
         image: { url: `https://image.thum.io/get/fullpage/${url}` },
-        caption: "- 🖼️ *Screenshot Generated*\n\n" +
-                "> POWERED BY WHITESHADOW 💜"
+        caption: "*👑 SCREENSHOT BY 👑*\n\n" +
+                "*👑 BILAL-MD WHATSAPP BOT 👑*"
     }, { quoted: mek });
 
   } catch (error) {
-    console.error("Error:", error);
-    reply("❌ Failed to capture screenshot\n✦ Please try again later");
+    console.error("*DUBARA KOSHISH KARE 😔*", error);
+    reply("*DUBARA KOSHISH KARE 😔*");
   }
 });
 
