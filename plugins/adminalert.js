@@ -1,12 +1,12 @@
 const { cmd } = require('../command');
 
-let adminAlertEnabled = false;
+let groupAlertState = {}; // 🔹 har group ka toggle status yahan save hoga
 
-// 🔹 Toggle command
+// 🔹 Command to toggle ON/OFF per group
 cmd({
     pattern: "adminalert",
     alias: ["aalert"],
-    desc: "Enable or disable admin promote/demote alert system",
+    desc: "Enable or disable admin promote/demote alert system per group",
     category: "group",
     filename: __filename
 }, async (conn, mek, m, { from, args, reply, isGroup, isAdmins }) => {
@@ -14,30 +14,32 @@ cmd({
     if (!isAdmins) return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI ☺️❤️*");
 
     const option = args[0]?.toLowerCase();
+
     if (!option) {
-        return reply(`🕹️ *Admin Alert Toggle*\n\nUse:\n.adminalert on → 🔔 Enable Alerts\n.adminalert off → 🔕 Disable Alerts\n\n*Current:* ${adminAlertEnabled ? "✅ ON" : "❌ OFF"}`);
+        const state = groupAlertState[from] ? "✅ ON" : "❌ OFF";
+        return reply(`🕹️ *Admin Alert System*\n\nUse:\n.adminalert on → 🔔 Enable\n.adminalert off → 🔕 Disable\n\n*Current:* ${state}`);
     }
 
     if (option === "on") {
-        adminAlertEnabled = true;
-        return reply("*✅ ADMIN ALERT SYSTEM AB ON HO GAYA HAI 🥰🌹*");
+        groupAlertState[from] = true;
+        return reply("*✅ ADMIN ALERT SYSTEM AB IS GROUP ME ON HO GAYA HAI 🥰🌹*");
     }
 
     if (option === "off") {
-        adminAlertEnabled = false;
-        return reply("*❌ ADMIN ALERT SYSTEM AB OFF KAR DIYA GAYA HAI 🥺💔*");
+        groupAlertState[from] = false;
+        return reply("*❌ ADMIN ALERT SYSTEM AB IS GROUP ME OFF KAR DIYA GAYA HAI 🥺💔*");
     }
 
     reply("*GALAT OPTION LIKHA HAI ☹️*\nUse: .adminalert on / off");
 });
 
-
-// 🔹 Group admin update listener
+// 🔹 Real-time listener for promote/demote (auto detect)
 const setupAdminAlerts = (conn) => {
     conn.ev.on("group-participants.update", async (anu) => {
         try {
-            if (!adminAlertEnabled) return;
-            if (!anu || !anu.action || !anu.participants) return;
+            // agar group me feature off hai to return
+            if (!groupAlertState[anu.id]) return;
+            if (!anu.action || !anu.participants) return;
 
             const groupMetadata = await conn.groupMetadata(anu.id);
             const groupName = groupMetadata.subject || "Group";
@@ -49,7 +51,6 @@ const setupAdminAlerts = (conn) => {
                 const targetMention = `@${target.split('@')[0]}`;
 
                 let text = "";
-
                 if (anu.action === "promote") {
                     text = `*${actorMention} NE ${targetMention} KO IS GROUP (${groupName}) ME ADMIN BANA DIYA HAI 🥰🌹*`;
                 } else if (anu.action === "demote") {
@@ -59,13 +60,13 @@ const setupAdminAlerts = (conn) => {
                 if (text) {
                     await conn.sendMessage(anu.id, {
                         text,
-                        mentions: [actor, target] // ✅ this part is required for real @mentions
+                        mentions: [actor, target] // ✅ real WhatsApp mentions
                     });
                 }
             }
 
         } catch (err) {
-            console.log("Admin Alert Error:", err);
+            console.log("⚠️ Admin Alert Error:", err);
         }
     });
 };
