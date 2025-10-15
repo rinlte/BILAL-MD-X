@@ -138,21 +138,16 @@ https://akaserein.github.io/Bilal/
 
 👑 BILAL-MD WHATSAPP BOT 👑`;
 
-        // Emojis
-        const emojis = ["🥰","🌹","♥️","💓","😍","💞","🌺","😘","❤️","💘","💞","💕","❣️","💗","💓","😇","☺️","😊","😃","🔰","👑","🙂","🥳"];
-
-        // 1️⃣ Send image with caption
+        // 1️⃣ Send image with caption first
         await conn.sendMessage(from, {
             image: { url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png' },
             caption: "👑 BILAL-MD MENU 👑"
         }, { quoted: mek });
 
-        // 2️⃣ Loading message
-        const loadingMsg = await conn.sendMessage(from, {
-            text: "MENU ME COMMANDS ADD HO RAHE HAI 🥺\nTHORA SA INTAZAR KARE....🥰"
-        }, { quoted: mek });
+        // 2️⃣ Wait 1 second
+        await sleep(1000);
 
-        // 3️⃣ Menu line-by-line
+        // 3️⃣ Send menu line-by-line
         const lines = menuText.split("\n");
         let currentText = "";
         const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
@@ -160,9 +155,6 @@ https://akaserein.github.io/Bilal/
         for (const line of lines) {
             currentText += line + "\n";
             await sleep(500); // 0.5 sec
-
-            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-
             // Edit menu message
             await conn.relayMessage(from, {
                 protocolMessage: {
@@ -171,19 +163,7 @@ https://akaserein.github.io/Bilal/
                     editedMessage: { conversation: currentText }
                 }
             }, {});
-
-            // React menu msg with random emoji
-            await conn.sendMessage(from, { react: { text: randomEmoji, key: msg.key } });
         }
-
-        // 4️⃣ Menu complete → final react + delete loading
-        await conn.sendMessage(from, { react: { text: "🥰", key: msg.key } });
-        await conn.relayMessage(from, {
-            protocolMessage: {
-                key: loadingMsg.key,
-                type: 2 // delete message
-            }
-        }, {});
 
     } catch (e) {
         console.error('Menu Error:', e);
