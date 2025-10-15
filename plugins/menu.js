@@ -42,7 +42,6 @@ const displayName = userName ? userName : 'User';
 
 *╭━━〔 👑 DOWNLOAD 👑 〕━━┈⊷*
 *┃👑│ • FB*
-*┃👑│ • FB2*
 *┃👑│ • TIKTOK*
 *┃👑│ • APK*
 *┃👑│ • IMG*
