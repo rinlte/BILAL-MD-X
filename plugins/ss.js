@@ -20,16 +20,16 @@ cmd({
 
     // ASCII loading bars with percentage
     const loadingBars = [
-        { percent: 10, bar: "[▓░░░░░░░░░]", text: "✦ Initializing capture..." },
-        { percent: 20, bar: "[▓▓░░░░░░░░]", text: "✦ Connecting to website..." },
-        { percent: 30, bar: "[▓▓▓░░░░░░░]", text: "✦ Loading page content..." },
-        { percent: 40, bar: "[▓▓▓▓░░░░░░]", text: "✦ Rendering elements..." },
-        { percent: 50, bar: "[▓▓▓▓▓░░░░░]", text: "✦ Processing JavaScript..." },
-        { percent: 60, bar: "[▓▓▓▓▓▓░░░░]", text: "✦ Capturing viewport..." },
-        { percent: 70, bar: "[▓▓▓▓▓▓▓░░░]", text: "✦ Scrolling page..." },
-        { percent: 80, bar: "[▓▓▓▓▓▓▓▓░░]", text: "✦ Finalizing screenshot..." },
-        { percent: 90, bar: "[▓▓▓▓▓▓▓▓▓░]", text: "✦ Optimizing image..." },
-        { percent: 100, bar: "[▓▓▓▓▓▓▓▓▓▓]", text: "✓ Capture complete!" }
+        { percent: 10, bar: "*[▓░░░░░░░░░]*", text: "*✦ CAPTURING...🥺" },
+        { percent: 20, bar: "*[▓▓░░░░░░░░]*", text: "*✦ CONNECTING TO WEBSITE...🌹*" },
+        { percent: 30, bar: "*[▓▓▓░░░░░░░]*", text: "*✦ LOADING WEBSITE PAGE....😃*" },
+        { percent: 40, bar: "*[▓▓▓▓░░░░░░]*", text: "*✦ TESTING WEBSITE....☺️*" },
+        { percent: 50, bar: "*[▓▓▓▓▓░░░░░]*", text: "*✦ TESTING LINK...🙂*" },
+        { percent: 60, bar: "*[▓▓▓▓▓▓░░░░]*", text: "*✦ SHOWING....😊*" },
+        { percent: 70, bar: "*[▓▓▓▓▓▓▓░░░]*", text: "*✦ CROPPING WEBSITE PAGE...😥" },
+        { percent: 80, bar: "*[▓▓▓▓▓▓▓▓░░]*", text: "✦ Finalizing screenshot..." },
+        { percent: 90, bar: "*[▓▓▓▓▓▓▓▓▓░]*", text: "*✦ SENDING SCREENSHOT...😎*" },
+        { percent: 100, bar: "*[▓▓▓▓▓▓▓▓▓▓]*", text: "*✦ COMPLETED BY BILAL-MD 👑*" }
     ];
 
     // Send initial message
@@ -45,7 +45,7 @@ cmd({
                 key: loadingMsg.key,
                 type: 14,
                 editedMessage: {
-                    conversation: `📸 ${frame.bar} ${frame.percent}%\n${frame.text}`
+                    conversation: `*👑 ${frame.bar} ${frame.percent}%\n${frame.text} 👑*`
                 }
             }
         }, {});
@@ -58,7 +58,7 @@ cmd({
             key: loadingMsg.key,
             type: 14,
             editedMessage: {
-                conversation: "*WEBSITE KA SCREENSHOT LE LIA GAYA HAI ☺️* \n*YAHA PER SEND KIA JA RAHA HAI....🥰*"
+                conversation: "*WEBSITE KA SCREENSHOT LE LIA GAYA HAI 🥺 AB YAHA PER SEND HO RAHA HAI....☺️*"
             }
         }
     }, {});
@@ -68,7 +68,7 @@ cmd({
     // Send the actual screenshot
     await conn.sendMessage(from, {
         image: { url: `https://image.thum.io/get/fullpage/${url}` },
-        caption: "*👑 SCREENSHOT BY 👑*\n\n" +
+        caption: "*👑 SCREENSHOT BY 👑*\n" +
                 "*👑 BILAL-MD WHATSAPP BOT 👑*"
     }, { quoted: mek });
 
