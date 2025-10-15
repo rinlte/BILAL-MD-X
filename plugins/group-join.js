@@ -13,7 +13,7 @@ cmd({
 }, async (conn, mek, m, { from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isCreator, isDev, isAdmins, reply }) => {
     try {
         const msr = {
-            own_cmd: "*YEH COMMAND SIRF MERE LIE HAI ☺️**"
+            own_cmd: "*YEH COMMAND SIRF MERE LIE HAI 😎*"
         };
 
         // 1️⃣ Owner check
