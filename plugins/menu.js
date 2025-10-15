@@ -24,123 +24,127 @@ cmd({
 
         // Menu text
         const menuText = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
-┃👑╭──────────────
-┃👑│ USER:❯ ${config.OWNER_NAME}
-┃👑│ USER:❯ ${config.OWNER_NUMBER}
-┃👑│ MODE :❯ ${config.MODE}
-┃👑│ PREFiX :❯ ${config.PREFIX}
-┃👑│ COMMANDS :❯ ${commands.length}
-┃👑│ PLATFORM :❯ ${getPlatform()}
-┃👑╰──────────────
-╰━━━━━━━━━━━━━━━┈⊷
+*┃👑╭──────────────*
+*┃👑│ USER:❯ ${config.OWNER_NAME}*
+*┃👑│ USER:❯ ${config.OWNER_NUMBER}*
+*┃👑│ MODE :❯ ${config.MODE}*
+*┃👑│ PREFiX :❯ ${config.PREFIX}*
+*┃👑│ COMMANDS :❯ ${commands.length}*
+*┃👑│ PLATFORM :❯ ${getPlatform()}*
+*┃👑╰──────────────*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-HI ${displayName} G 🥰
-MERE BOT KA MENU ☺️
-YEH HAI G 🌹
+*HI ${displayName} G 🥰*
+*MERE BOT KA MENU ☺️*
+*YEH HAI G 🌹*
 
-╭━━〔 👑 DOWNLOAD 👑 〕━━┈⊷
-┃👑│ • FB
-┃👑│ • TIKTOK
-┃👑│ • APK
-┃👑│ • IMG
-┃👑│ • SONG
-┃👑│ • VIDEO
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 DOWNLOAD 👑 〕━━┈⊷*
+*┃👑│ • FB*
+*┃👑│ • TIKTOK*
+*┃👑│ • APK*
+*┃👑│ • IMG*
+*┃👑│ • SONG*
+*┃👑│ • VIDEO*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-╭━━〔 👑 GROUP 👑 〕━━┈⊷
-┃👑│ • INVITE
-┃👑│ • ADD
-┃👑│ • KICK
-┃👑│ • PROMOTE
-┃👑│ • DEMOTE
-┃👑│ • DISMISS
-┃👑│ • MUTE
-┃👑│ • UNMUTE
-┃👑│ • LOCKGC
-┃👑│ • UNLOCKGC
-┃👑│ • TAGALL
-┃👑│ • HTAG
-┃👑│ • PENDING
-┃👑│ • ACCEPTALL
-┃👑│ • REJECTALL
-┃👑│ • GDESC
-┃👑│ • GNAME
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 GROUP 👑 〕━━┈⊷*
+*┃👑│ • INVITE*
+*┃👑│ • ADD*
+*┃👑│ • KICK*
+*┃👑│ • PROMOTE*
+*┃👑│ • DEMOTE*
+*┃👑│ • DISMISS*
+*┃👑│ • MUTE*
+*┃👑│ • UNMUTE*
+*┃👑│ • LOCKGC*
+*┃👑│ • UNLOCKGC*
+*┃👑│ • TAGALL*
+*┃👑│ • HTAG*
+*┃👑│ • PENDING*
+*┃👑│ • ACCEPTALL*
+*┃👑│ • REJECTALL*
+*┃👑│ • GDESC*
+*┃👑│ • GNAME*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-╭━━〔 👑 USER 👑 〕━━┈⊷
-┃👑│ • BLOCK
-┃👑│ • UNBLOCK
-┃👑│ • GETPP
-┃👑│ • RESTART
-┃👑│ • UPDATE
-┃👑│ • AUTOBIO
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 USER 👑 〕━━┈⊷*
+*┃👑│ • BLOCK*
+*┃👑│ • UNBLOCK*
+*┃👑│ • GETPP*
+*┃👑│ • RESTART*
+*┃👑│ • UPDATE*
+*┃👑│ • AUTOBIO*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-╭━━〔 👑 AI 👑 〕━━┈⊷
-┃👑│ • AI
-┃👑│ • GPT
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 AI 👑 〕━━┈⊷*
+*┃👑│ • AI*
+*┃👑│ • GPT*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-╭━━〔 👑 LOGO 👑 〕━━┈⊷
-┃👑│ • LOGO1
-┃👑│ • LOGO2
-┃👑│ • LOGO3
-┃👑│ • LOGO4
-┃👑│ • LOGO5
-┃👑│ • LOGO6
-┃👑│ • LOGO7
-┃👑│ • LOGO8
-┃👑│ • LOGO9
-┃👑│ • LOGO10
-┃👑│ • LOGO11
-┃👑│ • LOGO12
-┃👑│ • LOGO13
-┃👑│ • LOGO14
-┃👑│ • LOGO15
-┃👑│ • LOGO16
-┃👑│ • LOGO17
-┃👑│ • LOGO18
-┃👑│ • LOGO19
-┃👑│ • LOGO20
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 LOGO 👑 〕━━┈⊷*
+*┃👑│ • LOGO1*
+*┃👑│ • LOGO2*
+*┃👑│ • LOGO3*
+*┃👑│ • LOGO4*
+*┃👑│ • LOGO5*
+*┃👑│ • LOGO6*
+*┃👑│ • LOGO7*
+*┃👑│ • LOGO8*
+*┃👑│ • LOGO9*
+*┃👑│ • LOGO10*
+*┃👑│ • LOGO11*
+*┃👑│ • LOGO12*
+*┃👑│ • LOGO13*
+*┃👑│ • LOGO14*
+*┃👑│ • LOGO15*
+*┃👑│ • LOGO16*
+*┃👑│ • LOGO17*
+*┃👑│ • LOGO18*
+*┃👑│ • LOGO19*
+*┃👑│ • LOGO20*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-╭━━〔 👑 CONVERTER 👑 〕━━┈⊷
-┃👑│ • STICKER
-┃👑│ • STOIMG
-┃👑│ • TAKE
-┃👑│ • TOMP3
-┃👑│ • FANCY
-┃👑│ • TRT
-┃👑│ • EMIX
-┃👑│ • ATTP
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 CONVERTER 👑 〕━━┈⊷*
+*┃👑│ • STICKER*
+*┃👑│ • STOIMG*
+*┃👑│ • TAKE*
+*┃👑│ • TOMP3*
+*┃👑│ • FANCY*
+*┃👑│ • TRT*
+*┃👑│ • EMIX*
+*┃👑│ • ATTP*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-╭━━〔 👑 XTRA 👑 〕━━┈⊷
-┃👑│ • TIME
-┃👑│ • DATE
-┃👑│ • SS
-┃👑│ • READMORE
-┃👑│ • TINYURL
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 XTRA 👑 〕━━┈⊷*
+*┃👑│ • TIME*
+*┃👑│ • DATE*
+*┃👑│ • SS*
+*┃👑│ • READMORE*
+*┃👑│ • TINYURL*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-╭━━〔 👑 MAIN 👑 〕━━┈⊷
-┃👑│ • PING
-┃👑│ • ALIVE
-┃👑│ • UPTIME
-┃👑│ • REPO
-┃👑│ • OWNER
-┃👑│ • MENU
-┃👑│ • RESTART
-╰━━━━━━━━━━━━━━━┈⊷
+*╭━━〔 👑 MAIN 👑 〕━━┈⊷*
+*┃👑│ • PING*
+*┃👑│ • ALIVE*
+*┃👑│ • UPTIME*
+*┃👑│ • REPO*
+*┃👑│ • OWNER*
+*┃👑│ • MENU*
+*┃👑│ • RESTART*
+*╰━━━━━━━━━━━━━━━┈⊷*
 
-*👑 FOR HELP CLICK HERE 👑*
-*👑 WEBSITE :❯ *https://akaserein.github.io/Bilal/*
+*👑 clICK HERE FOR HELP 👑*
 
-*👑 CHANNEL :❯ https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G*
+*👑 SUPPORT WEBSITE 👑*
+*https://akaserein.github.io/Bilal/*
 
-*👑 GROUP :❯ https://chat.whatsapp.com/BwWffeDwiqe6cjDDklYJ5m?mode=ems_copy_t*
+*👑 SUPPORT CHANNEL 👑* 
+*https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G*
 
-👑 BILAL-MD WHATSAPP BOT 👑`;
+*👑 SUPPORT GROUP 👑*
+*https://chat.whatsapp.com/BwWffeDwiqe6cjDDklYJ5m?mode=ems_copy_t*
+
+*👑 BILAL-MD WHATSAPP BOT 👑*`;
 
         // 1️⃣ Send image with caption first
         await conn.sendMessage(from, {
