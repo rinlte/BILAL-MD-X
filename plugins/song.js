@@ -15,7 +15,7 @@ cmd({
   alias: ['song', 'music', 'audio', 'yta', 'ytmp3'],
   desc: 'Download YouTube audio using Izumi API.',
   category: 'download',
-  react: '🎧',
+  react: '🥺',
   filename: __filename
 },
 async (conn, mek, m, { from, args, reply, quoted }) => {
@@ -40,7 +40,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       { text: "*APKA AUDIO DOWNLOAD HO RAHA HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GA ☺️ TO YAHA BHEJ DIYA JAYE GA 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
       { quoted: m }
     );
-    await conn.sendMessage(from, { react: { text: "🎵", key: m.key } });
+    await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
 
     if (!ytUrl) {
       const search = await yts(provided);
