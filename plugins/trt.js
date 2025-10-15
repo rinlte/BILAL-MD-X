@@ -13,22 +13,22 @@ cmd({
 },
 async (conn, mek, m, { from, q, reply }) => {
     try {
-        // 🔹 Guide message (used for both command start & wrong input)
+        // 🔹 Guide message (jab command likhi jaye)
         const guideMsg =
 `\n*_________________________________________*
-*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI TO AP YEH TRICK USE KARO 🥺* 
+*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI YEH TRICK USE KARO 😃* 
  *TO AP ESE LIKHO ☺️* 
 *_________________________________________*
  *TRT UR ❮URDU LANGUAGE ME TRANSLATE KARNE K LIE❯* 
 *_________________________________________*
  *TRT EN ❮ENGLISH ME TRANSLATE KARNE K LIE❯* 
 *_________________________________________*
- *APKE PASS AGAR ENGLISH ZUBAN KA MSG HAI AP NE USE URDU ME TRANSLATE KARNA HAI 🤔* 
+ *APKE PASS AGAR ENGLISH ZUBAN KA MSG HAI AUR AP NE USE URDU ME TRANSLATE KARNA HAI 🤔* 
  *TO ESE LIKHO ☺️* 
 *_________________________________________*
  *TRT UR ❮APNA ENGLISH WALA MSG YAHA LIKHO❯* 
 *_________________________________________*
- *AGAR APKE PASS URDU WALA MSG HAI AUR AP NE ENGLISH ZUBAN ME TRANSLATE KARNA HAI 🤔* 
+ *AGAR APKE PASS URDU WALA MSG HAI AUR AP NE ENGLISH ME TRANSLATE KARNA HAI 🤔* 
  *TO AP ESE LIKHO ☺️* 
 *_________________________________________*
  *TRT EN ❮APNA URDU WALA MSG YAHA LIKHO❯* 
@@ -38,14 +38,22 @@ async (conn, mek, m, { from, q, reply }) => {
  *👑 BILAL-MD WHATSAPP BOT 👑* 
 *_________________________________________*`;
 
-        // 🔹 Jab command likhi jaye (start message)
+        // 🔹 Wrong command message (jab user galat likhe)
+        const wrongCmdMsg =
+`\n*_________________________________________*
+*LAGTA HAI APNE GALAT LIKHA HAI 🥺* 
+*_________________________________________*
+ **DUBARA SAHI SE LIKHO AP ☺️🌹*  
+ \n*_________________________________________*\n*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI TO YEH TRICK USE KARO 😃* \n *TO AP ESE LIKHO ☺️* \n*_________________________________________*\n *TRT UR ❮URDU LANGUAGE ME TRANSLATE KARNE K LIE❯* \n*_________________________________________*\n *TRT EN ❮ENGLISH ME TRANSLATE KARNE K LIE❯* \n*_________________________________________*\n *APKE PASS AGAR ENGLISH ZUBAN KA MSG HAI AP NE USE URDU ME TRANSLATE KARNA HAI 🤔* \n *TO ESE LIKHO ☺️* \n*_________________________________________*\n *TRT UR ❮APNA ENGLISH WALA MSG YAHA LIKHO❯* \n*_________________________________________*\n *AGAR APKE PASS URDU WALA MSG HAI AUR AP NE ENGLISH ZUBAN ME TRANSLATE KARNA HAI 🤔* \n *TO AP ESE LIKHO ☺️* \n*_________________________________________*\n *TRT EN ❮APNA URDU WALA MSG YAHA LIKHO❯* \n*_________________________________________*\n *AB TO APKO SAMAJH AA GAI HOGI ☺️🌹* \n*_________________________________________*\n *👑 BILAL-MD WHATSAPP BOT 👑* \n*_________________________________________*\n`;
+
+        // 🔹 Jab command likhi jaye (start)
         await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
         await reply(guideMsg);
 
         // 🔹 Agar user ne kuch likha hi nahi ya galat likha
         if (!q || q.trim().split(' ').length < 2) {
             await conn.sendMessage(from, { react: { text: '😫', key: m.key } });
-            return reply(guideMsg);
+            return reply(wrongCmdMsg);
         }
 
         const args = q.split(' ');
