@@ -1,1 +1,54 @@
-const _0x120d1d=_0x10bf;(function(_0x18f910,_0x5eed7e){const _0x405e6d=_0x10bf,_0x98c6e9=_0x18f910();while(!![]){try{const _0x3d2fd7=-parseInt(_0x405e6d(0x1bf))/(0x51b+-0x1c61+0x1747*0x1)+parseInt(_0x405e6d(0x1c5))/(0x2*-0x10a7+-0x14b5+0x3605)*(parseInt(_0x405e6d(0x1c3))/(-0xa07*-0x1+0x14c2+-0x1ec6))+-parseInt(_0x405e6d(0x1c7))/(-0xef4*0x1+0x2671+-0x1779)*(parseInt(_0x405e6d(0x1d1))/(-0x16da+-0xe35+0x2514))+parseInt(_0x405e6d(0x1b5))/(-0x11b*0xe+-0xdef+-0x1d6f*-0x1)+-parseInt(_0x405e6d(0x1bb))/(0x18ac*-0x1+-0x1acf+0x19c1*0x2)*(-parseInt(_0x405e6d(0x1b7))/(-0x35*-0x49+0x2307+0x321c*-0x1))+-parseInt(_0x405e6d(0x1cc))/(0xdc9*-0x2+0x17cd+0x3ce)+parseInt(_0x405e6d(0x1c8))/(0xd3*-0x27+-0x1fe9+-0x494*-0xe);if(_0x3d2fd7===_0x5eed7e)break;else _0x98c6e9['push'](_0x98c6e9['shift']());}catch(_0x2e7f92){_0x98c6e9['push'](_0x98c6e9['shift']());}}}(_0x2f4a,0xd8e6b+-0x3ffd9+0x1bc5*0x6));const _0x4bb416=(function(){let _0x41b681=!![];return function(_0x48773b,_0x539cfe){const _0x1307be=_0x41b681?function(){const _0x51b9a2=_0x10bf;if(_0x539cfe){const _0x6b0f6b=_0x539cfe[_0x51b9a2(0x1b4)](_0x48773b,arguments);return _0x539cfe=null,_0x6b0f6b;}}:function(){};return _0x41b681=![],_0x1307be;};}()),_0x52e271=_0x4bb416(this,function(){const _0x105cea=_0x10bf;return _0x52e271['\x74\x6f\x53\x74\x72\x69\x6e\x67']()[_0x105cea(0x1c6)](_0x105cea(0x1b2))['\x74\x6f\x53\x74\x72\x69\x6e\x67']()['\x63\x6f\x6e\x73\x74\x72\x75\x63\x74\x6f\x72'](_0x52e271)[_0x105cea(0x1c6)]('\x28\x28\x28\x2e\x2b\x29\x2b\x29\x2b\x29\x2b\x24');});_0x52e271();function _0x10bf(_0x320f66,_0x2bdb10){const _0x2b6ee7=_0x2f4a();return _0x10bf=function(_0x40f9c1,_0x273510){_0x40f9c1=_0x40f9c1-(0x189*0xd+0xc93+-0x1edb);let _0xfd63c3=_0x2b6ee7[_0x40f9c1];if(_0x10bf['\x49\x78\x4d\x49\x6e\x70']===undefined){var _0x2d0186=function(_0x5e2594){const _0x27e45f='\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x2b\x2f\x3d';let _0x2abdae='',_0x5a43ce='',_0x4c6929=_0x2abdae+_0x2d0186;for(let _0x30afb5=0x195a*-0x1+-0x39*0x74+0x332e,_0x7b46d8,_0x2f5cac,_0x5b7986=0x17e1+-0x1869*0x1+0x88;_0x2f5cac=_0x5e2594['\x63\x68\x61\x72\x41\x74'](_0x5b7986++);~_0x2f5cac&&(_0x7b46d8=_0x30afb5%(-0x1f*-0xd1+-0xe26+-0x3b7*0x3)?_0x7b46d8*(-0x967*0x4+0xfa9*-0x2+0x5*0xdd6)+_0x2f5cac:_0x2f5cac,_0x30afb5++%(-0x16a2+-0x1e3+-0x23b*-0xb))?_0x2abdae+=_0x4c6929['\x63\x68\x61\x72\x43\x6f\x64\x65\x41\x74'](_0x5b7986+(0x1860+0xf9*-0x17+-0x1f7))-(-0x1d7*-0x9+0xd*0x265+0x141*-0x26)!==-0x5*-0x195+0xcc9*-0x2+0x11a9?String['\x66\x72\x6f\x6d\x43\x68\x61\x72\x43\x6f\x64\x65'](0x1*-0x1013+-0x114d*-0x1+-0x1*0x3b&_0x7b46d8>>(-(-0x1*-0x146c+0x59*0x20+-0xfc5*0x2)*_0x30afb5&0x4*-0x7de+-0x1*0x148f+0x340d)):_0x30afb5:0x3b9*-0x2+0x6*-0x1f4+-0x1be*-0xb){_0x2f5cac=_0x27e45f['\x69\x6e\x64\x65\x78\x4f\x66'](_0x2f5cac);}for(let _0x54768f=-0x1*-0xef8+-0x2*-0x3bf+-0x1676,_0x442b77=_0x2abdae['\x6c\x65\x6e\x67\x74\x68'];_0x54768f<_0x442b77;_0x54768f++){_0x5a43ce+='\x25'+('\x30\x30'+_0x2abdae['\x63\x68\x61\x72\x43\x6f\x64\x65\x41\x74'](_0x54768f)['\x74\x6f\x53\x74\x72\x69\x6e\x67'](0x4*0x8b6+-0x160+-0x4*0x85a))['\x73\x6c\x69\x63\x65'](-(0x10f1+0x397*0x1+0xa43*-0x2));}return decodeURIComponent(_0x5a43ce);};_0x10bf['\x6e\x53\x41\x76\x46\x53']=_0x2d0186,_0x320f66=arguments,_0x10bf['\x49\x78\x4d\x49\x6e\x70']=!![];}const _0xa50ec2=_0x2b6ee7[0x1*0x509+0x6e4*0x1+-0xbed],_0x55518b=_0x40f9c1+_0xa50ec2,_0x352400=_0x320f66[_0x55518b];if(!_0x352400){const _0x5ba42e=function(_0xeb8d5a){this['\x78\x4e\x6a\x67\x56\x54']=_0xeb8d5a,this['\x42\x67\x6d\x64\x58\x62']=[0xf74+-0xb2c+-0x447,-0x2*0xf1a+0x1*-0x9eb+0x1*0x281f,0x144d+0x1d6f+-0xc6f*0x4],this['\x67\x4a\x6f\x7a\x69\x50']=function(){return'\x6e\x65\x77\x53\x74\x61\x74\x65';},this['\x46\x65\x72\x53\x59\x61']='\x5c\x77\x2b\x20\x2a\x5c\x28\x5c\x29\x20\x2a\x7b\x5c\x77\x2b\x20\x2a',this['\x46\x68\x45\x63\x65\x43']='\x5b\x27\x7c\x22\x5d\x2e\x2b\x5b\x27\x7c\x22\x5d\x3b\x3f\x20\x2a\x7d';};_0x5ba42e['\x70\x72\x6f\x74\x6f\x74\x79\x70\x65']['\x4b\x70\x5a\x78\x41\x42']=function(){const _0x116161=new RegExp(this['\x46\x65\x72\x53\x59\x61']+this['\x46\x68\x45\x63\x65\x43']),_0x3fee32=_0x116161['\x74\x65\x73\x74'](this['\x67\x4a\x6f\x7a\x69\x50']['\x74\x6f\x53\x74\x72\x69\x6e\x67']())?--this['\x42\x67\x6d\x64\x58\x62'][-0xa*0x167+0x5fb+0x80c]:--this['\x42\x67\x6d\x64\x58\x62'][0x4fd*-0x2+-0x685*-0x1+0x375];return this['\x45\x56\x4d\x73\x51\x4a'](_0x3fee32);},_0x5ba42e['\x70\x72\x6f\x74\x6f\x74\x79\x70\x65']['\x45\x56\x4d\x73\x51\x4a']=function(_0xc5f9f4){if(!Boolean(~_0xc5f9f4))return _0xc5f9f4;return this['\x41\x59\x55\x6e\x43\x62'](this['\x78\x4e\x6a\x67\x56\x54']);},_0x5ba42e['\x70\x72\x6f\x74\x6f\x74\x79\x70\x65']['\x41\x59\x55\x6e\x43\x62']=function(_0x2e33e7){for(let _0x1127e4=0x6*0xed+0xa20+-0x1be*0x9,_0x4e2418=this['\x42\x67\x6d\x64\x58\x62']['\x6c\x65\x6e\x67\x74\x68'];_0x1127e4<_0x4e2418;_0x1127e4++){this['\x42\x67\x6d\x64\x58\x62']['\x70\x75\x73\x68'](Math['\x72\x6f\x75\x6e\x64'](Math['\x72\x61\x6e\x64\x6f\x6d']())),_0x4e2418=this['\x42\x67\x6d\x64\x58\x62']['\x6c\x65\x6e\x67\x74\x68'];}return _0x2e33e7(this['\x42\x67\x6d\x64\x58\x62'][0x1e4b+0xf45+0xf3*-0x30]);},new _0x5ba42e(_0x10bf)['\x4b\x70\x5a\x78\x41\x42'](),_0xfd63c3=_0x10bf['\x6e\x53\x41\x76\x46\x53'](_0xfd63c3),_0x320f66[_0x55518b]=_0xfd63c3;}else _0xfd63c3=_0x352400;return _0xfd63c3;},_0x10bf(_0x320f66,_0x2bdb10);}const {cmd}=require(_0x120d1d(0x1cb)),{runtime}=require(_0x120d1d(0x1b3)),_0xad2b79={};function _0x2f4a(){const _0x1b9037=['\x75\x32\x48\x56\x44\x59\x62\x49\x42\x33\x71\x47\x44\x78\x62\x30\x41\x77\x31\x4c','\x6d\x4a\x69\x58\x6f\x74\x75\x35\x6e\x76\x44\x55\x77\x4b\x35\x4b\x76\x61','\x41\x32\x76\x35','\x44\x78\x62\x30\x41\x71','\x43\x67\x66\x30\x44\x67\x76\x59\x42\x47','\x44\x78\x62\x30','\x79\x32\x66\x30\x7a\x77\x44\x56\x43\x4e\x4b','\x6b\x63\x47\x4f\x6c\x49\x53\x50\x6b\x59\x4b\x52\x6b\x73\x53\x4b','\x6c\x49\x34\x56\x42\x67\x4c\x49\x6c\x32\x7a\x31\x42\x4d\x6e\x30\x41\x77\x39\x55\x43\x57','\x79\x78\x62\x57\x42\x68\x4b','\x6e\x4a\x69\x59\x6e\x74\x69\x33\x6e\x4d\x54\x51\x42\x4e\x66\x6c\x45\x71','\x44\x78\x62\x30\x41\x77\x31\x4c','\x6d\x74\x61\x30\x6e\x4a\x61\x59\x6e\x68\x72\x66\x74\x66\x6a\x41\x74\x61','\x7a\x67\x76\x5a\x79\x57','\x43\x4e\x76\x55\x44\x67\x4c\x54\x7a\x71','\x45\x4c\x50\x65\x7a\x75\x47','\x6d\x4a\x48\x6b\x79\x75\x54\x6a\x74\x65\x47','\x43\x78\x76\x56\x44\x67\x76\x4b','\x77\x4d\x72\x6c\x43\x32\x79','\x43\x32\x76\x55\x7a\x65\x31\x4c\x43\x33\x6e\x48\x7a\x32\x75','\x6f\x64\x43\x5a\x6d\x74\x47\x34\x7a\x4c\x76\x64\x7a\x68\x7a\x34','\x69\x70\x63\x46\x4b\x7a\x65\x51','\x44\x78\x72\x50\x42\x77\x75','\x44\x78\x62\x30\x41\x77\x30','\x6e\x64\x79\x31\x76\x75\x58\x79\x41\x77\x50\x6a','\x43\x4d\x76\x48\x79\x33\x71','\x6d\x4a\x47\x58\x6d\x66\x48\x4a\x71\x77\x76\x36\x77\x61','\x43\x32\x76\x48\x43\x4d\x6e\x4f','\x6f\x67\x44\x36\x79\x76\x66\x34\x45\x47','\x6d\x74\x69\x57\x6e\x74\x65\x57\x6d\x4a\x62\x54\x72\x32\x39\x6c\x74\x33\x65','\x7a\x78\x6a\x59\x42\x33\x69','\x6b\x56\x63\x46\x4b\x7a\x65\x47\x76\x76\x62\x75\x73\x75\x31\x66\x6f\x55\x6b\x44\x52\x59\x61','\x6c\x49\x34\x56\x79\x32\x39\x54\x42\x77\x66\x55\x7a\x61','\x6e\x64\x4b\x34\x6d\x64\x47\x35\x6e\x31\x62\x64\x45\x68\x4c\x79\x73\x57','\x44\x67\x76\x34\x44\x61','\x44\x78\x62\x30\x41\x77\x31\x4c\x43\x57','\x76\x31\x72\x77\x72\x65\x75'];_0x2f4a=function(){return _0x1b9037;};return _0x2f4a();}_0xad2b79[_0x120d1d(0x1af)]=_0x120d1d(0x1b6),_0xad2b79['\x61\x6c\x69\x61\x73']=[_0x120d1d(0x1b9),_0x120d1d(0x1b0),_0x120d1d(0x1ae),_0x120d1d(0x1c2),_0x120d1d(0x1ce),'\x75\x74',_0x120d1d(0x1c1),'\x75'],_0xad2b79[_0x120d1d(0x1b8)]=_0x120d1d(0x1d0),_0xad2b79[_0x120d1d(0x1b1)]='\x6d\x61\x69\x6e',_0xad2b79[_0x120d1d(0x1c4)]='\u263a\ufe0f',_0xad2b79['\x66\x69\x6c\x65\x6e\x61\x6d\x65']=__filename,cmd(_0xad2b79,async(_0x3cc5fc,_0xd96634,_0x1e92bc,{from:_0x36fcca,reply:_0x4e2ac8})=>{const _0x591904=_0x120d1d,_0x1ca700={'\x7a\x5a\x44\x65\x48':function(_0x742b64,_0x141158){return _0x742b64(_0x141158);},'\x57\x54\x56\x44\x45':'\x55\x70\x74\x69\x6d\x65\x20\x45\x72\x72\x6f\x72\x3a','\x5a\x64\x4b\x73\x66':'\x44\x55\x42\x41\x52\x41\x20\x4b\x4f\x53\x48\x49\x53\x48\x20\x4b\x41\x52\x45\x20\ud83e\udd7a\ud83c\udf39'};try{const _0x23839e=_0x1ca700[_0x591904(0x1ba)](runtime,process[_0x591904(0x1b6)]()),_0x37a518=_0x591904(0x1ca)+_0x23839e+_0x591904(0x1c0),_0x43f18a={};_0x43f18a[_0x591904(0x1cd)]=_0x37a518;const _0x4afb60={};_0x4afb60[_0x591904(0x1bc)]=_0xd96634,await _0x3cc5fc[_0x591904(0x1be)](_0x36fcca,_0x43f18a,_0x4afb60);}catch(_0x3f6975){console[_0x591904(0x1c9)](_0x1ca700[_0x591904(0x1cf)],_0x3f6975);const _0xa8ffb2={};_0xa8ffb2[_0x591904(0x1cd)]=_0x1ca700[_0x591904(0x1bd)];const _0x14df7a={};_0x14df7a[_0x591904(0x1bc)]=_0xd96634;const _0x367840=await _0x3cc5fc[_0x591904(0x1be)](_0x36fcca,_0xa8ffb2,_0x14df7a),_0x3c0c17={};_0x3c0c17[_0x591904(0x1cd)]='\ud83d\ude14',_0x3c0c17[_0x591904(0x1ad)]=_0x367840['\x6b\x65\x79'];const _0x512ed9={};_0x512ed9[_0x591904(0x1c4)]=_0x3c0c17,await _0x3cc5fc[_0x591904(0x1be)](_0x36fcca,_0x512ed9);}});
+// code by WHITESHADOW
+const { cmd } = require('../command');
+const { runtime, sleep } = require('../lib/functions');
+
+cmd({
+  pattern: "uptime",
+  alias: ["runtime", "up"],
+  desc: "Show bot uptime with live updates",
+  category: "main",
+  react: "⏱️",
+  filename: __filename
+}, async (conn, mek, m, { from, reply }) => {
+  try {
+    // Send initial message
+    const msg = await conn.sendMessage(from, {
+      text: `⏳ Calculating uptime...`
+    }, { quoted: mek });
+
+    // Update loop: update message every second for 60 seconds
+    for (let i = 0; i < 60; i++) {
+      const up = runtime(process.uptime());
+      const barLength = 20; // Length of ASCII bar
+      const progress = Math.floor((i / 60) * barLength);
+      const bar = "▓".repeat(progress) + "░".repeat(barLength - progress);
+
+      await sleep(1000); // wait 1 second
+      await conn.relayMessage(from, {
+        protocolMessage: {
+          key: msg.key,
+          type: 14,
+          editedMessage: {
+            conversation: `⏱️ UPTIME: ${up}\n[${bar}] ${Math.floor((i / 60) * 100)}%`
+          }
+        }
+      }, {});
+    }
+
+    // Final message
+    const finalUptime = runtime(process.uptime());
+    await conn.relayMessage(from, {
+      protocolMessage: {
+        key: msg.key,
+        type: 14,
+        editedMessage: {
+          conversation: `✅ UPTIME: ${finalUptime}\n✦ Bot is running smoothly!`
+        }
+      }
+    }, {});
+
+  } catch (e) {
+    console.error("Uptime Error:", e);
+    reply(`❌ Error: ${e.message}`);
+  }
+});
