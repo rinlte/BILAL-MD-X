@@ -18,15 +18,15 @@ cmd({
             return reply("*YEH COMMAND SIRF MERE LIE HAI 😎*");
         }
 
-        // 2️⃣ No link provided
+        // 2️⃣ No link provided → show guidance msg
         if (!q && !quoted) {
             await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️* \n*.JOIN ❮ GROUP LINK ❯*\n*JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️*\n*.JOIN ❮ GROUP LINK ❯*\n*JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
         }
 
         let groupLink;
 
-        // 3️⃣ Check if reply contains link
+        // 3️⃣ Extract link from reply or argument
         if (quoted && quoted.type === 'conversation' && isUrl(quoted.text)) {
             groupLink = quoted.text.split('https://chat.whatsapp.com/')[1];
         } else if (q && isUrl(q)) {
