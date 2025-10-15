@@ -129,6 +129,8 @@ const displayName = userName ? userName : 'User';
 *┃👑│ • MENU*
 *┃👑│ • RESTART*
 *╰━━━━━━━━━━━━━━━┈⊷*
+*👑 FOR HELP CLICK HERE 👑*
+*https://akaserein.github.io/Bilal/*
 
 *👑 BILAL-MD WHATSAPP BOT 👑*`;
 
