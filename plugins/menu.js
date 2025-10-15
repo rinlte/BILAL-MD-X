@@ -19,10 +19,11 @@ cmd({
 *┃👑│ MODE :❯ ${config.MODE}*
 *┃👑│ PREFiX :❯ ${config.PREFIX}*
 *┃👑│ COMMANDS :❯ ${commands.length}*
+*┃👑│ PLATFORM :❯ ${getPlatform()}*
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
-*HI ${m.pushName || 'User'} G 🥰*
+*HI ${displayName} G 🥰*
 *MERE BOT KA MENU ☺️*
 *YEH HAI G 🌹*
 
@@ -68,6 +69,61 @@ cmd({
 *┃👑│ • AI*
 *┃👑│ • GPT*
 *╰━━━━━━━━━━━━━━━┈⊷*
+
+*╭━━〔 👑 LOGO 👑 〕━━┈⊷*
+*┃👑│ • LOGO1*
+*┃👑│ • LOGO2*
+*┃👑│ • LOGO3*
+*┃👑│ • LOGO4*
+*┃👑│ • LOGO5*
+*┃👑│ • LOGO6*
+*┃👑│ • LOGO7*
+*┃👑│ • LOGO8*
+*┃👑│ • LOGO9*
+*┃👑│ • LOGO10*
+*┃👑│ • LOGO11*
+*┃👑│ • LOGO12*
+*┃👑│ • LOGO13*
+*┃👑│ • LOGO14*
+*┃👑│ • LOGO15*
+*┃👑│ • LOGO16*
+*┃👑│ • LOGO17*
+*┃👑│ • LOGO18*
+*┃👑│ • LOGO19*
+*┃👑│ • LOGO20*
+*╰━━━━━━━━━━━━━━━┈⊷*
+
+*╭━━〔 👑 CONVERTER 👑 〕━━┈⊷*
+*┃👑│ • STICKER*
+*┃👑│ • STOIMG*
+*┃👑│ • TAKE*
+*┃👑│ • TOMP3*
+*┃👑│ • FANCY*
+*┃👑│ • TRT*
+*┃👑│ • EMIX*
+*┃👑│ • ATTP*
+*╰━━━━━━━━━━━━━━━┈⊷*
+
+*╭━━〔 👑 XTRA 👑 〕━━┈⊷*
+*┃👑│ • TIME*
+*┃👑│ • DATE*
+*┃👑│ • SS*
+*┃👑│ • READMORE*
+*┃👑│ • TINYURL*
+*╰━━━━━━━━━━━━━━━┈⊷*
+
+*╭━━〔 👑 MAIN 👑 〕━━┈⊷*
+*┃👑│ • PING*
+*┃👑│ • ALIVE*
+*┃👑│ • UPTIME*
+*┃👑│ • REPO*
+*┃👑│ • OWNER*
+*┃👑│ • MENU*
+*┃👑│ • RESTART*
+*╰━━━━━━━━━━━━━━━┈⊷*
+
+*👑 FOR HELP CLICK HERE 👑*
+*https://akaserein.github.io/Bilal/*
 
 *👑 BILAL-MD WHATSAPP BOT 👑*`;
 
