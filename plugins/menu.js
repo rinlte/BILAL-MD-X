@@ -1,6 +1,5 @@
 const config = require('../config');
 const { cmd, commands } = require('../command');
-
 const { sleep } = require('../lib/functions');
 
 cmd({
@@ -12,11 +11,19 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
-          
+        // Get platform dynamically
+        function getPlatform() {
+            if (process.env.HEROKU_APP_NAME) return "Heroku";
+            if (process.env.KOYEB_API) return "Koyeb";
+            if (process.env.RENDER) return "Render";
+            if (process.env.TERMUX) return "Termux";
+            return "Panel";
         }
-        const userName = m.pushName || m.sender.split('@')[0];
-const displayName = userName ? userName : 'User';
-       
+
+        // Get user display name
+        const displayName = m.pushName || m.sender.split('@')[0] || 'User';
+
+        // Full menu text
         const menuText = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
 *┃👑│ USER:❯ ${config.OWNER_NAME}*
@@ -24,6 +31,7 @@ const displayName = userName ? userName : 'User';
 *┃👑│ MODE :❯ ${config.MODE}*
 *┃👑│ PREFiX :❯ ${config.PREFIX}*
 *┃👑│ COMMANDS :❯ ${commands.length}*
+*┃👑│ PLATFORM :❯ ${getPlatform()}*
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
