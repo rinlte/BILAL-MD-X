@@ -22,7 +22,7 @@ cmd({
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
-*HI ${displayName} G 🥰*
+*HI  G 🥰*
 *MERE BOT KA MENU ☺️*
 *YEH HAI G 🌹*
 
