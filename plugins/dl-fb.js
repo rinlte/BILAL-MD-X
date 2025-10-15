@@ -5,7 +5,7 @@ const { cmd } = require("../command");
 
 // 🔹 Facebook Video Downloader Function (New API)
 async function downloadFacebookVideo(url) {
-    const apiUrl = `https://delirius-apiofc.vercel.app/download/facebook?url=${encodeURIComponent(url)}`;
+    const apiUrl = `https://api.dmltools.tech/fb3?url=${encodeURIComponent(url)}`;
     const res = await axios.get(apiUrl, { timeout: 40000 });
 
     if (!res.data || !res.data.result || (!res.data.result.hd && !res.data.result.sd)) {
