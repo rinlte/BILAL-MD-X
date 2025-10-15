@@ -22,7 +22,7 @@ cmd({
         // Agar owner bina link ke command likhe
         if (!q && !quoted) {
             await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️*\n*.JOIN ❮ GROUP LINK ❯*");
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️*\n\n*.JOIN ❮GROUP LINK❯*\n \n *JAB AP ESE LIKHO GE TO AP GROUP ME JOIN HO JAO GE 🥰💞*");
         }
 
         let groupLink = "";
@@ -46,7 +46,7 @@ cmd({
         await conn.groupAcceptInvite(groupLink);
         await sleep(1000);
         await conn.sendMessage(from, { react: { text: "🥰", key: mek.key } });
-        await conn.sendMessage(from, { text: "*GROUP ME JOIN HO CHUKE HAI ☺️*" }, { quoted: mek });
+        await conn.sendMessage(from, { text: "*GROUP  JOIN HO GAYA HAI ☺️*" }, { quoted: mek });
 
     } catch (e) {
         console.log(e);
