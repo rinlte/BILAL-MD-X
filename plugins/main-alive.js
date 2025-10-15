@@ -17,7 +17,7 @@ cmd({
     const lines = [
       "*ASSALAMUALAIKUM ☺️*",
       "\n*KESE HAI AP 😇*",
-      "*\nUMEED HAI KE AP KHARIYAT SE HOGE AUR BEHTAR HOGE 🥰*",
+      "\n*UMEED HAI KE AP KHARIYAT SE HOGE AUR BEHTAR HOGE 🥰*",
       "\n*AUR APKE GHAR ME BHI SAB KHARIYAT SE HOGE 🥰*",
       "\n*DUWA KRE GE APKE LIE 🤲*",
       "\n*ALLAH AP SAB KO HAMESHA KHUSH RAKHE AMEEN 🤲*",
