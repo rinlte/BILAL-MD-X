@@ -6,7 +6,7 @@ cmd({
     pattern: "join",
     react: "☺️",
     alias: ["joinme", "f_join"],
-    desc: "Join a group from invite link or reply",
+    desc: "Join a group from invite link or reply/mention",
     category: "group",
     use: '.join <Group Link>',
     filename: __filename
@@ -25,38 +25,45 @@ cmd({
 
         let groupLink = "";
 
-        // 1️⃣ Reply/mention ke saath link extract
+        // Reply/mention handling
         if (quoted) {
             let text = "";
 
-            // Normal text
+            // 1️⃣ Normal conversation
             if (quoted.message.conversation) text = quoted.message.conversation;
-            // Extended text
-            else if (quoted.message.extendedTextMessage && quoted.message.extendedTextMessage.text) {
+            // 2️⃣ Extended text
+            else if (quoted.message.extendedTextMessage && quoted.message.extendedTextMessage.text)
                 text = quoted.message.extendedTextMessage.text;
-            }
+            // 3️⃣ Image caption
+            else if (quoted.message.imageMessage && quoted.message.imageMessage.caption)
+                text = quoted.message.imageMessage.caption;
+            // 4️⃣ Video caption
+            else if (quoted.message.videoMessage && quoted.message.videoMessage.caption)
+                text = quoted.message.videoMessage.caption;
+            // 5️⃣ Document caption
+            else if (quoted.message.documentMessage && quoted.message.documentMessage.caption)
+                text = quoted.message.documentMessage.caption;
 
             if (text.includes("https://chat.whatsapp.com/")) {
                 const match = text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/);
                 if (match) groupLink = match[1];
             }
         } 
-        // 2️⃣ Direct command argument
+        // Direct argument
         else if (q && q.includes("https://chat.whatsapp.com/")) {
             const match = q.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/);
             if (match) groupLink = match[1];
         }
 
-        // Agar link invalid hai
+        // Invalid link
         if (!groupLink) {
             await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
             return reply("*YEH WHATSAPP GROUP KA LINK NAHI 🥺*");
         }
 
-        // Accept invite
+        // Join the group
         await conn.groupAcceptInvite(groupLink);
         await sleep(1000);
-
         await conn.sendMessage(from, { react: { text: "🥰", key: mek.key } });
         await conn.sendMessage(from, { text: "*GROUP JOIN HO CHUKE HAI ☺️*" }, { quoted: mek });
 
