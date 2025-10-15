@@ -11,7 +11,7 @@ cmd({
 },
 async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
     try {
-        await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
+        await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
 
         if (!isGroup) {
             await conn.sendMessage(from, { react: { text: '😫', key: m.key } });
@@ -33,12 +33,12 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
             return reply("*KOI BHI NEW MEMBER KI REQUEST ABHI NAHI AYI ☺️❤️*");
         }
 
-        let text = `*YEH SAB LOG GROUP ME JOIN HONA CHAHTE HAI 🥺*\n\n🧾 *Total:* ${requests.length}\n\n`;
+        let text = `*YEH SAB LOG GROUP ME JOIN HONA CHAHTE HAI 🥺*\n\n* ${requests.length}\n\n*👑 BILAL-MD WHATSAPP BOT 👑*`;
         requests.forEach((user, i) => {
             text += `${i + 1}. @${user.jid.split('@')[0]}\n`;
         });
 
-        await conn.sendMessage(from, { react: { text: '😃', key: m.key } });
+        await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
         await conn.sendMessage(from, { text, mentions: requests.map(u => u.jid) });
     } catch (error) {
         console.error(error);
@@ -70,7 +70,7 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
         }
         if (!isBotAdmins) {
             await conn.sendMessage(from, { react: { text: '😎', key: m.key } });
-            return reply("*PEHLE MUJHE ADMIN BANAYEIN ☺️*");
+            return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAYEIN ☺️*");
         }
 
         const requests = await conn.groupRequestParticipantsList(from);
@@ -84,7 +84,7 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
         await conn.groupRequestParticipantsUpdate(from, jids, "approve");
 
         await conn.sendMessage(from, { react: { text: '🥰', key: m.key } });
-        return reply(`*${requests.length} MEMBERS KI REQUESTS ACCEPT KAR LI GAYI HAI 🥰🌹*`);
+        return reply(`*❮${requests.length}❯ IN SAB MEMBERS KI REQUESTS ACCEPT KAR LI GAYI HAI 🥰🌹*`);
     } catch (error) {
         console.error(error);
         await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
