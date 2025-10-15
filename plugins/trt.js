@@ -7,14 +7,14 @@ cmd({
     pattern: "trt",
     alias: ["translate"],
     desc: "🌍 Translate text between languages",
-    react: "⚡",
+    react: "🥺",
     category: "other",
     filename: __filename
 },
 async (conn, mek, m, { from, q, reply }) => {
     try {
         const args = q.split(' ');
-        if (args.length < 2) return reply("❗ Please provide a language code and text. Usage: .translate [language code] [text]");
+        if (args.length < 2) return reply("*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI 😥* n *TO AP ESE LIKHO ☺️* \n\n *TRT UR ❮URDU LANGUAGE ME TRANSLATE KARNE K LIE❯* \n *TRT EN ❮ENGLISH ME TRANSLATE KARNE K LIE❯* \n\n *APKE PASS AGAR ENGLISH ZUBAN KA MSG HAI AP NE USE URDU ME TRANSLATE KARNA HAI TO ESE LIKHO \n \n *TRT UR ❮APNA ENGLISH WALA MSG YAHA LIKHO❯* \n \n *AGAR APKE PASS URDU WALA MSG HAI AUR AP NE ENGLISH ME TRANSLATE KARNA HAI TO AP ESE LIKHO* \n \n *TRT EN ❮APNA URDU WALA MSG YAHA LIKHO❯* \n \n *👑 BILAL-MD WHATSAPP BOT 👑*");
 
         const targetLang = args[0];
         const textToTranslate = args.slice(1).join(' ');
