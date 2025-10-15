@@ -2,12 +2,11 @@ const config = require('../config')
 const { cmd } = require('../command')
 const { sleep } = require('../lib/functions')
 
-// Join group command
 cmd({
     pattern: "join",
     react: "☺️",
     alias: ["joinme", "f_join"],
-    desc: "To Join a Group from Invite link or reply",
+    desc: "Join a group from invite link or reply",
     category: "group",
     use: '.join <Group Link>',
     filename: __filename
@@ -19,34 +18,33 @@ cmd({
             return reply("*YEH COMMAND SIRF MERE LIE HAI 😎*");
         }
 
-        // Agar owner bina link ke command likhe
         if (!q && !quoted) {
             await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️*\n\n*.JOIN ❮GROUP LINK❯*\n \n *JAB AP ESE LIKHO GE TO AP GROUP ME JOIN HO JAO GE 🥰💞*");
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺*\n*.JOIN ❮GROUP LINK❯*\n*YA REPLY/MENTION KAREIN JAHAN LINK HO 🥰*");
         }
 
         let groupLink = "";
 
-        // Agar command reply/mention ke saath hai
+        // 1️⃣ Reply/mention ke saath link extract
         if (quoted) {
             let text = "";
 
-            // Text type messages
-            if (quoted.message.conversation) {
-                text = quoted.message.conversation;
-            } 
-            // Extended text messages
+            // Normal text
+            if (quoted.message.conversation) text = quoted.message.conversation;
+            // Extended text
             else if (quoted.message.extendedTextMessage && quoted.message.extendedTextMessage.text) {
                 text = quoted.message.extendedTextMessage.text;
             }
 
             if (text.includes("https://chat.whatsapp.com/")) {
-                groupLink = text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
+                const match = text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/);
+                if (match) groupLink = match[1];
             }
         } 
-        // Agar direct link command me diya
+        // 2️⃣ Direct command argument
         else if (q && q.includes("https://chat.whatsapp.com/")) {
-            groupLink = q.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
+            const match = q.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/);
+            if (match) groupLink = match[1];
         }
 
         // Agar link invalid hai
@@ -55,13 +53,12 @@ cmd({
             return reply("*YEH WHATSAPP GROUP KA LINK NAHI 🥺*");
         }
 
-        // Accept group invite
+        // Accept invite
         await conn.groupAcceptInvite(groupLink);
         await sleep(1000);
 
-        // Success reactions & message
         await conn.sendMessage(from, { react: { text: "🥰", key: mek.key } });
-        await conn.sendMessage(from, { text: "*GROUP JOIN HO GAYA HAI ☺️*" }, { quoted: mek });
+        await conn.sendMessage(from, { text: "*GROUP JOIN HO CHUKE HAI ☺️*" }, { quoted: mek });
 
     } catch (e) {
         console.log(e);
