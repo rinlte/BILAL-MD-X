@@ -45,7 +45,7 @@ cmd(
 
         // ⏳ Waiting message
         const waitMsg = await conn.sendMessage(from, {
-          text: `*APKA STICKER READY HO RAHA HAI ☺️*\n*THORA SA INTAZAR KARE...🥺🌹*`,
+          text: `*APKA STICKER READY HO RAHA HAI*\n*THORA SA INTAZAR KARE...☺️🌹*`,
           quoted: mek
         });
 
