@@ -4,7 +4,7 @@ const { isUrl } = require('../lib/functions')
 
 cmd({
     pattern: "join",
-    react: "😎",
+    react: "☺️",
     alias: ["joinme", "f_join"],
     desc: "To Join a Group from Invite link",
     category: "group",
@@ -35,8 +35,8 @@ cmd({
 
         // Agar link invalid hai
         if (!groupLink) {
-            await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
-            return reply("*YEH WHATSAPP GROUP KA LINK NAHI 🥺*");
+            await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } });
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️*\n*.JOIN ❮ GROUP LINK ❯*\n*JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
         }
 
         // Accept invite
