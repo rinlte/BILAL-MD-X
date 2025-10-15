@@ -19,7 +19,6 @@ cmd({
 *┃👑│ MODE :❯ ${config.MODE}*
 *┃👑│ PREFiX :❯ ${config.PREFIX}*
 *┃👑│ COMMANDS :❯ ${commands.length}*
-*┃👑│ PLATFORM :❯ ${getPlatform()}*
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
