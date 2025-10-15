@@ -2,9 +2,6 @@ const { sleep } = require('../lib/functions');
 const config = require('../config')
 const { cmd, commands } = require('../command')
 
-
-// JawadTechX
-
 cmd({
     pattern: "leave",
     alias: ["left", "leftgc", "leavegc"],
@@ -17,24 +14,32 @@ async (conn, mek, m, {
     from, quoted, body, isCmd, command, args, q, isGroup, senderNumber, reply
 }) => {
     try {
-
+        // 1️⃣ Check if group
         if (!isGroup) {
-            return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
+            await conn.sendMessage(from, { react: { text: "😫", key: m.key } });
+            return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️*");
         }
-        
 
+        // 2️⃣ Check if bot owner
         const botOwner = conn.user.id.split(":")[0]; 
         if (senderNumber !== botOwner) {
-            return reply("*AP YE COMMAND USE NAHI KAR SAKTE 🥺❤️* \n *YEH COMMAND SIRF MERE LIE HAI ☺️❤️*");
+            await conn.sendMessage(from, { react: { text: "😎", key: m.key } });
+            return reply("*YE COMAND SIRF MERE LIE HAI 😎*");
         }
 
+        // 3️⃣ Leaving group
+        await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
         reply("Leaving group...");
         await sleep(1500);
         await conn.groupLeave(from);
-        reply("*ALLAH HAFIZ ALL 🥺❤️*");
+
+        // 4️⃣ After leaving
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+        await conn.sendMessage(from, { text: "*ALLAH HAFIZ KHUSH RAHO AP SAB 🥺 MENE YE GROUP LEFT KAR DIA HAI 😔💔*" });
+
     } catch (e) {
         console.error(e);
-        reply(`*DUBARA KOSHISH KAREIN 🥺❤️* ${e}`);
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+        reply(`*DUBARA KOSHISH KARE 😔*`);
     }
 });
-
