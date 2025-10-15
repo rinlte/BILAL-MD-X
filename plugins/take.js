@@ -21,8 +21,8 @@ cmd(
       if (!mek.quoted) {
         await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
         return reply(
-          `*PEHLE KISI STICKER KO MENTION KARO 😊🌹*\n\n` +
-          `*PHIR LIKHO:*  *.take APKA NAME*\n\n` +
+          `*PEHLE KISI BHI STICKER KO MENTION KARO 🥺*\n\n` +
+          `*PHIR PHIR LIKHO ☺️*  \n\n *TAKE ❮APKA NAME❯*\n\n` +
           `*IS SE STICKER APKE NAME KA BAN JAYE GA ☺️🌹*`
         );
       }
@@ -73,11 +73,11 @@ cmd(
 
       } else {
         await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
-        return reply("*SIRF STICKER KO MENTION KARO, AUR DUBARA TRY KARO 🥺❤️*");
+        return reply("*SIRF STICKER KO MENTION KARO BAS 🥺*");
       }
 
     } catch (error) {
-      console.error("❌ Take Sticker Error:", error);
+      console.error("*DUBARA KOSHISH KARE 🥺*", error);
       await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
       return reply("*DUBARA KOSHISH KARE 🥺*");
     }
