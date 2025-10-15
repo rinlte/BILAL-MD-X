@@ -1,62 +1,81 @@
-const fetch = require("node-fetch");
+// code by WHITESHADOW 
+
+const axios = require("axios");
 const { cmd } = require("../command");
+const { sleep } = require('../lib/functions');
 
 cmd({
-  pattern: "ss",
-  alias: ["ssweb", "screenshot"],
-  desc: "Take a screenshot of any website",
-  category: "tools",
-  react: "🥺",
-  filename: __filename
-}, async (conn, mek, m, { from, args, reply }) => {
+  pattern: "screenshot",
+  react: "🌐",
+  alias: ["ss", "ssweb"],
+  desc: "Capture a full-page screenshot of a website.",
+  category: "main",
+  use: ".screenshot <url>",
+  filename: __filename,
+}, async (conn, mek, msg, { from, args, reply }) => {
   try {
-    if (!args[0]) {
-      // Wrong command / args react 😥
-      await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
-      return reply(
-        `*AP KO KISI WEBSITE KA SCREENSHOT CHAHYE 🥺*\n\n` +
-        `*TO AP US WEBSITE KA LINK COPY KAR LO* \n*PHIR ESE LIKHO ☺️*\n\n*SS ❮APKI WEBSITE KA LINK❯*\n\n` +
-        `*JAB AP ESE LIKHO GE 🥺 TO US WEBSITE KA SCREENSHOT ☺️ YAHA PER SEND KAR DIA JAYE GA 🌹*\n\n` +
-        `*👑 BILAL-MD WHATSAPP BOT 👑*`
-      );
+    const url = args[0];
+    if (!url) return reply("❌ Please provide a URL\nExample: .screenshot https://google.com");
+    if (!url.startsWith("http")) return reply("❌ URL must start with http:// or https://");
+
+    // ASCII loading bars with percentage
+    const loadingBars = [
+        { percent: 10, bar: "[▓░░░░░░░░░]", text: "✦ Initializing capture..." },
+        { percent: 20, bar: "[▓▓░░░░░░░░]", text: "✦ Connecting to website..." },
+        { percent: 30, bar: "[▓▓▓░░░░░░░]", text: "✦ Loading page content..." },
+        { percent: 40, bar: "[▓▓▓▓░░░░░░]", text: "✦ Rendering elements..." },
+        { percent: 50, bar: "[▓▓▓▓▓░░░░░]", text: "✦ Processing JavaScript..." },
+        { percent: 60, bar: "[▓▓▓▓▓▓░░░░]", text: "✦ Capturing viewport..." },
+        { percent: 70, bar: "[▓▓▓▓▓▓▓░░░]", text: "✦ Scrolling page..." },
+        { percent: 80, bar: "[▓▓▓▓▓▓▓▓░░]", text: "✦ Finalizing screenshot..." },
+        { percent: 90, bar: "[▓▓▓▓▓▓▓▓▓░]", text: "✦ Optimizing image..." },
+        { percent: 100, bar: "[▓▓▓▓▓▓▓▓▓▓]", text: "✓ Capture complete!" }
+    ];
+
+    // Send initial message
+    const loadingMsg = await conn.sendMessage(from, {
+        text: "🔄 Starting screenshot capture...\n✦ Please wait..."
+    }, { quoted: mek });
+
+    // Animate loading progress
+    for (const frame of loadingBars) {
+        await sleep(800);
+        await conn.relayMessage(from, {
+            protocolMessage: {
+                key: loadingMsg.key,
+                type: 14,
+                editedMessage: {
+                    conversation: `📸 ${frame.bar} ${frame.percent}%\n${frame.text}`
+                }
+            }
+        }, {});
     }
 
-    const url = args[0].trim();
+    // Final update before sending
+    await sleep(800);
+    await conn.relayMessage(from, {
+        protocolMessage: {
+            key: loadingMsg.key,
+            type: 14,
+            editedMessage: {
+                conversation: "✅ Screenshot Captured!\n✦ Sending now..."
+            }
+        }
+    }, {});
 
-    // URL validation
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
-      return reply("*AP WEBSITE KA LINK LIKHO ❮SS❯ COMMAND KE SATH ☺️*");
-    }
+    await sleep(1000);
 
-    // Command msg react ☺️
-    await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } });
+    // Send the actual screenshot
+    await conn.sendMessage(from, {
+        image: { url: `https://image.thum.io/get/fullpage/${url}` },
+        caption: "- 🖼️ *Screenshot Generated*\n\n" +
+                "> POWERED BY WHITESHADOW 💜"
+    }, { quoted: mek });
 
-    // Waiting msg
-    const waitingMsg = await conn.sendMessage(from, { text: "*WEBSITE KA SCREENSHOT SEND HO RAHA HAI...🥺*\n*THORA SA INTAZAR KARE ☺️*" });
-    await conn.sendMessage(from, { react: { text: "🥺", key: waitingMsg.key } });
-
-    // Screenshot API using Thum.io
-    const apiUrl = `https://image.thum.io/get/fullpage/${encodeURIComponent(url)}`;
-
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error(`API Error ${response.status}`);
-
-    const buffer = await response.buffer();
-
-    // Send screenshot
-    await conn.sendMessage(from, { image: buffer, caption: `*APKI WEBSITE KA SCREENSHOT ☺️* \n${url}` }, { quoted: mek });
-
-    // Delete waiting message safely
-    try {
-      await conn.sendMessage(waitingMsg.chat, { delete: waitingMsg.key });
-    } catch (e) {
-      console.log("Waiting msg already deleted or cannot delete:", e.message);
-    }
-
-  } catch (err) {
-    console.error("❌ SS Command Error:", err);
-    const errorMsg = await reply("*DUBARA KOSHISH KARE 🥺*");
-    await conn.sendMessage(from, { react: { text: "😔", key: errorMsg.key } });
+  } catch (error) {
+    console.error("Error:", error);
+    reply("❌ Failed to capture screenshot\n✦ Please try again later");
   }
 });
+
+// KEITH-XMD
