@@ -96,7 +96,7 @@ async (conn, mek, m, { from, q, reply }) => {
 
         const translation = response.data.responseData.translatedText;
 
-        const translationMessage = `*APKI LANGUAGE TRANSLATE HO CHUKI HAI ☺️* \n*_________________________________________*\n ${translation}\n*_________________________________________*\n *${targetLang.toUpperCase()} ZUBAN ME 🥰*`;
+        const translationMessage = `*APKI LANGUAGE TRANSLATE HO CHUKI HAI ☺️* \n*_________________________________________*\n ${translation}\n*_________________________________________*\n *👑 BY :❯ BILAL-MD 👑*`;
 
         await conn.sendMessage(from, { react: { text: '☺️', key: m.key } }); // success react
         return reply(translationMessage);
