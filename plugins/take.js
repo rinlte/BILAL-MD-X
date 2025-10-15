@@ -22,7 +22,7 @@ cmd(
         await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
         return reply(
           `*PEHLE KISI BHI STICKER KO MENTION KARO 🥺*\n\n` +
-          `*PHIR PHIR LIKHO ☺️*  \n\n *TAKE ❮APKA NAME❯*\n\n` +
+          `*PHIR ESE LIKHO ☺️*  \n\n *TAKE ❮APKA NAME❯*\n\n` +
           `*IS SE STICKER APKE NAME KA BAN JAYE GA ☺️🌹*`
         );
       }
