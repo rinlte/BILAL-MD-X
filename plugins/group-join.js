@@ -1,13 +1,13 @@
 const config = require('../config')
 const { cmd } = require('../command')
-const { sleep, isUrl } = require('../lib/functions')
+const { sleep } = require('../lib/functions')
 
 // Join group command
 cmd({
     pattern: "join",
     react: "☺️",
     alias: ["joinme", "f_join"],
-    desc: "To Join a Group from Invite link",
+    desc: "To Join a Group from Invite link or reply",
     category: "group",
     use: '.join <Group Link>',
     filename: __filename
@@ -22,16 +22,29 @@ cmd({
         // Agar owner bina link ke command likhe
         if (!q && !quoted) {
             await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️*\n\n*.JOIN ❮GROUP LINK❯*\n\n*JAB AP ESE LIKHO GE TO AP GROUP ME JOIN HO JAO GE 🥰💞*");
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️*\n\n*.JOIN ❮GROUP LINK❯*\n \n *JAB AP ESE LIKHO GE TO AP GROUP ME JOIN HO JAO GE 🥰💞*");
         }
 
         let groupLink = "";
 
-        // 1️⃣ Agar command reply ke sath hai
-        if (quoted && quoted.text && quoted.text.includes("https://chat.whatsapp.com/")) {
-            groupLink = quoted.text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
+        // Agar command reply/mention ke saath hai
+        if (quoted) {
+            let text = "";
+
+            // Text type messages
+            if (quoted.message.conversation) {
+                text = quoted.message.conversation;
+            } 
+            // Extended text messages
+            else if (quoted.message.extendedTextMessage && quoted.message.extendedTextMessage.text) {
+                text = quoted.message.extendedTextMessage.text;
+            }
+
+            if (text.includes("https://chat.whatsapp.com/")) {
+                groupLink = text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
+            }
         } 
-        // 2️⃣ Agar command me direct link hai
+        // Agar direct link command me diya
         else if (q && q.includes("https://chat.whatsapp.com/")) {
             groupLink = q.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
         }
@@ -45,8 +58,10 @@ cmd({
         // Accept group invite
         await conn.groupAcceptInvite(groupLink);
         await sleep(1000);
+
+        // Success reactions & message
         await conn.sendMessage(from, { react: { text: "🥰", key: mek.key } });
-        await conn.sendMessage(from, { text: "*GROUP JOIN HO CHUKE HAI ☺️*" }, { quoted: mek });
+        await conn.sendMessage(from, { text: "*GROUP JOIN HO GAYA HAI ☺️*" }, { quoted: mek });
 
     } catch (e) {
         console.log(e);
