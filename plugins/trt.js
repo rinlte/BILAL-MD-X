@@ -7,7 +7,7 @@ cmd({
     pattern: "trt",
     alias: ["translate"],
     desc: "🌍 Translate text between languages",
-    react: "🥺", // default react when command runs
+    react: "🥺", // framework will auto-react when command triggers; DO NOT duplicate manually
     category: "other",
     filename: __filename
 },
@@ -67,25 +67,20 @@ async (conn, mek, m, { from, q, reply }) => {
  *👑 BILAL-MD WHATSAPP BOT 👑* 
 *_________________________________________*`;
 
-        // --- BEHAVIOUR FIX: only send guideMsg if there are NO args at all.
-        // If user provided args but format is wrong (e.g., less than 2 parts),
-        // send only wrongCmdMsg so they don't merge.
-
-        // case: user typed just ".trt" (no q) => show guide
+        // ---------- BEHAVIOUR ----------
+        // If no args at all -> show guide (framework already reacted with 🥺)
         if (!q || q.trim().length === 0) {
-            await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
             return reply(guideMsg);
         }
 
-        // user provided something; check parts
+        // If user provided something but it's incomplete -> show wrongCmdMsg + wrong react
         const parts = q.trim().split(/\s+/);
         if (parts.length < 2) {
-            // provided something but format incomplete -> wrongCmdMsg only
-            await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
+            await conn.sendMessage(from, { react: { text: '😫', key: m.key } }); // wrong-format react
             return reply(wrongCmdMsg);
         }
 
-        // --- proceed with translation as before
+        // ---------- translation flow ----------
         const argsArr = parts;
         const targetLang = argsArr[0].toLowerCase();
         const textToTranslate = argsArr.slice(1).join(' ');
@@ -95,7 +90,7 @@ async (conn, mek, m, { from, q, reply }) => {
         const response = await axios.get(url);
 
         if (!response.data || !response.data.responseData || !response.data.responseData.translatedText) {
-            await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
+            await conn.sendMessage(from, { react: { text: '😔', key: m.key } }); // api error react
             return reply("*AP APNA TEXT MSG KO DUBARA TRANSLATE KARO 🥺*");
         }
 
@@ -103,7 +98,7 @@ async (conn, mek, m, { from, q, reply }) => {
 
         const translationMessage = `> *👑 BILAL-TRANSLATION 👑*\n\n> 🔤 *Original*: ${textToTranslate}\n\n> 🔠 *Translated*: ${translation}\n\n> 🌐 *Language*: ${targetLang.toUpperCase()}`;
 
-        await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
+        await conn.sendMessage(from, { react: { text: '☺️', key: m.key } }); // success react
         return reply(translationMessage);
 
     } catch (e) {
