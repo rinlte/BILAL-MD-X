@@ -6,16 +6,16 @@ cmd({
   alias: ["ssweb", "screenshot"],
   desc: "Take a screenshot of any website",
   category: "tools",
-  react: "🖼️",
+  react: "🥺",
   filename: __filename
 }, async (conn, mek, m, { from, args, reply }) => {
   try {
     if (!args[0]) {
       return reply(
-        `*🌐 SCREENSHOT TOOL*\n\n` +
-        `*.ss <url>*\n*.ssweb <url>*\n*.screenshot <url>*\n\n` +
-        `Take a screenshot of any website.\n\n` +
-        `Example:\n.ss https://google.com\n.ssweb https://google.com\n.screenshot https://google.com`
+        `*AP KO KISI WEBSITE KA SCREENSHOT CHAHYE 🥺*\n\n` +
+        `*TO AP US WEBSITE KA LINK COPY KAR LO 😊* \n*PPHIR ESE LIKHO ☺️*\n\n*SS ❮APKI WEBSITE KA LINK❯*\n\n` +
+        `*JAB AP ESE LIKHO GE 🥺 TO US WEBSITE KA SCREENSHOT ☺️ YAHA PER SEND KAR DIA JAYE GA 🌹*\n\n` +
+        `*👑 BILAL-MD WHATSAPP BOT 👑*`
       );
     }
 
@@ -23,10 +23,10 @@ cmd({
 
     // URL validation
     if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      return reply("❌ Please provide a valid URL starting with http:// or https://");
+      return reply("*AP WEBSITE KA LINK LIKHO ❮SS❯ COMMAND KE SATH ☺️*");
     }
 
-    await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
+    await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } });
 
     // Screenshot API
     const apiUrl = `https://api.siputzx.my.id/api/tools/ssweb?url=${encodeURIComponent(url)}&theme=light&device=desktop`;
@@ -36,7 +36,7 @@ cmd({
 
     const buffer = await response.buffer();
 
-    await conn.sendMessage(from, { image: buffer, caption: `🖼️ Screenshot of: ${url}` }, { quoted: mek });
+    await conn.sendMessage(from, { image: buffer, caption: `*APKI WEBSITE KA SCREENSHOT ☺️* \n${url}` }, { quoted: mek });
 
   } catch (err) {
     console.error("❌ SS Command Error:", err);
