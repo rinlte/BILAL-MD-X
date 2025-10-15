@@ -4,28 +4,40 @@ const { cmd } = require("../command");
 cmd({
   pattern: "autobio",
   alias: ["bioauto", "setautobio"],
-  desc: "Enable or disable automatic bio updates with uptime.",
+  desc: "Show or set auto bio status (on/off).",
   category: "owner",
-  react: "🥰",
+  react: "🥺",
   filename: __filename
-}, async (conn, m, store, { reply, args }) => {
+}, async (conn, m, store, { args }) => {
   try {
-    if (!m.key.fromMe) return reply("❌ Only the owner can use this command!");
+    // 🥺 React on command
+    await conn.sendMessage(m.chat, { react: { text: '🥺', key: m.key } });
+
+    // Sirf owner check
+    if (!m.key.fromMe) return m.reply("❌ Sirf owner hi is command ka use kar sakta hai!");
 
     const state = args[0]?.toLowerCase();
-    if (!state || !["on", "off"].includes(state))
-      return reply("📘 Usage:\n.autobio on\n.autobio off");
 
-    global.autoBio = state === "on";
-    reply(`✅ Auto Bio is now *${state.toUpperCase()}*!`);
-
-    if (state === "on") {
-      updateBio(conn); // start first update
+    // Agar argument missing ya invalid ho
+    if (!state || !["on", "off"].includes(state)) {
+      return m.reply(`📘 Use:\n.autobio on → Start auto bio\n.autobio off → Stop auto bio\n\nCurrent status: *${global.autoBio ? "ON" : "OFF"}*`);
     }
 
+    // State set karo
+    global.autoBio = state === "on";
+
+    // Agar on hai to bio update start karo
+    if (state === "on") updateBio(conn);
+
+    // Success react on command message
+    await conn.sendMessage(m.chat, { react: { text: '☺️', key: m.key } });
+
+    return m.reply(`✅ Auto Bio ab *${state.toUpperCase()}* hai!`);
+    
   } catch (e) {
     console.error("❌ AutoBio Error:", e);
-    reply("⚠️ Something went wrong while updating autobio.");
+    await conn.sendMessage(m.chat, { react: { text: '😔', key: m.key } });
+    return m.reply("*DUBARA KOSHISH KARE 🥺*");
   }
 });
 
@@ -40,12 +52,12 @@ async function updateBio(conn) {
 
     const bio = `👑 I AM ACTIVE NOW (${muptime}) 👑`;
     await conn.updateProfileStatus(bio);
-    console.log(`BILAL-MD BIO UPDATED ${bio}`);
+    console.log(`BILAL-MD BIO UPDATED: ${bio}`);
   } catch (err) {
     console.error("⚠️ Failed to update bio:", err.message);
   }
 
-  // Update every 1 minute
+  // Har 1 minute baad update
   setTimeout(() => updateBio(conn), 60 * 1000);
 }
 
