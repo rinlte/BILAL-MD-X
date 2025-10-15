@@ -5,7 +5,7 @@ const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, 
 cmd({
     pattern: "lockgc",
     alias: ["lock"],
-    react: "🌹", // default react when command runs
+    react: "☺️", // default react when command runs
     desc: "Lock the group (Prevents new members from joining).",
     category: "group",
     filename: __filename
