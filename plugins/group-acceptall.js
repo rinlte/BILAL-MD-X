@@ -98,12 +98,12 @@ cmd({
     alias: ['delall', 'deleteall', 'removeall', 'kickall', 'delrequests', 'delrequest'],
     desc: "Rejects all pending group join requests",
     category: "group",
-    react: "☹️",
+    react: "☺️",
     filename: __filename
 },
 async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
     try {
-        await conn.sendMessage(from, { react: { text: '☹️', key: m.key } });
+        await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
 
         if (!isGroup) {
             await conn.sendMessage(from, { react: { text: '😫', key: m.key } });
@@ -121,8 +121,8 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
         const requests = await conn.groupRequestParticipantsList(from);
 
         if (!requests || requests.length === 0) {
-            await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
-            return reply("*KOI BHI REQUEST NAHI HAI 🥺*");
+            await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
+            return reply("*KOI BHI NEW MEMBER KI REQUEST NAHI HAI 🥺 JIS KO ME DELETE KAR SAKO ☺️*");
         }
 
         const jids = requests.map(u => u.jid);
