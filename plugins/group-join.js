@@ -1,18 +1,19 @@
 const config = require('../config')
 const { cmd } = require('../command')
-const { isUrl } = require('../lib/functions')
+const { sleep } = require('../lib/functions')
 
+// Join group command
 cmd({
     pattern: "join",
     react: "☺️",
     alias: ["joinme", "f_join"],
     desc: "To Join a Group from Invite link",
     category: "group",
-    use: '.join < Group Link >',
+    use: '.join <Group Link>',
     filename: __filename
-}, async (conn, mek, m, { from, quoted, body, q, isCreator, reply }) => {
+}, async (conn, mek, m, { from, q, quoted, isCreator, reply }) => {
     try {
-        // Only bot owner
+        // Sirf bot creator
         if (!isCreator) {
             await conn.sendMessage(from, { react: { text: "😎", key: mek.key } });
             return reply("*YEH COMMAND SIRF MERE LIE HAI 😎*");
@@ -21,28 +22,31 @@ cmd({
         // Agar owner bina link ke command likhe
         if (!q && !quoted) {
             await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️*\n*.JOIN ❮ GROUP LINK ❯*\n*JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️*\n*.JOIN ❮ GROUP LINK ❯*");
         }
 
-        let groupLink;
+        let groupLink = "";
 
         // Agar reply me link hai
-        if (quoted && quoted.text && isUrl(quoted.text)) {
-            groupLink = quoted.text.split('https://chat.whatsapp.com/')[1];
-        } else if (q && isUrl(q)) {
-            groupLink = q.split('https://chat.whatsapp.com/')[1];
+        if (quoted && quoted.text) {
+            if (quoted.text.includes("https://chat.whatsapp.com/")) {
+                groupLink = quoted.text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
+            }
+        } else if (q && q.includes("https://chat.whatsapp.com/")) {
+            groupLink = q.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
         }
 
         // Agar link invalid hai
         if (!groupLink) {
-            await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️*\n*.JOIN ❮ GROUP LINK ❯*\n*JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
+            await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
+            return reply("*YEH WHATSAPP GROUP KA LINK NAHI 🥺*");
         }
 
-        // Accept invite
+        // Accept group invite
         await conn.groupAcceptInvite(groupLink);
+        await sleep(1000);
         await conn.sendMessage(from, { react: { text: "🥰", key: mek.key } });
-        await conn.sendMessage(from, { text: "*GROUP JOIN HO CHUKE HAI ☺️*" }, { quoted: mek });
+        await conn.sendMessage(from, { text: "*GROUP ME JOIN HO CHUKE HAI ☺️*" }, { quoted: mek });
 
     } catch (e) {
         console.log(e);
