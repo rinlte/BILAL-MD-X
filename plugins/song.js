@@ -71,29 +71,40 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       // 🔹 Final audio caption (downloaded message)
       const finalCaption = `*_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}\n\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*\n 👑 BY :❯ BILAL-MD 👑\n`;
 
+      // 🔸 send audio (no caption)
       await conn.sendMessage(from, {
         audio: { url: download },
         mimetype: 'audio/mpeg',
         fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`,
-        ptt: false,
-        caption: finalCaption
+        ptt: false
       }, { quoted: m });
 
-      await conn.sendMessage(from, { delete: waitingMsg.key });
+      // 🔸 send final caption separately
+      await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
+
+      // 🔸 delete waiting msg
+      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
     } catch (err) {
       const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*__________________________________*\n 👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
 
-      await reply(`*APKA AUDO BAHUT BARI HAI 🥺 IS LIE DUCUMENT ME SEND HO RAHI HAI ☺️♥️*`);
+      await reply(`*APKA AUDIO BAHUT BARI HAI 🥺 IS LIE DUCUMENT ME SEND HO RAHI HAI ☺️♥️*`);
+
+      // 🔸 send document (no caption)
       await conn.sendMessage(from, {
         document: { url: download },
         mimetype: 'audio/mpeg',
-        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`,
-        caption: finalCaption
+        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`
       }, { quoted: m });
 
-      await conn.sendMessage(from, { delete: waitingMsg.key });
+      // 🔸 send caption as separate msg
+      await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
+
+      // 🔸 delete waiting msg
+      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
     }
 
