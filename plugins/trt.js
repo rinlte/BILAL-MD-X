@@ -38,25 +38,3 @@ async (conn, mek, m, { from, q, reply }) => {
         return reply("⚠️ An error occurred data while translating the your text. Please try again later🤕");
     }
 });
-
-//____________________________TTS___________________________
-cmd({
-    pattern: "tts",
-    desc: "download songs",
-    category: "download",
-    react: "🎙️",
-    filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-if(!q) return reply("*ESE LIKHO ☺️🌹* \n *TTS TUM KESE HOO 🤔*")
-    const url = googleTTS.getAudioUrl(q, {
-  lang: 'hi-IN',
-  slow: false,
-  host: 'https://translate.google.com',
-})
-await conn.sendMessage(from, { audio: { url: url }, mimetype: 'audio/mpeg', ptt: true }, { quoted: mek })
-    }catch(a){
-reply(`${a}`)
-}
-})
