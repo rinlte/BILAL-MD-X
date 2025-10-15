@@ -69,7 +69,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
 
     try {
       // 🔹 Final audio caption (downloaded message)
-      const finalCaption = `*_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*__________________________________*\n👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
+      const finalCaption = `*__________________________________________*\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*__________________________________________*\n*👑 BY :❯ BILAL-MD 👑*\n*__________________________________________*`;
 
       await conn.sendMessage(from, {
         audio: { url: download },
@@ -91,7 +91,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       // agar error aaye to thumbnail msg delete ho jaye
       if (thumbMsg) await conn.sendMessage(from, { delete: thumbMsg.key });
 
-      const finalCaption = `*_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*__________________________________*\n👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
+      const finalCaption = `*__________________________________________*\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*__________________________________________*\n*👑 BY :❯ BILAL-MD 👑*\n*__________________________________________*`;
 
       await reply(`*APKA AUDO BAHUT BARI HAI 🥺 IS LIE DUCUMENT ME SEND HO RAHI HAI ☺️♥️*`);
       await conn.sendMessage(from, {
