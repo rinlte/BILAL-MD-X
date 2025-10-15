@@ -13,34 +13,43 @@ cmd({
 }, async (conn, mek, m, { from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isCreator, isDev, isAdmins, reply }) => {
     try {
         const msr = {
-            own_cmd: "*AP YE COMMAND USE NAHI KAR SAKTE 🥺❤️*"
+            own_cmd: "*YEH COMMAND SIRF MERE LIE HAI ☺️**"
         };
 
-        // Only allow the creator to use the command
-        if (!isCreator) return reply(msr.own_cmd);
+        // 1️⃣ Owner check
+        if (!isCreator) {
+            await conn.sendMessage(from, { react: { text: "😎", key: mek.key } });
+            return reply(msr.own_cmd);
+        }
 
-        // If there's no input, check if the message is a reply with a link
-        if (!q && !quoted) return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️* \n *.JOIN ❮ GROUP LINK ❯* \n *JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
+        // 2️⃣ Check if input/link exists
+        if (!q && !quoted) {
+            await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️* \n *.JOIN ❮ GROUP LINK ❯* \n *JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
+        }
 
         let groupLink;
 
-        // If the message is a reply to a group invite link
+        // 3️⃣ If message is reply with link
         if (quoted && quoted.type === 'conversation' && isUrl(quoted.text)) {
             groupLink = quoted.text.split('https://chat.whatsapp.com/')[1];
         } else if (q && isUrl(q)) {
-            // If the user provided the link in the command
             groupLink = q.split('https://chat.whatsapp.com/')[1];
         }
 
-        if (!groupLink) return reply("*YEH WHATSAPP GROUP KA LINK NAHI 🥺❤️*");
+        if (!groupLink) {
+            await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
+            return reply("*YEH WHATSAPP GROUP KA LINK NAHI 🥺*");
+        }
 
-        // Accept the group invite
+        // 4️⃣ Accept the invite
         await conn.groupAcceptInvite(groupLink);
-        await conn.sendMessage(from, { text: `*GROUP ME JOIN HO CHUKE HAI ☺️❤️*` }, { quoted: mek });
+        await conn.sendMessage(from, { react: { text: "🥰", key: mek.key } });
+        await conn.sendMessage(from, { text: "*GROUP JOIN HO GAYA HAI ☺️*" }, { quoted: mek });
 
     } catch (e) {
-        await conn.sendMessage(from, { react: { text: '❌', key: mek.key } });
         console.log(e);
-        reply(`*DUBARA KOSHISH KAREIN 🥺❤️*\n\n${e}`);
+        await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
+        reply(`*DUBARA KOSHISH KAREIN 😔*\n\n${e}`);
     }
 });
