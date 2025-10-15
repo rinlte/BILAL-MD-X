@@ -4,16 +4,16 @@ const { runtime, sleep } = require('../lib/functions');
 
 cmd({
   pattern: "uptime",
-  alias: ["runtime", "up"],
+  alias: ["runtime", "utime", "upt", "upti", "uptim", "uptimes"],
   desc: "Show bot uptime with live updates for 30 minutes",
   category: "main",
-  react: "⏱️",
+  react: "☺️",
   filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
   try {
     // Send initial message
     const msg = await conn.sendMessage(from, {
-      text: `*👑 UPTIME :❯ Starting...*`
+      text: `*STARTING UPTIME...☺️♥️*`
     }, { quoted: mek });
 
     // Update loop: update every second for 30 minutes (1800 seconds)
