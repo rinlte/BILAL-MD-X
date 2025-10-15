@@ -6,7 +6,7 @@ cmd({
   alias: ["bioauto", "setautobio"],
   desc: "Enable or disable automatic bio updates with uptime.",
   category: "owner",
-  react: "🕒",
+  react: "🥰",
   filename: __filename
 }, async (conn, m, store, { reply, args }) => {
   try {
