@@ -22,7 +22,7 @@ cmd(
         await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
         return reply(
           `*PEHLE KISI BHI STICKER KO MENTION KARO 🥺*\n\n` +
-          `*PHIR ESE LIKHO ☺️*  \n\n *TAKE ❮APKA NAME❯*\n\n` +
+          `*PHIR ESE LIKHO ☺️*  \n\n *TAKE ❮MADE BY APKA NAME❯*\n\n` +
           `*IS SE STICKER APKE NAME KA BAN JAYE GA ☺️🌹*`
         );
       }
@@ -31,9 +31,9 @@ cmd(
       if (!q) {
         await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
         return reply(
-          `*APNA NAME LIKHO JAISE 😊*\n\n` +
-          `*.take MADE BY <APKA NAME>*\n\n` +
-          `*IS TARAH LIKHNE SE STICKER APKE NAME KA HO JAYE GA 🌹*`
+          `*APNA NAME ESE LIKHO ☺️*\n\n` +
+          `*TAKE MADE BY ❮APKA NAME❯*\n\n` +
+          `*❮MADE BY❯ LAZMI LIKHO FIR USKE BAD APNA NAME LIKHO 😇* \n *JESE YE LIKHA HAI☺️\n\n TAKE MADE BY BILAL* *`
         );
       }
 
@@ -45,7 +45,7 @@ cmd(
 
         // ⏳ Waiting message
         const waitMsg = await conn.sendMessage(from, {
-          text: `*APKA STICKER READY HO RAHA HAI ☺️*\n*THORA SA INTAZAR KARE......😇*`,
+          text: `*APKA STICKER READY HO RAHA HAI ☺️*\n*THORA SA INTAZAR KARE...🥺🌹*`,
           quoted: mek
         });
 
