@@ -3,6 +3,7 @@ const { cmd } = require('../command');
 // Command to list all pending group join requests
 cmd({
     pattern: "requestlist",
+      alias: ['approvelist', 'addinglist', 'pending', 'pendinglist', 'pendingmembers', 'joinlist'],
     desc: "Shows pending group join requests",
     category: "group",
     react: "☺️",
@@ -11,24 +12,24 @@ cmd({
 async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
         await conn.sendMessage(from, {
-            react: { text: '🤔', key: m.key }
+            react: { text: '🥺', key: m.key }
         });
 
         if (!isGroup) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '😫', key: m.key }
             });
             return reply("*AP YEH COMMAND GROUP ME USE KARO ☺️❤️*");
         }
         if (!isAdmins) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '🤐', key: m.key }
             });
             return reply("*YEH COMMAND SIRF GRKOUP KE ADMINS USE KAR SAKTE HAI ☺️❤️*");
         }
         if (!isBotAdmins) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '😎', key: m.key }
             });
             return reply("*GROUP ME LOG JOIN HONA CHAHTE HAI ☺️* \n *AP MUJHE ADMIN BANAYE GE TO ME IN SAB KI REQUESS ACCEPT KARO 🥺❤️*");
         }
@@ -37,12 +38,12 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         
         if (requests.length === 0) {
             await conn.sendMessage(from, {
-                react: { text: '🙂', key: m.key }
+                react: { text: '☺️', key: m.key }
             });
             return reply("*KOI BHI NEW MEMBER KI REQUEST ABHI NAHI AYI ☺️❤️*");
         }
 
-        let text = `*YEH SAB LOG GROUP ME JOIN HONA CHAHTE HAI 🥺* \n (${requests.length})*\n\n`;
+        let text = `*YEH SAB LOG GROUP ME JOIN HONA CHAHTE HAI 🥺* \n\n (${requests.length})*\n\n`;
         requests.forEach((user, i) => {
             text += `${i+1}. @${user.jid.split('@')[0]}\n`;
         });
@@ -52,17 +53,18 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         });
         return reply(text, { mentions: requests.map(u => u.jid) });
     } catch (error) {
-        console.error("Request list error:", error);
+        console.error("*DUBARA KOSHISH KAREIN 😔*", error);
         await conn.sendMessage(from, {
-            react: { text: '🥺', key: m.key }
+            react: { text: '😔', key: m.key }
         });
-        return reply("*DUBARA KOSHISH KAREIN ☺️❤️*");
+        return reply("*DUBARA KOSHISH KAREIN 😔*");
     }
 });
 
 // Command to accept all pending join requests
 cmd({
     pattern: "acceptall",
+      alias: ['approveall', 'addall', 'adal', 'addal', 'joinall', 'joinmembers'],
     desc: "Accepts all pending group join requests",
     category: "group",
     react: "☺️",
@@ -71,26 +73,26 @@ cmd({
 async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
         await conn.sendMessage(from, {
-            react: { text: '🤔', key: m.key }
+            react: { text: '😃', key: m.key }
         });
 
         if (!isGroup) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '😫', key: m.key }
             });
             return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
         }
         if (!isAdmins) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '🤐', key: m.key }
             });
             return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI ☺️❤️*");
         }
         if (!isBotAdmins) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '😎', key: m.key }
             });
-            return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAO ☺️❤️*");
+            return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAO ☺️*");
         }
 
         const requests = await conn.groupRequestParticipantsList(from);
@@ -106,13 +108,13 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.groupRequestParticipantsUpdate(from, jids, "approve");
         
         await conn.sendMessage(from, {
-            react: { text: '🌹', key: m.key }
+            react: { text: '☺️', key: m.key }
         });
         return reply(`*ITNE ${requests.length} MEMBERS IS GROUP ME JOIN HO CHUKE HAI ☺️❤️*`);
     } catch (error) {
-        console.error("Accept all error:", error);
+        console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", error);
         await conn.sendMessage(from, {
-            react: { text: '🥺', key: m.key }
+            react: { text: '😔', key: m.key }
         });
         return reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
     }
@@ -121,32 +123,33 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 // Command to reject all pending join requests
 cmd({
     pattern: "rejectall",
+      alias: ['delall', 'deleteall', 'removeall', 'kickall', 'delrequests', 'delrequest'],
     desc: "Rejects all pending group join requests",
     category: "group",
-    react: "🥺",
+    react: "☹️",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
         await conn.sendMessage(from, {
-            react: { text: '🤔', key: m.key }
+            react: { text: '☹️', key: m.key }
         });
 
         if (!isGroup) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '😫', key: m.key }
             });
             return reply("*YEH COMMAND SIRF GROUPS ME USE KAREIN ☺️❤️*");
         }
         if (!isAdmins) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '🤐', key: m.key }
             });
             return reply("*YEH COMMAND SIRF GROUP ADMINS USE KAR SAKTE HAI ☺️❤️*");
         }
         if (!isBotAdmins) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '😎', key: m.key }
             });
             return reply("*PEHLE MUJHE IS GROUP ME ADMIN BANAO ☺️❤️*");
         }
@@ -155,20 +158,20 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         
         if (requests.length === 0) {
             await conn.sendMessage(from, {
-                react: { text: '🥺', key: m.key }
+                react: { text: '☺️', key: m.key }
             });
-            return reply("*KOI BHI REQUEST NAHI HAI ☺️❤️*");
+            return reply("*KOI BHI REQUEST NAHI HAI ☺️*");
         }
 
         const jids = requests.map(u => u.jid);
         await conn.groupRequestParticipantsUpdate(from, jids, "reject");
         
         await conn.sendMessage(from, {
-            react: { text: '🥺', key: m.key }
+            react: { text: '😔, key: m.key }
         });
         return reply(`IN ${requests.length} SAB MEMBERS KI REQUESTS REJECT HO CHUKI HAI 🥺❤️*`);
     } catch (error) {
-        console.error("Reject all error:", error);
+        console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", error);
         await conn.sendMessage(from, {
             react: { text: '🥺', key: m.key }
         });
