@@ -133,8 +133,12 @@ YEH HAI G 🌹
 ┃👑│ • RESTART
 ╰━━━━━━━━━━━━━━━┈⊷
 
-👑 FOR HELP CLICK HERE 👑
-https://akaserein.github.io/Bilal/
+*👑 FOR HELP CLICK HERE 👑*
+*👑 WEBSITE :❯ *https://akaserein.github.io/Bilal/*
+
+*👑 CHANNEL :❯ https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G*
+
+*👑 GROUP :❯ https://chat.whatsapp.com/BwWffeDwiqe6cjDDklYJ5m?mode=ems_copy_t*
 
 👑 BILAL-MD WHATSAPP BOT 👑`;
 
