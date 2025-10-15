@@ -38,9 +38,9 @@ async function updateBio(conn) {
     const muptime = clockString(uptime * 1000);
     const botname = global.config?.botname || "BILAL-MD";
 
-    const bio = `👑 BILAL-MD IS ACTIVE (${muptime})`;
+    const bio = `👑 I AM ACTIVE NOW (${muptime}) 👑`;
     await conn.updateProfileStatus(bio);
-    console.log(`✅ Updated bio: ${bio}`);
+    console.log(`BILAL-MD BIO UPDATED ${bio}`);
   } catch (err) {
     console.error("⚠️ Failed to update bio:", err.message);
   }
