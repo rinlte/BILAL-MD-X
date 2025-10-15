@@ -12,6 +12,11 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
+          
+        }
+        const userName = m.pushName || m.sender.split('@')[0];
+const displayName = userName ? userName : 'User';
+       
         const menuText = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
 *┃👑│ USER:❯ ${config.OWNER_NAME}*
@@ -22,7 +27,7 @@ cmd({
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
-*HI  G 🥰*
+*HI ${displayName} G 🥰*
 *MERE BOT KA MENU ☺️*
 *YEH HAI G 🌹*
 
