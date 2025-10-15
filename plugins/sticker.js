@@ -9,7 +9,7 @@ cmd(
         filename: __filename,
     },
     async (conn, mek, m, { quoted, args, q, reply, from }) => {
-        if (!mek.quoted) return reply(`*AP KISI PHOTO , VIDEO KO MENTION KARO AUR PHIR LIKHO ☺️🌹* \n STICKER* \n *JAB AP STICKER LIKHO GE TO APKI PHOTO YA VIDEO STICKER BAN JAYE GE OK 😊❤️*`);
+        if (!mek.quoted) return reply(`*AP KISI PHOTO , VIDEO KO MENTION KARO 🥺* \n *AUR PHIR ESE LIKHO ☺️* \n\n *❮STICKER❯* \n\n *JAB AP STICKER LIKHO GE 😊 TO APKI PHOTO YA VIDEO STICKER BAN JAYE GE OK 😇🌹*`);
         let mime = mek.quoted.mtype;
         let pack = Config.STICKER_NAME || "👑 BILAL-MD 👑";
         
