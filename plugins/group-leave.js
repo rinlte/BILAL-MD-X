@@ -28,8 +28,8 @@ async (conn, mek, m, {
         }
 
         // 3️⃣ Leaving group
-        await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
-        reply("Leaving group...");
+        await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
+        reply("*MENE YEH GROUP LEFT KAR DIA HAI 🥺 AP SAB ALLAH KHUSH RAHE AMEEN 🤲 ALLAH HAFIZ TAKE CARE ALL ☹️💔*");
         await sleep(1500);
         await conn.groupLeave(from);
 
