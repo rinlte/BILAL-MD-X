@@ -141,7 +141,7 @@ https://akaserein.github.io/Bilal/
         // 1️⃣ Send image with caption first
         await conn.sendMessage(from, {
             image: { url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png' },
-            caption: "👑 BILAL-MD MENU 👑"
+            caption: "*👑 BILAL-MD MENU 👑*"
         }, { quoted: mek });
 
         // 2️⃣ Wait 1 second
