@@ -10,7 +10,9 @@ cmd({
 async (conn, mek, m, { reply, isCreator }) => {
     try {
         if (!isCreator) {
-            return reply("*AP YE COMMAND USE NAHI KAR SAKTE 🥺❤️* \n *YEH COMMAND SIRF MERE LIE HAI ☺️❤️*");
+            // React 🤐 before sending the reply
+            await conn.sendMessage(m.chat, { react: { text: '😎', key: m.key } });
+            return reply("*YEH COMMAND SIRF MERE LIE HAI 😎*");
         }
 
         // Command pe 🥺 react
