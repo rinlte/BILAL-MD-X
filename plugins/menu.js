@@ -11,7 +11,7 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
-        // Get platform dynamically
+        // Platform & User
         function getPlatform() {
             if (process.env.HEROKU_APP_NAME) return "Heroku";
             if (process.env.KOYEB_API) return "Koyeb";
@@ -19,8 +19,6 @@ cmd({
             if (process.env.TERMUX) return "Termux";
             return "Panel";
         }
-
-        // Get user display name
         const displayName = m.pushName || m.sender.split('@')[0] || 'User';
 
         // Full menu text
@@ -139,25 +137,53 @@ cmd({
 
 *👑 BILAL-MD WHATSAPP BOT 👑*`;
 
-        // Split menu by lines
-        const lines = menuText.split("\n");
+// Emojis array
+const emojis = ["🥰","🌹","♥️","💓","😍","💞","🌺","😘","❤️","💘","💞","💕","❣️","💗","💓","😇","☺️","😊","😃","🔰","👑","🙂","🥳"];
 
-        // Send initial empty message
-        let currentText = "";
-        const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
+// 1️⃣ Send image first
+await conn.sendMessage(from, {
+    image: { url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png' },
+    caption: "*👑 BILAL-MD MENU 👑*"
+}, { quoted: mek });
 
-        // Add lines one by one every 1 second
-        for (const line of lines) {
-            currentText += line + "\n";
-            await sleep(1000); // 1 second delay
-            await conn.relayMessage(from, {
-                protocolMessage: {
-                    key: msg.key,
-                    type: 14,
-                    editedMessage: { conversation: currentText }
-                }
-            }, {});
+// 2️⃣ Send loading message
+const loadingMsg = await conn.sendMessage(from, {
+    text: "*MENU ME COMMANDS ADD HO RAHE HAI 🥺*\n*THORA SA INTAZAR KARE....🥰*"
+}, { quoted: mek });
+
+// 3️⃣ Split menu by lines & send line-by-line
+const lines = menuText.split("\n");
+let currentText = "";
+const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
+
+for (const line of lines) {
+    currentText += line + "\n";
+    await sleep(1000); // 1 sec delay
+
+    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+    // Edit menu message
+    await conn.relayMessage(from, {
+        protocolMessage: {
+            key: msg.key,
+            type: 14,
+            editedMessage: { conversation: currentText }
         }
+    }, {});
+
+    // React line-by-line with emoji
+    await conn.sendMessage(from, { react: { text: randomEmoji, key: msg.key } });
+}
+
+// 4️⃣ Menu complete → delete loading message
+await conn.sendMessage(from, { react: { text: "✅", key: msg.key } }); // final react
+await conn.sendMessage(from, { text: "Menu complete ✔️" }); // optional confirm msg
+await conn.relayMessage(from, {
+    protocolMessage: {
+        key: loadingMsg.key,
+        type: 2 // delete message type
+    }
+}, {});
 
     } catch (e) {
         console.error('Menu Error:', e);
