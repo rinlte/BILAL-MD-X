@@ -25,10 +25,10 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
 
     if (!args[0]) {
       return reply(
-        "*AP KO KOI GAANA SUNNA HAI 🥺*\n" +
-        "*TO AP ESE LIKHO 😇*\n\n" +
-        "*PLAY ❮APKE GAANE KA NAM❯*\n\n" +
-        "*AP COMMAND ❮PLAY❯ LIKH KAR USKE AGE APNA GAANA KA NAM LIKH DO ☺️ FIR ME WO GAANA DOWNLOAD KAR KE YAHA BHEJ DUNGA 🥰💞*"
+        "*AP KO KOI AUDIO DOWNLOAD KARNI HAI 🥺*\n" +
+        "*TO AP ESE LIKHO ☺️*\n\n" +
+        "*PLAY ❮APKE AUDIO KA NAM❯*\n\n" +
+        "*AP COMMAND ❮PLAY❯ LIKH KAR USKE AGE APNE AUDIO KA NAM LIKH DO ☺️ FIR ME WO AUDIO DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE 🥰💞*"
       );
     }
 
@@ -37,7 +37,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
 
     waitingMsg = await conn.sendMessage(
       from,
-      { text: "*APKA GAANA DOWNLOAD HO RAHA HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GA ☺️ TO YAHA BHEJ DIYA JAYE GA 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
+      { text: "*APKA AUDIO DOWNLOAD HO RAHA HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GA ☺️ TO YAHA BHEJ DIYA JAYE GA 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
       { quoted: m }
     );
     await conn.sendMessage(from, { react: { text: "🎵", key: m.key } });
@@ -46,7 +46,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       const search = await yts(provided);
       if (!search?.all?.length) {
         await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-        return reply("*APKA GAANA MUJHE NAHI MILA 🥺*\n*DUBARA KOSHISH KARE 🥺*");
+        return reply("*APKA AUDIO MUJHE NAHI MILA 🥺 AP APNA AUDIO DUBARA DOWNLOAD KARO ☺️*");
       }
       ytUrl = search.all[0].url;
     }
@@ -57,19 +57,19 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
     if (!data?.status || !data?.result?.download) {
       await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
       if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-      return reply("*APKA GAANA DOWNLOAD NAHI HO PA RAHA 🥺*\n*DUBARA KOSHISH KARE 🥺*");
+      return reply("*APKA AUDIO MUJHE NAHI MILA 🥺 AP APNA AUDIO DUBARA DOWNLOAD KARO ☺️*");
     }
 
     const { title, thumbnail, author, metadata, download } = data.result;
 
     // 🔹 Thumbnail caption (audio info)
-    const thumbCaption = `__________________________________\n*👑 AUDIO KA NAME 👑* \n ${title}\n*\n👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}\n\n👑 VIEWS:❯ ${metadata?.view || '—'}\n\n👑 LIKES :❯ ${metadata?.like || '—'}\n\n👑 TIME:❯ ${metadata?.duration || '—'}\n__________________________________*`;
+    const thumbCaption = `*__________________________________*\n*👑 AUDIO KA NAME 👑* \n *__________________________________*\n *${title}*\n*__________________________________**\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n*__________________________________*\n*👑 VIEWS:❯ ${metadata?.view || '—'}*\n*__________________________________*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*__________________________________*\n*👑 TIME:❯ ${metadata?.duration || '—'}*\n__________________________________*`;
 
     await conn.sendMessage(from, { image: { url: thumbnail }, caption: thumbCaption }, { quoted: m });
 
     try {
       // 🔹 Final audio caption (downloaded message)
-      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}\n\nMENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*\n 👑 BY :❯ BILAL-MD 👑\n`;
+      const finalCaption = `*_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}\n\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*\n 👑 BY :❯ BILAL-MD 👑\n`;
 
       await conn.sendMessage(from, {
         audio: { url: download },
@@ -83,9 +83,9 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
     } catch (err) {
-      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}\n\nMENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*\n 👑 BY :❯ BILAL-MD 👑\n`;
+      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*__________________________________*\n 👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
 
-      await reply(`*GAANA BAHUT BARA HAI 🥺 AB ME USE DOCUMENT FORM ME BHEJ RAHA HU 💌*`);
+      await reply(`*APKA AUDO BAHUT BARI HAI 🥺 IS LIE DUCUMENT ME SEND HO RAHI HAI ☺️♥️*`);
       await conn.sendMessage(from, {
         document: { url: download },
         mimetype: 'audio/mpeg',
