@@ -13,7 +13,7 @@ cmd({
   try {
     // Send initial message
     const msg = await conn.sendMessage(from, {
-      text: `*👑 UPTIME :❯ Calculating...*`
+      text: `*TESTING UPTIME....☺️*`
     }, { quoted: mek });
 
     // Update loop: update message every second for 60 seconds
