@@ -12,13 +12,13 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, quoted, body, q, isCreator, reply }) => {
     try {
-        // Only bot owner can use
+        // Only bot owner
         if (!isCreator) {
             await conn.sendMessage(from, { react: { text: "😎", key: mek.key } });
             return reply("*YEH COMMAND SIRF MERE LIE HAI 😎*");
         }
 
-        // Owner ne sirf command likha bina link ke
+        // Agar owner bina link ke command likhe
         if (!q && !quoted) {
             await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
             return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI TO ESE LIKHO ☺️❤️*\n*.JOIN ❮ GROUP LINK ❯*\n*JAB ESE GROUP KA LINK TYPE KRE GE TO AP GROUP ME JOIN HO JAYE GE ☺️❤️*");
@@ -33,7 +33,7 @@ cmd({
             groupLink = q.split('https://chat.whatsapp.com/')[1];
         }
 
-        // Invalid link
+        // Agar link invalid hai
         if (!groupLink) {
             await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
             return reply("*YEH WHATSAPP GROUP KA LINK NAHI 🥺*");
@@ -47,6 +47,6 @@ cmd({
     } catch (e) {
         console.log(e);
         await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-        reply(`*DUBARA KOSHISH KARE 😔*`);
+        reply("*DUBARA KOSHISH KARE 😔*");
     }
 });
