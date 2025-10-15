@@ -36,9 +36,9 @@ const displayName = userName ? userName : 'User';
 *┃👑╰──────────────*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
-*HI ${displayName} G ☺️♥️*
-*MERE BOT KA MENU 🥰🌹*
-*YEH HAI G 🌺🌹*
+*HI ${displayName} G 🥰*
+*MERE BOT KA MENU ☺️*
+*YEH HAI G 🌹*
 
 *╭━━〔 👑 DOWNLOAD 👑 〕━━┈⊷*
 *┃👑│ • FB*
@@ -47,7 +47,6 @@ const displayName = userName ? userName : 'User';
 *┃👑│ • APK*
 *┃👑│ • IMG*
 *┃👑│ • SONG*
-*┃👑│ • PLAY*
 *┃👑│ • VIDEO*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
@@ -64,6 +63,9 @@ const displayName = userName ? userName : 'User';
 *┃👑│ • UNLOCKGC*
 *┃👑│ • TAGALL*
 *┃👑│ • HTAG*
+*┃👑│ • PENDING*
+*┃👑│ • ACCEPTALL*
+*┃👑│ • REJECTALL*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 USER 👑 〕━━┈⊷*
