@@ -5,7 +5,7 @@ const { runtime, sleep } = require('../lib/functions');
 cmd({
   pattern: "uptime",
   alias: ["runtime", "up"],
-  desc: "Show bot uptime with live updates",
+  desc: "Show bot uptime with live updates for 30 minutes",
   category: "main",
   react: "⏱️",
   filename: __filename
@@ -13,11 +13,11 @@ cmd({
   try {
     // Send initial message
     const msg = await conn.sendMessage(from, {
-      text: `*TESTING UPTIME....☺️*`
+      text: `*👑 UPTIME :❯ Starting...*`
     }, { quoted: mek });
 
-    // Update loop: update message every second for 60 seconds
-    for (let i = 0; i < 60; i++) {
+    // Update loop: update every second for 30 minutes (1800 seconds)
+    for (let i = 0; i < 1800; i++) {
       const up = runtime(process.uptime());
 
       await sleep(1000); // wait 1 second
@@ -31,6 +31,8 @@ cmd({
         }
       }, {});
     }
+
+    // After 30 minutes, just stop updating (no final message)
 
   } catch (e) {
     console.error("*DUBARA ❮UPTIME❯ LIKHO 🥺*", e);
