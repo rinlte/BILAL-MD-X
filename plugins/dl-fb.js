@@ -3,15 +3,16 @@ const fs = require("fs");
 const path = require("path");
 const { cmd } = require("../command");
 
+// 🔹 Facebook Video Downloader Function (New API)
 async function downloadFacebookVideo(url) {
-    const apiUrl = `https://api.princetechn.com/api/download/facebook?apikey=prince&url=${encodeURIComponent(url)}`;
+    const apiUrl = `https://delirius-apiofc.vercel.app/download/facebook?url=${encodeURIComponent(url)}`;
     const res = await axios.get(apiUrl, { timeout: 40000 });
 
-    if (!res.data || res.data.status !== 200 || !res.data.success || !res.data.result) {
+    if (!res.data || !res.data.result || (!res.data.result.hd && !res.data.result.sd)) {
         throw new Error("Invalid API response");
     }
 
-    return res.data.result.hd_video || res.data.result.sd_video;
+    return res.data.result.hd || res.data.result.sd;
 }
 
 async function saveVideo(url) {
@@ -66,7 +67,7 @@ cmd({
         await conn.sendMessage(m.chat, {
             video: { url: filePath },
             mimetype: "video/mp4",
-            caption: "*_________________________________*\n*👑 FACEBOOK VIDEO NAME 👑* \n*${title}*\n*_________________________________*\n*MENE APKI FACEBOOK VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI FACEBOOK VIDEO CHAHYE TO MUJHE LINK DENA 😍 KAR DE GE FACEBOOK VIDEO DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*_________________________________*\n *👑 BY :❯ BILAL-MD 👑*\n*_________________________________*"
+            caption: "*_________________________________*\n*👑 FACEBOOK VIDEO NAME 👑* \n*${url}*\n*_________________________________*\n*MENE APKI FACEBOOK VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI FACEBOOK VIDEO CHAHYE TO MUJHE LINK DENA 😍 KAR DE GE FACEBOOK VIDEO DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞* \n*_________________________________*\n *👑 BY :❯ BILAL-MD 👑*\n*_________________________________*"
         }, { quoted: mek });
 
         // React on command/link message
