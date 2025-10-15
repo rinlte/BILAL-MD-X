@@ -62,7 +62,7 @@ async (conn, mek, m, { from, q, reply }) => {
 *_________________________________________*
  *TRT EN ❮APNA URDU WALA MSG YAHA LIKHO❯* 
 *_________________________________________*
- *AB TO APKO SAMAJH AA GAI HOGI ☺️🌹* 
+ *AB TO APKO SAMAJH AA GAI HOGI ☺️* 
 *_________________________________________*
  *👑 BILAL-MD WHATSAPP BOT 👑* 
 *_________________________________________*`;
@@ -81,7 +81,7 @@ async (conn, mek, m, { from, q, reply }) => {
         const parts = q.trim().split(/\s+/);
         if (parts.length < 2) {
             // provided something but format incomplete -> wrongCmdMsg only
-            await conn.sendMessage(from, { react: { text: '😫', key: m.key } });
+            await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
             return reply(wrongCmdMsg);
         }
 
