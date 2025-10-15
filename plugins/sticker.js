@@ -21,8 +21,8 @@ cmd(
       if (!mek.quoted) {
         await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
         return reply(
-          `*AP KISI PHOTO YA VIDEO KO MENTION KARO 🥺*\n\n` +
-          `*PHIR LIKHO ☺️* \n \n *❮STICKER❯*\n\n` +
+          `*AP KISI BHI PHOTO YA VIDEO KO MENTION KARO 🥺*\n\n` +
+          `*PHIR ESE LIKHO ☺️* \n \n *❮STICKER❯*\n\n` +
           `*JAB AP STICKER LIKHO GE 😇 TO APKI PHOTO YA VIDEO STICKER BAN JAYE GI 🌹*`
         );
       }
