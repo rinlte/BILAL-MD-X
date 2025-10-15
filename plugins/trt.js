@@ -7,14 +7,14 @@ cmd({
     pattern: "trt",
     alias: ["translate"],
     desc: "🌍 Translate text between languages",
-    react: "🌹",
+    react: "⚡",
     category: "other",
     filename: __filename
 },
 async (conn, mek, m, { from, q, reply }) => {
     try {
         const args = q.split(' ');
-        if (args.length < 2) return reply("*AP KO KISI KE MSG KI LANGUAGE SAMAJH NAHI AA RH 🤔* \n *TO ESE LIKHO ☺️🌹* \n *❮.TRT UR❯ WO MSG PASTE KRO ☺️🌹* \");
+        if (args.length < 2) return reply("❗ Please provide a language code and text. Usage: .translate [language code] [text]");
 
         const targetLang = args[0];
         const textToTranslate = args.slice(1).join(' ');
@@ -24,13 +24,13 @@ async (conn, mek, m, { from, q, reply }) => {
         const response = await axios.get(url);
         const translation = response.data.responseData.translatedText;
 
-        const translationMessage = `*👑 BILAL-MD WHATSAPP BOT 👑*
+        const translationMessage = `> *BILAL-TRANSLATION*
 
-*APKA MSG:❯* ${textToTranslate}
+> 🔤 *Original*: ${textToTranslate}
 
-*TRANSLATED:❯* ${translation}
+> 🔠 *Translated*: ${translation}
 
-*LANGUAGE:❯* ${targetLang.toUpperCase()}`;
+> 🌐 *Language*: ${targetLang.toUpperCase()}`;
 
         return reply(translationMessage);
     } catch (e) {
@@ -38,3 +38,5 @@ async (conn, mek, m, { from, q, reply }) => {
         return reply("⚠️ An error occurred data while translating the your text. Please try again later🤕");
     }
 });
+
+//____________________________TTS___________________________
