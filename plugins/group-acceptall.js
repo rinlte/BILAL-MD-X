@@ -173,8 +173,8 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
     } catch (error) {
         console.error("*DUBARA KOSHISH KAREIN 🥺❤️*", error);
         await conn.sendMessage(from, {
-            react: { text: '🥺', key: m.key }
-        });
+    react: { text: '😔', key: m.key }
+});
         return reply("*DUBARA KOSHISH KAREIN 🥺❤️*");
     }
 });
