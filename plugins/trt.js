@@ -14,7 +14,7 @@ cmd({
 async (conn, mek, m, { from, q, reply }) => {
     try {
         const args = q.split(' ');
-        if (args.length < 2) return reply("*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI 😥* \n *TO AP ESE LIKHO ☺️* \n\n *TRT UR ❮URDU LANGUAGE ME TRANSLATE KARNE K LIE❯* \n *TRT EN ❮ENGLISH ME TRANSLATE KARNE K LIE❯* \n\n *APKE PASS AGAR ENGLISH ZUBAN KA MSG HAI AP NE USE URDU ME TRANSLATE KARNA HAI 🤔* \n *TO ESE LIKHO ☺️* \n \n *TRT UR ❮APNA ENGLISH WALA MSG YAHA LIKHO❯* \n \n *AGAR APKE PASS URDU WALA MSG HAI AUR AP NE ENGLISH ZUBAN ME TRANSLATE KARNA HAI 🤔* \n *TO AP ESE LIKHO ☺️* \n \n *TRT EN ❮APNA URDU WALA MSG YAHA LIKHO❯* \n \n *👑 BILAL-MD WHATSAPP BOT 👑*");
+        if (args.length < 2) return reply("\n*_________________________________________*\n*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI 😥* \n *TO AP ESE LIKHO ☺️* \n*_________________________________________*\n *TRT UR ❮URDU LANGUAGE ME TRANSLATE KARNE K LIE❯* \n*_________________________________________*\n *TRT EN ❮ENGLISH ME TRANSLATE KARNE K LIE❯* \n*_________________________________________*\n *APKE PASS AGAR ENGLISH ZUBAN KA MSG HAI AP NE USE URDU ME TRANSLATE KARNA HAI 🤔* \n *TO ESE LIKHO ☺️* \n*_________________________________________*\n *TRT UR ❮APNA ENGLISH WALA MSG YAHA LIKHO❯* \n*_________________________________________*\n *AGAR APKE PASS URDU WALA MSG HAI AUR AP NE ENGLISH ZUBAN ME TRANSLATE KARNA HAI 🤔* \n *TO AP ESE LIKHO ☺️* \n*_________________________________________*\n *TRT EN ❮APNA URDU WALA MSG YAHA LIKHO❯* \n*_________________________________________*\n *👑 BILAL-MD WHATSAPP BOT 👑*");
 
         const targetLang = args[0];
         const textToTranslate = args.slice(1).join(' ');
