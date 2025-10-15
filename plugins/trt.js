@@ -16,7 +16,7 @@ async (conn, mek, m, { from, q, reply }) => {
         // 🔹 Guide message (jab command sirf call ki jaye, bina args)
         const guideMsg =
 `\n*_________________________________________*
-*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI YEH TRICK USE KARO 😃* 
+*APKO KISI LANGUAGE KI SAMAJH NAHI AA RAHI TO AP YEH TRICK USE KARO 😃* 
  *TO AP ESE LIKHO ☺️* 
 *_________________________________________*
  *TRT UR ❮URDU LANGUAGE ME TRANSLATE KARNE K LIE❯* 
