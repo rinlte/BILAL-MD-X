@@ -19,7 +19,7 @@ cmd(
 
       // ⚠️ No reply case
       if (!mek.quoted) {
-        await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
+        await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
         return reply(
           `*AP KISI PHOTO YA VIDEO KO MENTION KARO 🥺*\n\n` +
           `*PHIR LIKHO ☺️* \n \n *❮STICKER❯*\n\n` +
