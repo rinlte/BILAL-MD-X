@@ -76,7 +76,7 @@ async (conn, mek, m, { from, q, reply }) => {
         // If user provided something but it's incomplete -> show wrongCmdMsg + wrong react
         const parts = q.trim().split(/\s+/);
         if (parts.length < 2) {
-            await conn.sendMessage(from, { react: { text: '😫', key: m.key } }); // wrong-format react
+            await conn.sendMessage(from, { react: { text: '😥', key: m.key } }); // wrong-format react
             return reply(wrongCmdMsg);
         }
 
@@ -96,7 +96,7 @@ async (conn, mek, m, { from, q, reply }) => {
 
         const translation = response.data.responseData.translatedText;
 
-        const translationMessage = `> *👑 BILAL-TRANSLATION 👑*\n\n> 🔤 *Original*: ${textToTranslate}\n\n> 🔠 *Translated*: ${translation}\n\n> 🌐 *Language*: ${targetLang.toUpperCase()}`;
+        const translationMessage = `*APKI LANGUAGE TRANSLATE HO CHUKI HAI ☺️* \n*_________________________________________*\n ${translation}\n*_________________________________________*\n *${targetLang.toUpperCase()} ZUBAN ME 🥰*`;
 
         await conn.sendMessage(from, { react: { text: '☺️', key: m.key } }); // success react
         return reply(translationMessage);
