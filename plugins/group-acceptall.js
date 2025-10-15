@@ -76,7 +76,7 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
         const requests = await conn.groupRequestParticipantsList(from);
 
         if (!requests || requests.length === 0) {
-            await conn.sendMessage(from, { react: { text: '🤔', key: m.key } });
+            await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
             return reply("*KOI BHI REQUEST NAHI HAI ACCEPT KARNE K LIE ☺️❤️*");
         }
 
