@@ -17,7 +17,7 @@ cmd({
         // 😥 If no text provided
         if (!args[0]) {
             await conn.sendMessage(m.chat, { react: { text: '🥺', key: m.key } });
-            return reply(`*APKO APKE NAME KA STICKER BANANA HAI 🥺* \n *TO AP ESE LIKHO ☺️* \n\n *ATTP ❮APKA NAME❯* \n \n *JAB AP ESE LIKHO GE 🥺 TO APKE NAME KA STICKER BAN JAYE GA 🥰🌹*`);
+            return reply(`*APKO APKE NAME KA STICKER BANANA HAI 🥺* \n *TO AP ESE LIKHO ☺️* \n\n *ATTP ❮APKA NAME❯* \n \n *JAB AP ESE LIKHO GE 🥺 TO APKE NAME KA STICKER BAN JAYE GA 🥰*`);
         }
 
         // ⏳ Waiting message
