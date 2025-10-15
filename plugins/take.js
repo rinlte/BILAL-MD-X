@@ -19,7 +19,7 @@ cmd(
 
       // ⚠️ Agar koi sticker reply nahi kiya
       if (!mek.quoted) {
-        await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
+        await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
         return reply(
           `*PEHLE KISI BHI STICKER KO MENTION KARO 🥺*\n\n` +
           `*PHIR ESE LIKHO ☺️*  \n\n *TAKE ❮APKA NAME❯*\n\n` +
