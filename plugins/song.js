@@ -69,7 +69,7 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
 
     try {
       // 🔹 Final audio caption (downloaded message)
-      const finalCaption = `_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*__________________________________*\n👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
+      const finalCaption = `*_________________________________\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*__________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*__________________________________*\n👑 BY :❯ BILAL-MD 👑\n*__________________________________*`;
 
       await conn.sendMessage(from, {
         audio: { url: download },
