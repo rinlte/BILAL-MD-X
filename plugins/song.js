@@ -12,7 +12,7 @@ function extractUrl(text = '') {
 
 cmd({
   pattern: 'play',
-  alias: ['song', 'music', 'audio', 'yta', 'ytmp3'],
+  alias: ['song', 'music', 'audio', 'yta', 'ytmp3', 'ytmusic', 'ytsong', 'ytaudio', 'ytsearch', 'ytmp'],
   desc: 'Download YouTube audio using Izumi API.',
   category: 'download',
   react: '🥺',
