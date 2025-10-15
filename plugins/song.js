@@ -19,7 +19,7 @@ cmd({
   filename: __filename
 },
 async (conn, mek, m, { from, args, reply, quoted }) => {
-  let waitingMsg, thumbMsg;
+  let waitingMsg, thumbMsg, captionMsg;
   try {
     await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
@@ -79,38 +79,22 @@ async (conn, mek, m, { from, args, reply, quoted }) => {
       }, { quoted: m });
 
       // Caption message alag bhejna (audio ke baad)
-      await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
+      captionMsg = await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
 
       // waiting msg delete (success hone ke baad)
       if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
 
-      // ✅ thumbnail msg delete nahi hoga (success hone ke baad)
       await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
 
     } catch (err) {
-      // agar error aaye to thumbnail msg delete ho jaye
-      if (thumbMsg) await conn.sendMessage(from, { delete: thumbMsg.key });
-
-      const finalCaption = `*_________________________________________*\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*_________________________________________*\nMENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*_________________________________________*\n*👑 BY :❯ BILAL-MD 👑*\n*_________________________________________*`;
-
-      await reply(`*APKA AUDO BAHUT BARI HAI 🥺 IS LIE DUCUMENT ME SEND HO RAHI HAI ☺️♥️*`);
-      await conn.sendMessage(from, {
-        document: { url: download },
-        mimetype: 'audio/mpeg',
-        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`
-      }, { quoted: m });
-
-      await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
-      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-
-      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
+      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+      await reply("*ERROR: AUDIO SEND KARNE ME PROBLEM A GAYI 🥺 DUBARA TRY KARO ☹️*");
     }
 
   } catch (e) {
     console.error('play cmd error =>', e?.message || e);
-    if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-    if (thumbMsg) await conn.sendMessage(from, { delete: thumbMsg.key });
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-    reply("*APKA GAANA MUJHE NAHI MILA 🥺*\n*DUBARA KOSHISH KARE 🥺*");
+    if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+    await reply("*ERROR: KUCH GALAT HO GAYA 🥺 DUBARA KOSHISH KARO ☹️*");
   }
 });
