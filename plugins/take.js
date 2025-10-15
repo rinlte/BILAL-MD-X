@@ -1,46 +1,85 @@
 const { cmd } = require('../command');
-const crypto = require('crypto');
-const webp = require('node-webpmux');
-const axios = require('axios');
-const fs = require('fs-extra');
-const { exec } = require('child_process');
-const { Sticker, createSticker, StickerTypes } = require("wa-sticker-formatter");
+const { Sticker, StickerTypes } = require("wa-sticker-formatter");
 const Config = require('../config');
 
-// Take Sticker 
-
+// 🎨 Take / Rename Sticker Command
 cmd(
-    {
-        pattern: 'take',
-        alias: ['rename', 'stake'],
-        desc: '*AP KISI BHI STICKER KO MENTION KARO AUR PHIR LIKHO \n *take APNA NAME LIKHO* \n *JAB ESE KARO GE TO US STICKER KA NAME APKE NAME K SATH CHANGE HO JAYE GA AUR WO STICKER APKE NAME KA BAN JAYE GA 😊🌹**',
-        category: 'sticker',
-        use: '<reply media or URL>',
-        filename: __filename,
-    },
-    async (conn, mek, m, { quoted, args, q, reply, from }) => {
-        if (!mek.quoted) return reply(`*PEHLE KISI STICKER KO MENTION KARO 😊🌹*`);
-        if (!q) return reply(`*DUBARA KOSHISH KARO AUR 😊❤️* \n *.TAKE MADE BY APKA NAME* \n *JAB ESE LIKHO GE TO WO STICKER APKA NAME KA BAN JAYE GA ☺️*`);
+  {
+    pattern: 'take',
+    alias: ['rename', 'stake'],
+    desc: 'Sticker ka name apne name se change kare.',
+    category: 'sticker',
+    use: '<reply sticker> <new name>',
+    filename: __filename,
+  },
+  async (conn, mek, m, { quoted, args, q, reply, from }) => {
+    try {
+      // 🥺 React on command
+      await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
 
-        let mime = mek.quoted.mtype;
-        let pack = q;
+      // ⚠️ Agar koi sticker reply nahi kiya
+      if (!mek.quoted) {
+        await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
+        return reply(
+          `*PEHLE KISI STICKER KO MENTION KARO 😊🌹*\n\n` +
+          `*PHIR LIKHO:*  *.take APKA NAME*\n\n` +
+          `*IS SE STICKER APKE NAME KA BAN JAYE GA ☺️🌹*`
+        );
+      }
 
-        if (mime === "imageMessage" || mime === "stickerMessage") {
-            let media = await mek.quoted.download();
-            let sticker = new Sticker(media, {
-                pack: pack, 
-                type: StickerTypes.FULL,
-                categories: ["🤩", "🎉"],
-                id: "12345",
-                quality: 75,
-                background: 'transparent',
-            });
-            const buffer = await sticker.toBuffer();
-            return conn.sendMessage(mek.chat, { sticker: buffer }, { quoted: mek });
-        } else {
-            return reply("*FIR KOSHISH KARO 🥺❤️*");
-        }
+      // ⚠️ Agar name nahi diya
+      if (!q) {
+        await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
+        return reply(
+          `*APNA NAME LIKHO JAISE 😊*\n\n` +
+          `*.take MADE BY <APKA NAME>*\n\n` +
+          `*IS TARAH LIKHNE SE STICKER APKE NAME KA HO JAYE GA 🌹*`
+        );
+      }
+
+      const mime = mek.quoted.mtype;
+      const pack = q;
+
+      // ✅ Sticker Type Check
+      if (mime === "imageMessage" || mime === "stickerMessage") {
+
+        // ⏳ Waiting message
+        const waitMsg = await conn.sendMessage(from, {
+          text: `*APKA STICKER READY HO RAHA HAI ☺️*\n*THORA SA INTAZAR KARE......😇*`,
+          quoted: mek
+        });
+
+        const media = await mek.quoted.download();
+        const sticker = new Sticker(media, {
+          pack: pack,
+          type: StickerTypes.FULL,
+          categories: ["🤩", "🎉"],
+          id: "12345",
+          quality: 75,
+          background: 'transparent',
+        });
+
+        const buffer = await sticker.toBuffer();
+
+        // 🎉 Send sticker
+        await conn.sendMessage(from, { sticker: buffer }, { quoted: mek });
+
+        // ☺️ Success react
+        await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
+
+        // 🧹 Delete waiting msg after success
+        await new Promise(r => setTimeout(r, 2000));
+        await conn.sendMessage(from, { delete: waitMsg.key });
+
+      } else {
+        await conn.sendMessage(from, { react: { text: '😥', key: m.key } });
+        return reply("*SIRF STICKER KO MENTION KARO, AUR DUBARA TRY KARO 🥺❤️*");
+      }
+
+    } catch (error) {
+      console.error("❌ Take Sticker Error:", error);
+      await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
+      return reply("*DUBARA KOSHISH KARE 🥺*");
     }
+  }
 );
-
-//Sticker create 
