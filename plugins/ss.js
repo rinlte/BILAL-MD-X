@@ -12,7 +12,7 @@ cmd({
   try {
     if (!args[0]) {
       // Wrong command / args react 😥
-      await conn.sendMessage(from, { react: { text: "😥", key: mek.key } });
+      await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
       return reply(
         `*AP KO KISI WEBSITE KA SCREENSHOT CHAHYE 🥺*\n\n` +
         `*TO AP US WEBSITE KA LINK COPY KAR LO* \n*PHIR ESE LIKHO ☺️*\n\n*SS ❮APKI WEBSITE KA LINK❯*\n\n` +
@@ -34,7 +34,7 @@ cmd({
 
     // Waiting msg
     const waitingMsg = await conn.sendMessage(from, { text: "*WEBSITE KA SCREENSHOT SEND HO RAHA HAI...🥺*\n*THORA SA INTAZAR KARE ☺️*" });
-    await conn.sendMessage(from, { react: { text: "🥺", key: waitingMsg.key } });
+    await conn.sendMessage(from, { react: { text: "😥", key: waitingMsg.key } });
 
     // Screenshot API
     const apiUrl = `https://api.siputzx.my.id/api/tools/ssweb?url=${encodeURIComponent(url)}&theme=light&device=desktop`;
