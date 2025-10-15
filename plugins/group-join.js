@@ -1,6 +1,6 @@
 const config = require('../config')
 const { cmd } = require('../command')
-const { sleep } = require('../lib/functions')
+const { sleep, isUrl } = require('../lib/functions')
 
 // Join group command
 cmd({
@@ -22,17 +22,17 @@ cmd({
         // Agar owner bina link ke command likhe
         if (!q && !quoted) {
             await conn.sendMessage(from, { react: { text: "🥺", key: mek.key } });
-            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️*\n\n*.JOIN ❮GROUP LINK❯*\n \n *JAB AP ESE LIKHO GE TO AP GROUP ME JOIN HO JAO GE 🥰💞*");
+            return reply("*AGAR AP NE KOI GROUP JOIN KARNA HAI 🥺* \n *TO AP ESE LIKHO ☺️*\n\n*.JOIN ❮GROUP LINK❯*\n\n*JAB AP ESE LIKHO GE TO AP GROUP ME JOIN HO JAO GE 🥰💞*");
         }
 
         let groupLink = "";
 
-        // Agar reply me link hai
-        if (quoted && quoted.text) {
-            if (quoted.text.includes("https://chat.whatsapp.com/")) {
-                groupLink = quoted.text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
-            }
-        } else if (q && q.includes("https://chat.whatsapp.com/")) {
+        // 1️⃣ Agar command reply ke sath hai
+        if (quoted && quoted.text && quoted.text.includes("https://chat.whatsapp.com/")) {
+            groupLink = quoted.text.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
+        } 
+        // 2️⃣ Agar command me direct link hai
+        else if (q && q.includes("https://chat.whatsapp.com/")) {
             groupLink = q.match(/https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]+)/)[1];
         }
 
@@ -46,7 +46,7 @@ cmd({
         await conn.groupAcceptInvite(groupLink);
         await sleep(1000);
         await conn.sendMessage(from, { react: { text: "🥰", key: mek.key } });
-        await conn.sendMessage(from, { text: "*GROUP  JOIN HO GAYA HAI ☺️*" }, { quoted: mek });
+        await conn.sendMessage(from, { text: "*GROUP JOIN HO CHUKE HAI ☺️*" }, { quoted: mek });
 
     } catch (e) {
         console.log(e);
