@@ -1,6 +1,5 @@
 const { cmd } = require('../command');
 
-// 🔹 Memory for feature state
 let adminAlertEnabled = false;
 
 cmd({
@@ -40,22 +39,24 @@ cmd({
 });
 
 
-// 🔹 Real-time listener (always running but conditional)
+// 🔹 Real-time listener (mentions version)
 const setupAdminAlerts = (conn) => {
     conn.ev.on('group-participants.update', async (anu) => {
         try {
-            if (!adminAlertEnabled) return; // ❗ Alert only if enabled
+            if (!adminAlertEnabled) return;
             if (!anu.id || !anu.participants || !anu.action) return;
 
             const metadata = await conn.groupMetadata(anu.id);
             const groupName = metadata.subject;
-            const actor = anu.author ? anu.author.split('@')[0] : 'Unknown Admin';
+
+            const actorJid = anu.author || "";
+            const actorTag = `@${actorJid.split('@')[0]}`;
 
             // 🟢 Promote
             if (anu.action === 'promote') {
                 for (let num of anu.participants) {
-                    const target = num.split('@')[0];
-                    const text = `*( ${actor} ) NE IS MEMBER ( ${target} ) KO IS GROUP (${groupName}) ME ADMIN BANA DIYA HAI 🥰🌹*`;
+                    const targetTag = `@${num.split('@')[0]}`;
+                    const text = `*${actorTag} NE ${targetTag} KO IS GROUP (${groupName}) ME ADMIN BANA DIYA HAI 🥰🌹*`;
                     await conn.sendMessage(anu.id, {
                         text,
                         mentions: [anu.author, num]
@@ -66,8 +67,8 @@ const setupAdminAlerts = (conn) => {
             // 🔴 Demote
             if (anu.action === 'demote') {
                 for (let num of anu.participants) {
-                    const target = num.split('@')[0];
-                    const text = `*( ${actor} ) NE IS ADMIN ( ${target} ) KO IS GROUP (${groupName}) SE ADMIN SE HATA DIYA HAI 🥺💔*`;
+                    const targetTag = `@${num.split('@')[0]}`;
+                    const text = `*${actorTag} NE ${targetTag} KO IS GROUP (${groupName}) SE ADMIN SE HATA DIYA HAI 🥺💔*`;
                     await conn.sendMessage(anu.id, {
                         text,
                         mentions: [anu.author, num]
