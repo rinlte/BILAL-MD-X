@@ -66,6 +66,8 @@ const displayName = userName ? userName : 'User';
 *┃👑│ • PENDING*
 *┃👑│ • ACCEPTALL*
 *┃👑│ • REJECTALL*
+*┃👑│ • GDESC*
+*┃👑│ • GNAME*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 USER 👑 〕━━┈⊷*
@@ -74,6 +76,7 @@ const displayName = userName ? userName : 'User';
 *┃👑│ • GETPP*
 *┃👑│ • RESTART*
 *┃👑│ • UPDATE*
+*┃👑│ • AUTOBIO*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 AI 👑 〕━━┈⊷*
