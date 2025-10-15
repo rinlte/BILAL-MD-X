@@ -32,7 +32,7 @@ cmd({
     // Success react on command message
     await conn.sendMessage(m.chat, { react: { text: '☺️', key: m.key } });
 
-    return m.reply(` AUTO BIO ON ${state.toUpperCase()} HO CHUKI HAI ☺️*`);
+    return m.reply(`*AUTO BIO AB ${state.toUpperCase()} HO CHUKI HAI ☺️*`);
     
   } catch (e) {
     console.error("❌ AutoBio Error:", e);
