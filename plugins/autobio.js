@@ -20,7 +20,7 @@ cmd({
 
     // Agar argument missing ya invalid ho
     if (!state || !["on", "off"].includes(state)) {
-      return m.reply(`📘 Use:\n*AUTOBIO ON KARNE SE 🥺 APKI WHATSAPP KI BIO ☺️ AUTO UPDATE HOTI RAHE GE 🥰 AP ISKO OFF BHI KAR SAKTE HAI 😇*\n*JESE ☺️* \n*❮AUTOBIO ON❯*\n*❮AUTOBIO OFF❯*\n\n*ABHI APKI AUTOBIO ${global.autoBio ? "ON" : "OFF"} HAI ☺️*`);
+      return m.reply(`*AUTOBIO ON KARNE SE 🥺 APKI WHATSAPP KI BIO ☺️ AUTO UPDATE HOTI RAHE GE 🥰 AP ISKO OFF BHI KAR SAKTE HAI 😇*\n*JESE ☺️* \n*❮AUTOBIO ON❯*\n*❮AUTOBIO OFF❯*\n\n*ABHI APKI AUTOBIO ${global.autoBio ? "ON" : "OFF"} HAI ☺️*`);
     }
 
     // State set karo
