@@ -33,6 +33,6 @@
 
 # *_DEVELOPER_*
 <a href="https://github.com/BilalTech05"><img src="https://i.postimg.cc/x8KFHsZ0/BILAL-MD.jpg" width="250" height="250" alt="UMAR"/></a>
-# ( => • BILAL • <= )
+# ( => • [BILAL](wa.me/+923078071982) • <= )
 
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
