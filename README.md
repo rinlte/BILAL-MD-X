@@ -1,7 +1,7 @@
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Wildwood&size=42&duration=2500&pause=1000&center=true&vCenter=true&width=850&lines=%F0%9F%91%91+ASSALAMUALAIKUM+%F0%9F%91%91;%F0%9F%91%91+KESE+HAI+AP+%F0%9F%91%91;%F0%9F%91%91+UMEED+HAI+KE+AP+KHARIYAT+SE+HOGE+%F0%9F%91%91;%F0%9F%91%91+ALLAH+APKO+HAMESHA+KHUSH+RAKHE+AMEEN+%F0%9F%91%91;%F0%9F%91%91+BILAL-MD+WHATSAPP+BOT+%F0%9F%91%91;%F0%9F%91%91+PAKISTAN+KA+PEHLA+BOT+%F0%9F%91%91;%F0%9F%91%91+BANAYA+GAYA+HAI+URDU+ZUBAN+ME+%F0%9F%91%91" alt="typing animation" />
+  <img src="https://readme-typing-svg.demolab.com?font=Wildwood&size=30&duration=2500&pause=1000&center=true&vCenter=true&width=750&lines=%F0%9F%91%91+ASSALAMUALAIKUM+%F0%9F%91%91;%F0%9F%91%91+KESE+HAI+AP+%F0%9F%91%91;%F0%9F%91%91+UMEED+HAI+KE+AP+KHARIYAT+SE+HOGE+%F0%9F%91%91;%F0%9F%91%91+ALLAH+APKO+HAMESHA+KHUSH+RAKHE+AMEEN+%F0%9F%91%91;%F0%9F%91%91+BILAL-MD+WHATSAPP+BOT+%F0%9F%91%91;%F0%9F%91%91+PAKISTAN+KA+PEHLA+BOT+%F0%9F%91%91;%F0%9F%91%91+BANAYA+GAYA+HAI+URDU+ZUBAN+ME+%F0%9F%91%91" alt="typing animation" />
 </p>
 # ( =========> • BILAL-MD • <========= )
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
