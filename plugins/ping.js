@@ -1,16 +1,18 @@
-const config = require('../config');
 const { cmd } = require('../command');
 const { sleep } = require('../lib/functions');
 
 cmd({
   pattern: "ping",
-  desc: "Check bot response with live message updates",
+  desc: "Check bot response with live line updates",
   category: "main",
-  react: "👑",
+  react: "🥰",
   filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
   try {
-    // Lines to show gradually
+    // 🥺 React jab command chale
+    await conn.sendMessage(from, { react: { text: '🥰', key: m.key } });
+
+    // 💬 Lines jo 1 msg me 2 seconds gap se update hoti jayengi
     const lines = [
       "*ASSALAMUALAIKUM ☺️*",
       "\n*KESE HAI AP ☺️*",
@@ -24,20 +26,14 @@ cmd({
       "\n*BEE HAPPY MY DEAR ☺️💞*"
     ];
 
-    // React when command received
-    await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
-
-    // Start ping timer
-    const startTime = Date.now();
-
-    // Start with empty text message
+    // 🌸 Empty message bhejna
     let currentText = "";
     const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
 
-    // Line-by-line edit same message every 2 seconds
+    // 🕒 Har 2 seconds me line add hoti rahegi
     for (const line of lines) {
       currentText += line + "\n";
-      await sleep(2000);
+      await sleep(2000); // 2 seconds delay
       await conn.relayMessage(from, {
         protocolMessage: {
           key: msg.key,
@@ -47,25 +43,12 @@ cmd({
       }, {});
     }
 
-    // Add final ping line after all messages
-    await sleep(2000);
-    const endTime = Date.now();
-    currentText += `❤️`;
-
-    await conn.relayMessage(from, {
-      protocolMessage: {
-        key: msg.key,
-        type: 14,
-        editedMessage: { conversation: currentText }
-      }
-    }, {});
-
-    // Final react
-    await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
+    // ☺️ End me confirm react
+    await conn.sendMessage(from, { react: { text: '😇', key: m.key } });
 
   } catch (e) {
     console.error("Ping command error:", e);
     await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
-    reply("*ERROR: DUBARA KOSHISH KARE 🥺*");
+    reply("*ERROR: DUBARA KOSHISH KARE 😔*");
   }
 });
