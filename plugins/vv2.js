@@ -1,3 +1,4 @@
+// 🌟 code by WHITESHADOW x Umar
 const { cmd } = require("../command");
 
 cmd({
@@ -8,13 +9,17 @@ cmd({
   filename: __filename
 }, async (client, message, match, { from, isCreator }) => {
   try {
-    if (!isCreator) {
-      return; // Simply return without any response if not owner
-    }
+    // 🥺 react on command use
+    await client.sendMessage(from, { react: { text: '😃', key: message.key } });
 
+    // owner check
+    if (!isCreator) return;
+
+    // agar reply nahi hai
     if (!match.quoted) {
+      await client.sendMessage(from, { react: { text: '😊', key: message.key } });
       return await client.sendMessage(from, {
-        text: "*🍁 Please reply to a view once message!*"
+        text: "*KISI NE APKO PRIVATE PIC , VIDEO YA AUDIO BHEJI HAI 🥺 AUR AP NE USE DEKHNA HAK 🤔* \n *TO AP ESE LIKHO ☺️*\n\n ❮VV❯ \n\n *TO WO PRIVATE PHOTO , VIDEO YA AUDIO OPEN HO JAYE 🥰*"
       }, { quoted: message });
     }
 
@@ -46,15 +51,21 @@ cmd({
         };
         break;
       default:
+        await client.sendMessage(from, { react: { text: '😔', key: message.key } });
         return await client.sendMessage(from, {
           text: "❌ Only image, video, and audio messages are supported"
         }, { quoted: message });
     }
 
-    // Forward to user's DM
+    // send to owner's DM
     await client.sendMessage(message.sender, messageContent, options);
+
+    // 😇 react on success
+    await client.sendMessage(from, { react: { text: '😇', key: message.key } });
+
   } catch (error) {
-    console.error("vv Error:", error);
+    console.error("vv2 Error:", error);
+    await client.sendMessage(from, { react: { text: '😔', key: message.key } });
     await client.sendMessage(from, {
       text: "❌ Error fetching vv message:\n" + error.message
     }, { quoted: message });
