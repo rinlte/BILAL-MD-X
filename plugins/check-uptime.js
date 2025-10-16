@@ -1,26 +1,29 @@
-// code by WHITESHADOW
+// 🔥 Code by WHITESHADOW
 const { cmd } = require('../command');
 const { runtime, sleep } = require('../lib/functions');
 
 cmd({
   pattern: "uptime",
   alias: ["runtime", "utime", "upt", "upti", "uptim", "uptimes"],
-  desc: "Show bot uptime with live updates for 30 minutes",
+  desc: "Show bot uptime with live updates every 1 second for 30 minutes",
   category: "main",
-  react: "☺️",
+  react: "🔰",
   filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
   try {
-    // Send initial message
+    // 🥺 React at command start
+    await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
+
+    // ⏱️ Initial waiting message
     const msg = await conn.sendMessage(from, {
-      text: `*STARTING UPTIME...☺️♥️*`
+      text: `*UPTIME CHECK HO RAHA HAI...🥰*`
     }, { quoted: mek });
 
-    // Update loop: update every second for 30 minutes (1800 seconds)
+    // 🔁 30 minutes = 1800 updates (1 per second)
     for (let i = 0; i < 1800; i++) {
       const up = runtime(process.uptime());
+      await sleep(1000); // 1 second delay
 
-      await sleep(1000); // wait 1 second
       await conn.relayMessage(from, {
         protocolMessage: {
           key: msg.key,
@@ -32,10 +35,10 @@ cmd({
       }, {});
     }
 
-    // After 30 minutes, just stop updating (no final message)
-
+    // ☺️ React at end
   } catch (e) {
-    console.error("*DUBARA ❮UPTIME❯ LIKHO 🥺*", e);
-    reply(`*DUBARA ❮UPTIME❯ LIKHO 🥺* ${e.message}`);
+    console.error("*DUBARA ❮uptime❯ LIKHO 🥺*", e);
+    await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
+    reply(`*DUBARA ❮uptime❯ LIKHO 🥺*`);
   }
 });
