@@ -1,61 +1,71 @@
 const config = require('../config');
-const { cmd, commands } = require('../command');
+const { cmd } = require('../command');
 const { sleep } = require('../lib/functions');
 
-// 💫 Ping command — single message updating line by line (2s delay)
 cmd({
   pattern: "ping",
-  desc: "Check bot response and send greeting lines slowly.",
+  desc: "Check bot response with live message updates",
   category: "main",
-  react: "🥰",
+  react: "👑",
   filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
   try {
-    // All lines (old + new)
+    // Lines to show gradually
     const lines = [
       "*ASSALAMUALAIKUM ☺️*",
       "\n*KESE HAI AP ☺️*",
-      "\n*UMEED HAI KE AP KHARIYT SE HOGE INSHALLAH 🤲🥰*",
-      "\n*ALLAH APKO AUR APKE CHANE WALO KO SAB KO HAMESHA KHUSH RAKHE AMEEN 🤲🥰*",
+      "\n*UMEED HAI KE AP KHARIYAT SE HOGE INSHALLAH 🤲🥰*",
+      "\n*ALLAH APKO AUR APKE CHAHNE WALO KO HAMESHA KHUSH RAKHE AMEEN 🤲🥰*",
       "\n*APNA KHAYAL RKHO AUR KHUSH RAHO AMEEN 🤲🥰*",
-      "\n*AUR BATAYE KESE GUZAR RAHI HAI APKI ZINDAGY 🥰*",
+      "\n*AUR BATAYE KESE GUZAR RAHI HAI APKI ZINDAGI 🥰*",
       "\n*NAMAZ BHI PARHA KARO 🥰💞*",
       "\n*AUR QURAN MAJEED KI TILAWAT BHI KIA KARO 🥰💞*",
       "\n*ALLAH PAK KI IBADAT BHI KIA KARO 🥰💞*",
       "\n*BEE HAPPY MY DEAR ☺️💞*"
     ];
 
-    // 🥺 React when command received
+    // React when command received
     await conn.sendMessage(from, { react: { text: '🥺', key: m.key } });
 
+    // Start ping timer
     const startTime = Date.now();
 
-    // Send first message
-    let currentText = lines[0];
-    let sentMsg = await conn.sendMessage(from, { text: currentText });
+    // Start with empty text message
+    let currentText = "";
+    const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
 
-    // Line by line update every 2s
-    for (let i = 1; i < lines.length; i++) {
+    // Line-by-line edit same message every 2 seconds
+    for (const line of lines) {
+      currentText += line + "\n";
       await sleep(2000);
-      currentText = lines.slice(0, i + 1).join("\n");
-      try { await conn.sendMessage(from, { delete: sentMsg.key }); } catch (e) {}
-      sentMsg = await conn.sendMessage(from, { text: currentText });
+      await conn.relayMessage(from, {
+        protocolMessage: {
+          key: msg.key,
+          type: 14,
+          editedMessage: { conversation: currentText }
+        }
+      }, {});
     }
 
-    // After all lines, add ping info
+    // Add final ping line after all messages
     await sleep(2000);
-    try { await conn.sendMessage(from, { delete: sentMsg.key }); } catch (e) {}
-
     const endTime = Date.now();
-    const pingText = `${currentText}\n\n*❤️*  (_Response time: ${endTime - startTime} ms_)`;
-    sentMsg = await conn.sendMessage(from, { text: pingText });
+    currentText += `\n\n*Gg...☺️*  (_Response time: ${endTime - startTime} ms_)`;
 
-    // ☺️ React after finished
-    await conn.sendMessage(from, { react: { text: '🥰', key: m.key } });
+    await conn.relayMessage(from, {
+      protocolMessage: {
+        key: msg.key,
+        type: 14,
+        editedMessage: { conversation: currentText }
+      }
+    }, {});
+
+    // Final react
+    await conn.sendMessage(from, { react: { text: '☺️', key: m.key } });
 
   } catch (e) {
     console.error("Ping command error:", e);
-    try { await conn.sendMessage(from, { react: { text: '😔', key: m.key } }); } catch (__) {}
-    return reply("*ERROR: DUBARA KOSHISH KARE 🥺*");
+    await conn.sendMessage(from, { react: { text: '😔', key: m.key } });
+    reply("*ERROR: DUBARA KOSHISH KARE 🥺*");
   }
 });
