@@ -1,4 +1,5 @@
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
+
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Courier+Prime&size=22&duration=2000&pause=1000&color=F772A1&center=true&vCenter=true&width=550&lines=ASSALAMUALAIKUM+☺️;KESE+HAI+AP+😇;UMEED+HAI+KE+AP+KHARIYAT+SE+HOGE+🥰;ALLAH+APKO+HAMESHA+KHUSH+RAKHE+AMEEN+🤲🥰;BILAL-MD+WHATSAPP+BOT;PAKISTAN+KA+PEHLA+BOT;BANAYA+GAYA+HAI+URDU+ZUBAN+ME+🇵🇰" alt="typing animation" />
   
