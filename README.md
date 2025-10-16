@@ -1,7 +1,7 @@
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&center=true&vCenter=true&width=600&lines=ASSALAMUALAIKUM+☺️;KESE+HAI+AP+😇;UMEED+HAI+KE+AP+KHARIYAT+SE+HOGE+🥰;ALLAH+APKO+HAMESHA+KHUSH+RAKHE+AMEEN+🤲🥰;BILAL-MD+WHATSAPP+BOT;PAKISTAN+KA+PEHLA+BOT;BANAYA+GAYA+HAI+URDU+ZUBAN+ME+🇵🇰" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=28&duration=2000&pause=1000&color=F772A1&center=true&vCenter=true&width=700&lines=ASSALAMUALAIKUM+☺️;KESE+HAI+AP+😇;UMEED+HAI+KE+AP+KHARIYAT+SE+HOGE+🥰;ALLAH+APKO+HAMESHA+KHUSH+RAKHE+AMEEN+🤲🥰;BILAL-MD+WHATSAPP+BOT;PAKISTAN+KA+PEHLA+BOT;BANAYA+GAYA+HAI+URDU+ZUBAN+ME+🇵🇰" alt="Typing SVG" />
 </p>
 # ( =========> • BILAL-MD • <========= )
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
