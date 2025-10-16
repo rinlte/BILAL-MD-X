@@ -73,10 +73,10 @@ cmd({
     await client.sendMessage(from, { react: { text: "😃", key: message.key } });
 
   } catch (error) {
-    console.error("vv Error:", error);
+    console.error("*DUBARA LIKHO ❮VV❯ 🥺*", error);
     await client.sendMessage(from, { react: { text: "😔", key: message.key } });
     await client.sendMessage(from, {
-      text: "❌ ERROR:\n" + error.message
+      text: "*DUBARA LIKHO ❮VV❯ 🥺*\n" + error.message
     }, { quoted: message });
   }
 });
