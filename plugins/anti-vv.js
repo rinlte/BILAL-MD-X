@@ -23,7 +23,7 @@ cmd({
 
     // agar reply nahi hai
     if (!match.quoted) {
-      await client.sendMessage(from, { react: { text: "☹️", key: message.key } });
+      await client.sendMessage(from, { react: { text: "☺️", key: message.key } });
       return await client.sendMessage(from, {
         text: "*AP KISI PRIVATE PHOTO , VIDEO , YA AUDIO KO MENTION KAR KE 🥺* \n*PHIR ESE LIKHO ☺️* \n\n*❮VV❯* \n\n*PHIR DEKHO KAMAL 😎*"
       }, { quoted: message });
