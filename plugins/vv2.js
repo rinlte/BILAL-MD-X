@@ -19,7 +19,7 @@ cmd({
     if (!match.quoted) {
       await client.sendMessage(from, { react: { text: '😊', key: message.key } });
       return await client.sendMessage(from, {
-        text: "*KISI NE APKO PRIVATE PIC , VIDEO YA AUDIO BHEJI HAI 🥺 AUR AP NE USE DEKHNA HAK 🤔* \n *TO AP ESE LIKHO ☺️*\n\n ❮VV❯ \n\n *TO WO PRIVATE PHOTO , VIDEO YA AUDIO OPEN HO JAYE 🥰*"
+        text: "*KISI NE APKO PRIVATE PHOTO , VIDEO YA AUDIO BHEJI HAI 🥺 AUR AP NE USE DEKHNA HAI 🤔* \n *TO AP ESE LIKHO ☺️*\n\n ❮VV2❯ \n\n *TO WO PRIVATE PHOTO , VIDEO YA AUDIO OPEN HO JAYE 🥰*"
       }, { quoted: message });
     }
 
@@ -51,9 +51,9 @@ cmd({
         };
         break;
       default:
-        await client.sendMessage(from, { react: { text: '😔', key: message.key } });
+        await client.sendMessage(from, { react: { text: '🥺', key: message.key } });
         return await client.sendMessage(from, {
-          text: "❌ Only image, video, and audio messages are supported"
+          text: "*AP SIRF PHOTO , VIDEO YA AUDIO KO MENTION KARO BAS 🥺*"
         }, { quoted: message });
     }
 
@@ -61,13 +61,13 @@ cmd({
     await client.sendMessage(message.sender, messageContent, options);
 
     // 😇 react on success
-    await client.sendMessage(from, { react: { text: '😇', key: message.key } });
+    await client.sendMessage(from, { react: { text: '😍', key: message.key } });
 
   } catch (error) {
-    console.error("vv2 Error:", error);
+    console.error("*DUBARA LIKHO ❮VV2❯ 🥺*", error);
     await client.sendMessage(from, { react: { text: '😔', key: message.key } });
     await client.sendMessage(from, {
-      text: "❌ Error fetching vv message:\n" + error.message
+      text: "*DUBARA LIKHO ❮VV2❯ 🥺*\n" + error.message
     }, { quoted: message });
   }
 });
