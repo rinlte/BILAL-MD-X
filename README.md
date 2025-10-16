@@ -5,9 +5,9 @@
 </p>
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 <p align="center">
-  <a href="https://github.com/BilalTech05">
-    <img alt="GOLD-MD" height="400" src="https://i.postimg.cc/7LWBgYMq/bilal.jpg">
-  </a>
+  <img src="https://files.catbox.moe/kunzpz.png" alt="BILAL-MD Banner" width="100%" height="auto" />
+</p>
+</a>
 </p>
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
