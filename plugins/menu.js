@@ -137,7 +137,7 @@ cmd({
 *┃👑│ • RESTART*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
-*👑 clICK HERE FOR HELP 👑*
+*👑 ClICK HERE FOR HELP 👑*
 
 *👑 SUPPORT WEBSITE 👑*
 *https://akaserein.github.io/Bilal/*
@@ -178,7 +178,7 @@ cmd({
         }
 
     } catch (e) {
-        console.error('Menu Error:', e);
-        reply(`❌ Menu error: ${e.message}`);
+        console.error('*DUBARA LIKHO ❮MENU❯ 🥺❤️*', e);
+        reply(`*DUBARA LIKHO ❮MENU❯ 🥺❤️* ${e.message}`);
     }
 });
