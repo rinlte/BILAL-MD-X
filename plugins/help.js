@@ -2,7 +2,7 @@ const { cmd } = require('../command');
 
 cmd({
     pattern: "help",
-    alias: ["hi", "error"],
+    alias: ["h", "error"],
     desc: "📜 Show bot help or command list.",
     react: "🥰",
     category: "main",
