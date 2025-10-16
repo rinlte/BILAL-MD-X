@@ -50,7 +50,7 @@ cmd({
     // Add final ping line after all messages
     await sleep(2000);
     const endTime = Date.now();
-    currentText += `\n\n*Gg...☺️*  (_Response time: ${endTime - startTime} ms_)`;
+    currentText += `❤️`;
 
     await conn.relayMessage(from, {
       protocolMessage: {
