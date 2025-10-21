@@ -11,16 +11,7 @@
 </p>
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
-# *_JUST • [FORK](https://github.com/BilalTech05/BILAL-MD/fork) • THE REPO_*
-
-<a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
-
-# *_GET • [SESSION ID](https://pair-vd1s.onrender.com/) • FOR BILAL-MD_*
-
-<a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
-
-# *_NOW • [DEPLOY](https://dashboard.heroku.com/new?button-url=https://github.com/D4X-UMAR/GOLD-MD&template=https://github.com/BilalTech05/BILAL-MD) • BILAL-MD ON HEROKU_*
-
+# _NOW • [START](https://bilal-md-web-1x-z9o7.vercel.app/) • BILAL-MD_
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
 # *_FOLLOW • [WHATSAPP CHANNEL](https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G) •_*
