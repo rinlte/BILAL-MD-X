@@ -3,8 +3,8 @@ const config = require("../config");
 const { cmd } = require("../command");
 
 cmd({
-    pattern: "repox",
-    alias: ["sgggc", "scripxxxt", "infout"],
+    pattern: "repo",
+    alias: ["sc", "script", "infobot", "r", "re", "rep", "repos", "botlink", "?"],
     desc: "Fetch GitHub repository information",
     react: "📂",
     category: "info",
@@ -24,15 +24,12 @@ async (conn, mek, m, { from, reply }) => {
         const repoData = response.data;
 
         // Caption style
-        const style = `📦 *Repository*: ${repoData.name}
-👑 *Owner*: ${repoData.owner.login}
-⭐ *Stars*: ${repoData.stargazers_count}
-🍴 *Forks*: ${repoData.forks_count}
-🛠 *Issues*: ${repoData.open_issues_count}
-🔗 *URL*: ${repoData.html_url}
-📝 *Description*: ${repoData.description || 'No description'}
-
-> ${config.DESCRIPTION}`;
+        const style = `*BILAL-MD WHATSAPP BOT 😇 PAKISTAN KA PEHLA BOT HAI ☺️ JO URDU ZUBAN ME DESIGN KIA GAYA HAI 🥰🌹*
+*👑 USER:❯ ${repoData.owner.login}*
+*👑 STARS:❯ ${repoData.stargazers_count}*
+*👑 FORKS:❯ ${repoData.forks_count}*
+🔗 *LINK:❯ https://bilal-md-web-1x-z9o7.vercel.app/*
+📝 Description:❯ ${repoData.description || 'No description'}`;
 
         // ✅ Send image with BUTTONS
         await conn.sendMessage(from, {
