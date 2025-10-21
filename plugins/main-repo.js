@@ -6,13 +6,13 @@ cmd({
     pattern: "repo",
     alias: ["sc", "script", "infobot", "r", "re", "rep", "repos", "botlink", "?"],
     desc: "Fetch GitHub repository information",
-    react: "📂",
+    react: "☺️",
     category: "info",
     filename: __filename,
 },
 async (conn, mek, m, { from, reply }) => {
     const githubRepoURL = "https://github.com/BilalTech05/BILAL-MD";
-    const channelLink = "https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G";
+    const channelLink = "https://whatsapp.com/channel/0029VbBXuGe4yltMLngL582d";
 
     try {
         const cleanUrl = githubRepoURL.replace(/\/+$/, "");
@@ -29,7 +29,7 @@ async (conn, mek, m, { from, reply }) => {
 *👑 STARS:❯ ${repoData.stargazers_count}*
 *👑 FORKS:❯ ${repoData.forks_count}*
 *👑 LINK:❯ https://bilal-md-web-1x-z9o7.vercel.app/*
-*👑 CHANNEL:❯ https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G*`;
+*👑 CHANNEL:❯ https://whatsapp.com/channel/0029VbBXuGe4yltMLngL582dhttps://whatsapp.com/channel/0029VbBXuGe4yltMLngL582d*`;
 
         // ✅ Send only image + caption (no buttons)
         await conn.sendMessage(from, {
@@ -40,7 +40,7 @@ async (conn, mek, m, { from, reply }) => {
         }, { quoted: mek });
 
     } catch (error) {
-        console.error("Repo command error:", error);
-        reply(`❌ Error: ${error.message}`);
+        console.error("*BILAL-MD BOT KI REPO NAHI MILI 🥺*", error);
+        reply(`ERROR ${error.message}`);
     }
 });
