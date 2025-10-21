@@ -29,7 +29,7 @@ async (conn, mek, m, { from, reply }) => {
 *👑 STARS:❯ ${repoData.stargazers_count}*
 *👑 FORKS:❯ ${repoData.forks_count}*
 *👑 LINK:❯ https://bilal-md-web-1x-z9o7.vercel.app/*
-*👑 CHANNEL:❯ https://whatsapp.com/channel/0029VbBXuGe4yltMLngL582dhttps://whatsapp.com/channel/0029VbBXuGe4yltMLngL582d*`;
+*👑 CHANNEL:❯ https://whatsapp.com/channel/0029VbBXuGe4yltMLngL582d*`;
 
         // ✅ Send only image + caption (no buttons)
         await conn.sendMessage(from, {
