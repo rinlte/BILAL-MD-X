@@ -21,7 +21,7 @@ async (conn, mek, m, { from, reply }) => {
         if (!match) return reply("⚠️ Invalid GitHub repo URL set in code!");
 
         const [, username, repoName] = match;
-        const response = await axios.get(`https://api.github.com/repos/${username}/${repoName}`);
+        const response = await axios.get(`https://api.github.com/repos/BilalTech05/BILAL-MD`);
         const repoData = response.data;
 
         // ✅ Caption text
