@@ -1,14 +1,17 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const fetch = require("node-fetch");
+const path = require("path");
+
 const app = express();
+const PORT = process.env.PORT || 8000;
 
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
-const PORT = process.env.PORT || 8000;
-
-app.get("/", (req, res) => res.sendFile(__dirname + "/page.html"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "page.html"));
+});
 
 app.post("/deploy", async (req, res) => {
   const { session, token, repo } = req.body;
@@ -56,6 +59,6 @@ app.post("/deploy", async (req, res) => {
   }
 });
 
-app.listen(PORT, () =>
-  console.log("✅ Auto deployer running on port " + PORT)
-);
+app.listen(PORT, () => {
+  console.log("✅ Auto deployer running on port " + PORT);
+});
