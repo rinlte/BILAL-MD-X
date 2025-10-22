@@ -1,36 +1,148 @@
-<script>
-  const MAIN_REPO = "BiLaLTeCh05/BILAL-MD"; // 👈 apna main repo
-  const MAIN_OWNER = MAIN_REPO.split('/')[0];
-
-  async function confirmFork() {
-    const user = document.getElementById("username").value.trim();
-    if (!user) return confirmLog("❌ Please enter your GitHub username!");
-    confirmLog("🔍 Checking your fork...");
-
-    try {
-      // 👉 If user is the original repo owner, skip fork check
-      if (user.toLowerCase() === MAIN_OWNER.toLowerCase()) {
-        confirmLog(`✅ You are the main repo owner (${user}), skipping fork check.`);
-        localStorage.setItem("userRepo", MAIN_REPO);
-        document.getElementById("step2").classList.add("hidden");
-        document.getElementById("step3").classList.remove("hidden");
-        return;
-      }
-
-      // 👉 Normal fork verification for other users
-      const forkURL = `https://api.github.com/repos/${user}/${MAIN_REPO.split('/')[1]}`;
-      const check = await fetch(forkURL);
-
-      if (check.ok) {
-        confirmLog(`✅ Fork confirmed for ${user}`);
-        localStorage.setItem("userRepo", `${user}/${MAIN_REPO.split('/')[1]}`);
-        document.getElementById("step2").classList.add("hidden");
-        document.getElementById("step3").classList.remove("hidden");
-      } else {
-        confirmLog("❌ Fork not found! Please fork first and try again.");
-      }
-    } catch (e) {
-      confirmLog("⚠️ Error: " + e.message);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BILAL-MD AUTO DEPLOY 🚀</title>
+  <link rel="icon" href="https://i.ibb.co/wspzc9t/IMG-20240328-WA0000.jpg" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      margin: 0;
     }
-  }
-</script>
+    h1 {
+      color: #58a6ff;
+      margin-bottom: 15px;
+    }
+    input {
+      padding: 10px;
+      width: 250px;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #161b22;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    button {
+      background: #238636;
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #2ea043;
+    }
+    .hidden { display: none; }
+    .log {
+      margin-top: 15px;
+      background: #161b22;
+      border-radius: 8px;
+      padding: 10px;
+      width: 280px;
+      font-size: 13px;
+      text-align: left;
+      min-height: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🚀 BILAL-MD DEPLOYER</h1>
+
+  <!-- Step 2: GitHub Fork Verification -->
+  <div id="step2">
+    <h3>🔗 Step 1: Confirm your Fork</h3>
+    <input type="text" id="username" placeholder="Enter your GitHub username"/>
+    <br>
+    <button onclick="confirmFork()">✅ Confirm Fork</button>
+    <div class="log" id="log"></div>
+  </div>
+
+  <!-- Step 3: Session + Token + Owner -->
+  <div id="step3" class="hidden">
+    <h3>🧩 Step 2: Enter Bot Details</h3>
+    <input type="text" id="session" placeholder="Enter Session ID"/><br>
+    <input type="text" id="token" placeholder="Enter Token"/><br>
+    <input type="text" id="owner" placeholder="Enter Owner Number"/><br>
+    <button onclick="deployNow()">🚀 Deploy</button>
+    <div class="log" id="deployLog"></div>
+  </div>
+
+  <script>
+    const MAIN_REPO = "BiLaLTeCh05/BILAL-MD";
+    const MAIN_OWNER = MAIN_REPO.split('/')[0];
+
+    function confirmLog(msg) {
+      document.getElementById("log").innerHTML = msg;
+    }
+
+    async function confirmFork() {
+      const user = document.getElementById("username").value.trim();
+      if (!user) return confirmLog("❌ Please enter your GitHub username!");
+      confirmLog("🔍 Checking your fork...");
+
+      try {
+        // skip if original owner
+        if (user.toLowerCase() === MAIN_OWNER.toLowerCase()) {
+          confirmLog(`✅ You are the main repo owner (${user}), skipping fork check.`);
+          localStorage.setItem("userRepo", MAIN_REPO);
+          document.getElementById("step2").classList.add("hidden");
+          document.getElementById("step3").classList.remove("hidden");
+          return;
+        }
+
+        // check fork
+        const forkURL = `https://api.github.com/repos/${user}/${MAIN_REPO.split('/')[1]}`;
+        const check = await fetch(forkURL);
+
+        if (check.ok) {
+          confirmLog(`✅ Fork confirmed for ${user}`);
+          localStorage.setItem("userRepo", `${user}/${MAIN_REPO.split('/')[1]}`);
+          document.getElementById("step2").classList.add("hidden");
+          document.getElementById("step3").classList.remove("hidden");
+        } else {
+          confirmLog("❌ Fork not found! Please fork the repo first and try again.");
+        }
+      } catch (e) {
+        confirmLog("⚠️ Error: " + e.message);
+      }
+    }
+
+    async function deployNow() {
+      const session = document.getElementById("session").value.trim();
+      const token = document.getElementById("token").value.trim();
+      const owner = document.getElementById("owner").value.trim();
+      const log = document.getElementById("deployLog");
+
+      if (!session || !token || !owner)
+        return log.innerHTML = "❌ Please fill all fields!";
+
+      log.innerHTML = "⚙️ Deploying... Please wait...";
+
+      try {
+        const res = await fetch("/deploy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session, token, owner })
+        });
+        const text = await res.text();
+        log.innerHTML = text;
+      } catch (err) {
+        log.innerHTML = "❌ Error: " + err.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
