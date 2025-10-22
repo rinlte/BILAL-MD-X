@@ -1,7 +1,7 @@
 {
   "name": "bilal-md-autodeployer",
   "version": "1.0.0",
-  "description": "Auto deploy system for Bilal-MD bot",
+  "description": "Auto deploy page for Bilal-MD",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
