@@ -1,1 +1,1 @@
-web: node autodeploy/index.js
+web: node web/index.js
