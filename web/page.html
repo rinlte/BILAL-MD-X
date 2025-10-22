@@ -6,63 +6,96 @@
   <title>BILAL-MD AUTO DEPLOY</title>
   <style>
     body{background:#000;color:#fff;text-align:center;font-family:Arial;margin-top:60px}
-    .box{background:rgba(255,255,255,.08);display:inline-block;padding:40px;border-radius:12px}
-    input{width:320px;padding:10px;margin:8px 0;border:none;border-radius:6px;outline:none}
+    .box{background:rgba(255,255,255,.08);display:inline-block;padding:40px;border-radius:12px;transition:0.3s}
+    input{width:320px;padding:10px;margin:8px 0;border:none;border-radius:6px;outline:none;text-align:center}
     button{margin:8px;padding:10px 25px;border:none;border-radius:6px;background:limegreen;color:#000;font-weight:bold;cursor:pointer}
-    #logs{background:rgba(255,255,255,.08);margin-top:25px;width:90%;max-width:700px;height:250px;overflow-y:auto;white-space:pre-wrap;text-align:left;margin:auto;border-radius:10px;padding:10px;font-family:monospace;color:#00ff99}
+    #logs,#confirmLogs,#deployLogs{background:rgba(255,255,255,.08);margin-top:25px;width:90%;max-width:700px;height:200px;overflow-y:auto;white-space:pre-wrap;text-align:left;margin:auto;border-radius:10px;padding:10px;font-family:monospace;color:#00ff99}
+    .hidden{display:none}
   </style>
 </head>
 <body>
-  <div class="box">
+
+  <!-- STEP 1: Fork Repo -->
+  <div class="box" id="step1">
     <h1>🚀 BILAL-MD AUTO DEPLOY</h1>
-    <p>Fork the repo → fill details → deploy your bot!</p>
-    <button onclick="forkRepo()">🔁 Fork Repo</button><br><br>
-    <input id="token" placeholder="Enter your GitHub Token" required><br>
-    <input id="repo" placeholder="Your Repo (auto-fills after fork)" required><br>
+    <p>Step 1: Fork the main repository before deploying</p>
+    <button onclick="openForkPage()">🔁 Fork BILAL-MD Repo</button>
+    <p style="font-size:14px;opacity:0.8;">After forking, come back here and click “Next”</p>
+    <button onclick="goNext()">Next ➡️</button>
+    <div id="logs">Waiting for fork...</div>
+  </div>
+
+  <!-- STEP 2: Confirm Username -->
+  <div class="box hidden" id="step2">
+    <h2>✅ Confirm Your Fork</h2>
+    <p>Step 2: Enter your GitHub username to verify your fork</p>
+    <input id="username" placeholder="Enter your GitHub username" required><br>
+    <button onclick="confirmFork()">Confirm Fork</button>
+    <div id="confirmLogs">Waiting for confirmation...</div>
+  </div>
+
+  <!-- STEP 3: Deploy Bot -->
+  <div class="box hidden" id="step3">
+    <h2>🚀 Deploy BILAL-MD Bot</h2>
+    <p>Step 3: Enter your Session ID and GitHub Token</p>
     <input id="session" placeholder="Enter Session ID" required><br>
+    <input id="token" placeholder="Enter GitHub Token" required><br>
     <button onclick="deploy()">Deploy Bot</button>
-    <div id="logs">Waiting for input...</div>
+    <div id="deployLogs">Waiting for deployment...</div>
   </div>
 
   <script>
-    const MAIN_REPO = "BiLaLTeCh05/BILAL-MD"; // 👈 change this to your main repo
-    const LOG = msg => document.getElementById("logs").innerText = msg;
+    const MAIN_REPO = "BiLaLTeCh05/BILAL-MD"; // ⚠️ apna main repo yahan likhna (owner/repo)
 
-    async function forkRepo(){
-      const token = document.getElementById("token").value.trim();
-      if(!token) return LOG("❌ Enter GitHub token first!");
-      LOG("🔁 Forking repo...");
+    const log = msg => document.getElementById("logs").innerText = msg;
+    const confirmLog = msg => document.getElementById("confirmLogs").innerText = msg;
+    const deployLog = msg => document.getElementById("deployLogs").innerText = msg;
+
+    function openForkPage(){
+      const url = `https://github.com/${MAIN_REPO}/fork`;
+      window.open(url, "_blank");
+      log("🔁 Opened GitHub fork page in new tab.");
+    }
+
+    function goNext(){
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+    }
+
+    async function confirmFork(){
+      const user = document.getElementById("username").value.trim();
+      if(!user) return confirmLog("❌ Please enter your GitHub username!");
+      confirmLog("🔍 Checking if your fork exists...");
+
       try {
-        const res = await fetch(`https://api.github.com/repos/${MAIN_REPO}/forks`,{
-          method:"POST",
-          headers:{Authorization:`token ${token}`}
-        });
-        const data = await res.json();
-        if(data.full_name){
-          localStorage.setItem("userRepo",data.full_name);
-          document.getElementById("repo").value = data.full_name;
-          LOG(`✅ Forked: ${data.full_name}`);
+        const forkURL = `https://api.github.com/repos/${user}/${MAIN_REPO.split('/')[1]}`;
+        const check = await fetch(forkURL);
+        if(check.ok){
+          confirmLog(`✅ Fork confirmed for ${user}`);
+          localStorage.setItem("userRepo", `${user}/${MAIN_REPO.split('/')[1]}`);
+          document.getElementById("step2").classList.add("hidden");
+          document.getElementById("step3").classList.remove("hidden");
         } else {
-          LOG("❌ Fork failed! Check token permissions (need 'repo').");
+          confirmLog("❌ Fork not found! Please fork first and try again.");
         }
-      } catch(e){ LOG("⚠️ Error: "+e.message); }
+      } catch(e){ confirmLog("⚠️ Error: "+e.message); }
     }
 
     async function deploy(){
-      const s=document.getElementById("session").value.trim();
-      const t=document.getElementById("token").value.trim();
-      const r=document.getElementById("repo").value.trim();
-      const l=document.getElementById("logs");
-      if(!s||!t||!r)return l.innerText="❌ Fill all fields!";
-      l.innerText="🚀 Starting deployment...\n";
-      const res=await fetch("/deploy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session:s,token:t,repo:r})});
-      const text=await res.text();l.innerText=text;
-    }
-
-    // auto fill if already forked
-    window.onload = ()=>{
+      const session = document.getElementById("session").value.trim();
+      const token = document.getElementById("token").value.trim();
       const repo = localStorage.getItem("userRepo");
-      if(repo) document.getElementById("repo").value = repo;
+      if(!session || !token || !repo) return deployLog("❌ Missing info!");
+      deployLog("🚀 Starting deployment...");
+      try {
+        const res = await fetch("/deploy",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({session,token,repo})
+        });
+        const text = await res.text();
+        deployLog(text);
+      } catch(e){ deployLog("⚠️ Error: "+e.message); }
     }
   </script>
 </body>
