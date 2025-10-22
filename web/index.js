@@ -1,64 +1,77 @@
+// 🌐 BILAL-MD AUTO DEPLOYER
 const express = require("express");
-const bodyParser = require("body-parser");
-const fetch = require("node-fetch");
 const path = require("path");
+const fs = require("fs");
+const bodyParser = require("body-parser");
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+// 🔧 middlewares
 app.use(bodyParser.json());
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname))); // serve static page.html
 
+// 🏠 route to open page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "page.html"));
 });
 
+// 🚀 main deploy route
 app.post("/deploy", async (req, res) => {
-  const { session, token, repo } = req.body;
-  if (!session || !token || !repo)
+  const { session, token, owner } = req.body;
+
+  // validation
+  if (!session || !token || !owner)
     return res.send("❌ Missing fields! Please fill all boxes.");
 
   try {
-    const url = `https://api.github.com/repos/${repo}/contents/config.js`;
-    const current = await fetch(url, {
-      headers: { Authorization: `token ${token}` },
-    }).then((r) => r.json());
+    const configPath = path.join(__dirname, "../config.js");
 
-    if (!current.content)
-      return res.send("❌ config.js not found in the repository!");
+    // check config exists
+    if (!fs.existsSync(configPath)) {
+      return res.send("⚠️ config.js not found in root folder!");
+    }
 
-    const decoded = Buffer.from(current.content, "base64").toString("utf8");
-    const updated = decoded.replace(
-      /SESSION_ID\s*[:=]\s*["'].*?["']/,
-      `SESSION_ID = "${session}"`
-    );
-    const encoded = Buffer.from(updated).toString("base64");
+    let configData = fs.readFileSync(configPath, "utf8");
 
-    const result = await fetch(url, {
-      method: "PUT",
-      headers: {
-        Authorization: `token ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: "Auto update SESSION_ID via BILAL-MD Web Deployer",
-        content: encoded,
-        sha: current.sha,
-      }),
-    }).then((r) => r.json());
-
-    if (result.commit) {
-      res.send(
-        `✅ <b>Session updated on GitHub!</b><br>🗂 Repo: ${repo}<br>🚀 Heroku auto redeploy in 1–2 minutes...`
+    // replace SESSION_ID
+    if (configData.match(/SESSION_ID\s*[:=]\s*["'].*?["']/)) {
+      configData = configData.replace(
+        /SESSION_ID\s*[:=]\s*["'].*?["']/,
+        `SESSION_ID = "${session}"`
       );
     } else {
-      res.send("❌ Commit failed! Please check your GitHub token or repo access.");
+      configData += `\nSESSION_ID = "${session}";`;
     }
-  } catch (e) {
-    res.send("⚠️ Error: " + e.message);
+
+    // replace OWNER_NUMBER
+    if (configData.match(/OWNER_NUMBER\s*[:=]\s*["'].*?["']/)) {
+      configData = configData.replace(
+        /OWNER_NUMBER\s*[:=]\s*["'].*?["']/,
+        `OWNER_NUMBER = "${owner}"`
+      );
+    } else {
+      configData += `\nOWNER_NUMBER = "${owner}";`;
+    }
+
+    // save updated config
+    fs.writeFileSync(configPath, configData, "utf8");
+    console.log("✅ Config updated successfully!");
+
+    res.send(`
+      ✅ <b>Deployment Successful!</b><br>
+      🧩 Session ID: ${session}<br>
+      👑 Owner Number: ${owner}<br>
+      🔐 Token (saved securely): ${token.slice(0, 4)}********<br>
+      🚀 Bot restarting on Heroku...
+    `);
+  } catch (err) {
+    console.error(err);
+    res.send("❌ Error while updating config.js: " + err.message);
   }
 });
 
-app.listen(PORT, () => {
-  console.log("✅ Auto deployer running on port " + PORT);
-});
+// 🟢 Start server
+app.listen(PORT, () =>
+  console.log(`✅ Web Deployer running on port ${PORT}`)
+);
