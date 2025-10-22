@@ -5,91 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BILAL-MD AUTO DEPLOY</title>
   <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 80px;
-    }
-    h1 {
-      color: limegreen;
-    }
-    input {
-      width: 300px;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      outline: none;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 25px;
-      border: none;
-      border-radius: 6px;
-      background: limegreen;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .box {
-      background: rgba(255,255,255,0.1);
-      display: inline-block;
-      padding: 40px;
-      border-radius: 12px;
-    }
-    #logs {
-      background: rgba(255,255,255,0.1);
-      margin-top: 25px;
-      width: 90%;
-      max-width: 700px;
-      height: 250px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      text-align: left;
-      margin-left: auto;
-      margin-right: auto;
-      border-radius: 10px;
-      padding: 10px;
-      font-family: monospace;
-      color: #00ff99;
-    }
+    body{background:#000;color:#fff;text-align:center;font-family:Arial;margin-top:60px}
+    .box{background:rgba(255,255,255,.08);display:inline-block;padding:40px;border-radius:12px}
+    input{width:320px;padding:10px;margin:8px 0;border:none;border-radius:6px;outline:none}
+    button{margin:8px;padding:10px 25px;border:none;border-radius:6px;background:limegreen;color:#000;font-weight:bold;cursor:pointer}
+    #logs{background:rgba(255,255,255,.08);margin-top:25px;width:90%;max-width:700px;height:250px;overflow-y:auto;white-space:pre-wrap;text-align:left;margin:auto;border-radius:10px;padding:10px;font-family:monospace;color:#00ff99}
   </style>
 </head>
 <body>
   <div class="box">
     <h1>🚀 BILAL-MD AUTO DEPLOY</h1>
-    <input id="session" placeholder="Enter SESSION ID" required />
-    <br />
+    <p>Fork the repo → fill details → deploy your bot!</p>
+    <button onclick="forkRepo()">🔁 Fork Repo</button><br><br>
+    <input id="token" placeholder="Enter your GitHub Token" required><br>
+    <input id="repo" placeholder="Your Repo (auto-fills after fork)" required><br>
+    <input id="session" placeholder="Enter Session ID" required><br>
     <button onclick="deploy()">Deploy Bot</button>
     <div id="logs">Waiting for input...</div>
   </div>
 
   <script>
-    async function deploy() {
-      const session = document.getElementById("session").value.trim();
-      const logs = document.getElementById("logs");
-      if (!session) return logs.innerText = "❌ Please enter a valid Session ID!";
-      
-      logs.innerText = "🚀 Starting deployment...\n";
-      const response = await fetch("/deploy", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session })
-      });
+    const MAIN_REPO = "BiLaLTeCh05/BILAL-MD"; // 👈 change this to your main repo
+    const LOG = msg => document.getElementById("logs").innerText = msg;
 
-      if (!response.ok) return logs.innerText += "\n❌ Deployment failed (server error).";
+    async function forkRepo(){
+      const token = document.getElementById("token").value.trim();
+      if(!token) return LOG("❌ Enter GitHub token first!");
+      LOG("🔁 Forking repo...");
+      try {
+        const res = await fetch(`https://api.github.com/repos/${MAIN_REPO}/forks`,{
+          method:"POST",
+          headers:{Authorization:`token ${token}`}
+        });
+        const data = await res.json();
+        if(data.full_name){
+          localStorage.setItem("userRepo",data.full_name);
+          document.getElementById("repo").value = data.full_name;
+          LOG(`✅ Forked: ${data.full_name}`);
+        } else {
+          LOG("❌ Fork failed! Check token permissions (need 'repo').");
+        }
+      } catch(e){ LOG("⚠️ Error: "+e.message); }
+    }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+    async function deploy(){
+      const s=document.getElementById("session").value.trim();
+      const t=document.getElementById("token").value.trim();
+      const r=document.getElementById("repo").value.trim();
+      const l=document.getElementById("logs");
+      if(!s||!t||!r)return l.innerText="❌ Fill all fields!";
+      l.innerText="🚀 Starting deployment...\n";
+      const res=await fetch("/deploy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session:s,token:t,repo:r})});
+      const text=await res.text();l.innerText=text;
+    }
 
-      // Stream Heroku logs
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        logs.innerText += decoder.decode(value);
-        logs.scrollTop = logs.scrollHeight; // auto scroll
-      }
+    // auto fill if already forked
+    window.onload = ()=>{
+      const repo = localStorage.getItem("userRepo");
+      if(repo) document.getElementById("repo").value = repo;
     }
   </script>
 </body>
