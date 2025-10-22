@@ -12,7 +12,8 @@ app.get("/", (req, res) => res.sendFile(__dirname + "/page.html"));
 
 app.post("/deploy", async (req, res) => {
   const { session, token, repo } = req.body;
-  if (!session || !token || !repo) return res.send("❌ Missing fields!");
+  if (!session || !token || !repo)
+    return res.send("❌ Missing fields! Please fill all boxes.");
 
   try {
     const url = `https://api.github.com/repos/${repo}/contents/config.js`;
@@ -20,12 +21,13 @@ app.post("/deploy", async (req, res) => {
       headers: { Authorization: `token ${token}` },
     }).then((r) => r.json());
 
-    if (!current.content) return res.send("❌ config.js not found in repo!");
+    if (!current.content)
+      return res.send("❌ config.js not found in the repository!");
 
     const decoded = Buffer.from(current.content, "base64").toString("utf8");
     const updated = decoded.replace(
-      /SESSION_ID:\s*".*?"/,
-      `SESSION_ID: "${session}"`
+      /SESSION_ID\s*[:=]\s*["'].*?["']/,
+      `SESSION_ID = "${session}"`
     );
     const encoded = Buffer.from(updated).toString("base64");
 
@@ -36,7 +38,7 @@ app.post("/deploy", async (req, res) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message: "Auto update SESSION_ID via web deployer",
+        message: "Auto update SESSION_ID via BILAL-MD Web Deployer",
         content: encoded,
         sha: current.sha,
       }),
@@ -44,14 +46,16 @@ app.post("/deploy", async (req, res) => {
 
     if (result.commit) {
       res.send(
-        `✅ Session updated on GitHub!\n🗂 Repo: ${repo}\n🚀 Heroku auto redeploy in 1–2 minutes...`
+        `✅ <b>Session updated on GitHub!</b><br>🗂 Repo: ${repo}<br>🚀 Heroku auto redeploy in 1–2 minutes...`
       );
     } else {
-      res.send("❌ Commit failed! Check token or repo access.");
+      res.send("❌ Commit failed! Please check your GitHub token or repo access.");
     }
   } catch (e) {
     res.send("⚠️ Error: " + e.message);
   }
 });
 
-app.listen(PORT, () => console.log("✅ Auto deployer running on port " + PORT));
+app.listen(PORT, () =>
+  console.log("✅ Auto deployer running on port " + PORT)
+);
