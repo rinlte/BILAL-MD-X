@@ -87,7 +87,7 @@ cmd({
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
 
     if (error.message.includes("PRIVATE REPO")) {
-      reply(`*AP NE PRIVATE REPO KA LINK LIKHA HAI 🥺 AP SIRF PUBLIC REPO KA LINK LIKHO 😔*`);
+      reply(`*AP NE PRIVATE REPO KA LINK LIKHA HAI 🥺 AP SIRF PUBLIC REPO KA LINK LIKHO 😊*`);
     } else {
       reply(`*AP NE PRIVATE REPO KA LINK LIKHA HAI 🥺 AP SIRF PUBLIC REPO KA LINK LIKHO 😊*`);
     }
