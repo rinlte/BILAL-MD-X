@@ -24,7 +24,7 @@ cmd({
   // 🟡 Invalid link check
   if (!/^(https:\/\/)?github\.com\/.+/.test(args[0])) {
     await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
-    return reply(`*SIRF GITHUB REPO KA LINK LIKHO 🥺 AP GHALAT LINK LIKH RAHE HO 😥`);
+    return reply(`*SIRF GITHUB REPO KA LINK LIKHO 🥺 AP GHALAT LINK LIKH RAHE HO 😥*`);
   }
 
   try {
