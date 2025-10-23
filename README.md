@@ -24,7 +24,7 @@
 
 # _OWNER • [INFO](https://akaserein.github.io/Bilal/)_ •
 
-<a><img src='https://i.imgur.com/LyHic3i.gif'/><>
+<a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
 # *CONTACT ME ON • [WHATSAPP](https://wa.me/923078071982) •*
 
