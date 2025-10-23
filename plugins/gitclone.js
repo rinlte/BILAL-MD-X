@@ -66,7 +66,7 @@ cmd({
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363296818107681@newsletter',
-          newsletterName: '*👑 BILAL-MD WHATSAPP BOT 👑️*',
+          newsletterName: 'BILAL-MD WHATSAPP BOT',
           serverMessageId: 143
         }
       }
@@ -77,8 +77,6 @@ cmd({
   } catch (error) {
     console.error(error);
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-    reply(`❌ *DUBARA KOSHISH KARO 🥺*
-
-_Maybe link invalid ya repo private hai ☹️_`);
+    reply(`*AP NE PRIVATE REPO KA LINK LIKHA HAI 🥺 AP SIRF PUBLIC REPO KA LINK LIKHO 😊*`);
   }
 });
