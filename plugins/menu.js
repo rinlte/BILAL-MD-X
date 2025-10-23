@@ -25,8 +25,8 @@ cmd({
         // Menu text
         const menuText = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
-*┃👑│ USER:❯ ${config.OWNER_NAME}*
-*┃👑│ USER:❯ ${config.OWNER_NUMBER}*
+*┃👑│ USER :❯ ${config.OWNER_NAME}*
+*┃👑│ USER :❯ ${config.OWNER_NUMBER}*
 *┃👑│ MODE :❯ ${config.MODE}*
 *┃👑│ PREFiX :❯ ${config.PREFIX}*
 *┃👑│ COMMANDS :❯ ${commands.length}*
@@ -51,9 +51,8 @@ cmd({
 *┃👑│ • INVITE*
 *┃👑│ • ADD*
 *┃👑│ • KICK*
-*┃👑│ • PROMOTE*
-*┃👑│ • DEMOTE*
-*┃👑│ • DISMISS*
+*┃👑│ • PMT*
+*┃👑│ • DMT*
 *┃👑│ • MUTE*
 *┃👑│ • UNMUTE*
 *┃👑│ • LOCKGC*
@@ -125,6 +124,7 @@ cmd({
 *┃👑│ • TINYURL*
 *┃👑│ • VV*
 *┃👑│ • VV2*
+*┃👑│ • GITCLONE
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 MAIN 👑 〕━━┈⊷*
