@@ -23,8 +23,13 @@ cmd({
 
   // 🟡 Invalid link check
   if (!/^(https:\/\/)?github\.com\/.+/.test(args[0])) {
-    await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
-    return reply(`*SIRF GITHUB REPO KA LINK LIKHO 🥺 AP GHALAT LINK LIKH RAHE HO 😥*`);
+    await conn.sendMessage(from, { react: { text: "⚠️", key: m.key } });
+    return reply(`❌ *SIRF GITHUB REPO LINK DO 🥺*
+
+👉 Example:
+https://github.com/BiLaLTeCh05/BILAL-MD
+
+> *Kisi aur website ka link mat do ☺️*`);
   }
 
   try {
@@ -32,8 +37,8 @@ cmd({
     const match = args[0].match(regex);
 
     if (!match) {
-      await conn.sendMessage(from, { react: { text: "😓", key: m.key } });
-      throw new Error("*YEH GITHUB REPO KA LINK NAHI 😊*");
+      await conn.sendMessage(from, { react: { text: "😢", key: m.key } });
+      throw new Error("❌ Invalid GitHub link!");
     }
 
     const [, username, repo] = match;
@@ -42,7 +47,7 @@ cmd({
     // 🔍 Check if repository exists
     const response = await fetch(zipUrl, { method: "HEAD" });
     if (!response.ok) {
-      await conn.sendMessage(from, { react: { text: "☹️", key: m.key } });
+      await conn.sendMessage(from, { react: { text: "🔒", key: m.key } });
       throw new Error("YEH PRIVATE REPO KA LINK HAI 🥺 AP SIRF PUBLIC REPO KA LINK DO ☺️");
     }
 
@@ -51,11 +56,11 @@ cmd({
       ? contentDisposition.match(/filename=(.*)/)[1]
       : `${repo}.zip`;
 
-    // 🔵 Notify user
+    // 🟢 Untouched message + reaction
     await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
-    reply(`*APKI REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 😃*`);
+    const downloadingMsg = await reply(`*APKI REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 😃*`);
 
-    // 📨 Send zip file
+    // 📨 Send the ZIP file
     await conn.sendMessage(from, {
       document: { url: zipUrl },
       fileName: fileName,
@@ -66,17 +71,26 @@ cmd({
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363296818107681@newsletter',
-          newsletterName: 'BILAL-MD WHATSAPP BOT',
+          newsletterName: '*👑 BILAL-MD WHATSAPP BOT 👑️*',
           serverMessageId: 143
         }
       }
     }, { quoted: m });
 
-    await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+    // 🧹 Instantly delete the "downloading" message
+    try {
+      await conn.sendMessage(from, { delete: downloadingMsg.key });
+    } catch (e) {
+      console.log("⚠️ Failed to delete message:", e);
+    }
+
+    await conn.sendMessage(from, { react: { text: "✅", key: m.key } });
 
   } catch (error) {
     console.error(error);
-    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-    reply(`*AP NE PRIVATE REPO KA LINK LIKHA HAI 🥺 AP SIRF PUBLIC REPO KA LINK LIKHO 😊*`);
+    await conn.sendMessage(from, { react: { text: "❌", key: m.key } });
+    reply(`❌ *DUBARA KOSHISH KARO 🥺*
+
+_Maybe link invalid ya repo private hai ☹️_`);
   }
 });
