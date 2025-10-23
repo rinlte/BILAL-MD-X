@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 
 cmd({
   pattern: 'gitclone',
-  alias: ["git"],
+  alias: ["git", "zip", "file"],
   desc: "Download GitHub repository as a zip file.",
   react: '🥺',
   category: "downloader",
@@ -53,7 +53,10 @@ cmd({
 
     // 🟢 Untouched message + reaction
     await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
-    const downloadingMsg = await reply(`*APKI REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 😃*`);
+    const downloadingMsg = await conn.sendMessage(from, {
+      text: "*APKI REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 😃*",
+      quoted: m
+    });
 
     // 📨 Send the ZIP file
     await conn.sendMessage(from, {
