@@ -12,7 +12,7 @@ cmd({
 
   // 🟢 Agar koi sirf '.gitclone' likhe (without link)
   if (!args[0]) {
-    await conn.sendMessage(from, { react: { text: "🤔", key: m.key } });
+    await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
     return reply(`*AGAR AP NE KISI GITHUB REPO KI ZIP FILE DOWNLOAD KARNI HAI 🥺*
     *TO AP ESE LIKHO ☺️*
     
@@ -23,13 +23,8 @@ cmd({
 
   // 🟡 Invalid link check
   if (!/^(https:\/\/)?github\.com\/.+/.test(args[0])) {
-    await conn.sendMessage(from, { react: { text: "⚠️", key: m.key } });
-    return reply(`❌ *SIRF GITHUB REPO LINK DO 🥺*
-
-👉 Example:
-https://github.com/BiLaLTeCh05/BILAL-MD
-
-> *Kisi aur website ka link mat do ☺️*`);
+    await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
+    return reply(`*SIRF GITHUB REPO KA LINK LIKHO 🥺 AP GHALAT LINK LIKH RAHE HO 😥*`);
   }
 
   try {
@@ -37,8 +32,8 @@ https://github.com/BiLaLTeCh05/BILAL-MD
     const match = args[0].match(regex);
 
     if (!match) {
-      await conn.sendMessage(from, { react: { text: "😢", key: m.key } });
-      throw new Error("❌ Invalid GitHub link!");
+      await conn.sendMessage(from, { react: { text: "☹️", key: m.key } });
+      throw new Error("*DUBARA KOSHISH KARO 🥺*");
     }
 
     const [, username, repo] = match;
@@ -47,7 +42,7 @@ https://github.com/BiLaLTeCh05/BILAL-MD
     // 🔍 Check if repository exists
     const response = await fetch(zipUrl, { method: "HEAD" });
     if (!response.ok) {
-      await conn.sendMessage(from, { react: { text: "🔒", key: m.key } });
+      await conn.sendMessage(from, { react: { text: "☹️", key: m.key } });
       throw new Error("YEH PRIVATE REPO KA LINK HAI 🥺 AP SIRF PUBLIC REPO KA LINK DO ☺️");
     }
 
@@ -71,7 +66,7 @@ https://github.com/BiLaLTeCh05/BILAL-MD
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363296818107681@newsletter',
-          newsletterName: '*👑 BILAL-MD WHATSAPP BOT 👑️*',
+          newsletterName: 'BILAL-MD WHATSAPP BOT',
           serverMessageId: 143
         }
       }
@@ -84,13 +79,11 @@ https://github.com/BiLaLTeCh05/BILAL-MD
       console.log("⚠️ Failed to delete message:", e);
     }
 
-    await conn.sendMessage(from, { react: { text: "✅", key: m.key } });
+    await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
 
   } catch (error) {
     console.error(error);
-    await conn.sendMessage(from, { react: { text: "❌", key: m.key } });
-    reply(`❌ *DUBARA KOSHISH KARO 🥺*
-
-_Maybe link invalid ya repo private hai ☹️_`);
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+    reply(`*AP NE PRIVATE REPO KA LINK LIKHA HAI 🥺 AP SIRF PUBLIC REPO KA LINK LIKHO 😊*`);
   }
 });
