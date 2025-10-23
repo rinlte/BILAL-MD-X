@@ -4,7 +4,7 @@ const yts = require('yt-search');
 
 cmd({
   pattern: "song",
-  alias: ["play", "mp3"],
+  alias: ["play", "mp3", "audio", "music", "s", "so", "son", "songs"],
   react: "🎶",
   desc: "Download YouTube song (Audio) via Nekolabs API",
   category: "download",
@@ -12,7 +12,7 @@ cmd({
   filename: __filename
 }, async (conn, mek, m, { from, reply, q }) => {
   try {
-    if (!q) return reply("⚠️ Please provide a song name or YouTube link.");
+    if (!q) return reply("*AP KO KOI AUDIO DOWNLOAD KARNI HAI 🥺*\nTO AP ESE LIKHO ☺️*\n\n*PLAY ❮APKE AUDIO KA NAM❯*\n\n*AP COMMAND ❮PLAY❯ LIKH KAR USKE AGE APNE AUDIO KA NAM LIKH DO ☺️ FIR WO AUDIO DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE 🥰💞*");
 
     // 🔹 API Call (Nekolabs)
     const apiUrl = `https://api.nekolabs.my.id/downloader/youtube/play/v1?q=${encodeURIComponent(q)}`;
@@ -21,7 +21,7 @@ cmd({
 
     // ✅ Validate response
     if (!data?.success || !data?.result?.downloadUrl) {
-      return reply("❌ Song not found or API error. Try again later.");
+      return reply("*APKA AUDIO NAHI MILA 🥺❤️*");
     }
 
     const meta = data.result.metadata;
@@ -37,18 +37,11 @@ cmd({
     }
 
     // 🔹 Song info card
-    const caption = `
-╔═══════════════════════
-🎶 *Now Playing*
-╠═══════════════════════
-🎵 *Title:* ${meta.title}
-👤 *Channel:* ${meta.channel}
-⏱ *Duration:* ${meta.duration}
-🔗 [Watch on YouTube](${meta.url})
-╠═══════════════════════
-⚡ Powered by *BILAL-MD*
-╚═══════════════════════
-`;
+    const caption = `*👑 AUDIO INFO 👑*
+*👑 NAME :❯ ${meta.title}*
+*👑CHANNEL :❯ ${meta.channel}*
+*👑 TIME :❯ * ${meta.duration}*
+*👑 BILAL-MD WHATSAPP BOT 👑*`;
 
     // 🖼️ Send thumbnail + info
     await conn.sendMessage(from, {
@@ -64,7 +57,7 @@ cmd({
     }, { quoted: mek });
 
   } catch (err) {
-    console.error("song cmd error:", err);
-    reply("⚠️ An unexpected error occurred while processing your request.");
+    console.error("*DUBARA KOSHISH KARO 🥺❤️*", err);
+    reply("*DUBARA KOSHISH KARO 🥺❤️*");
   }
 });
