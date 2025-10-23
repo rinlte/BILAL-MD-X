@@ -13,10 +13,10 @@ cmd({
   // 🟢 Agar koi sirf '.gitclone' likhe (without link)
   if (!args[0]) {
     await conn.sendMessage(from, { react: { text: "🤔", key: m.key } });
-    return reply(`*AGAR AP NE KISI GITHUB REPO KI ZIP FILE DOWNLOAD KARNI HAI 🥺
+    return reply(`*AGAR AP NE KISI GITHUB REPO KI ZIP FILE DOWNLOAD KARNI HAI 🥺*
     *TO AP ESE LIKHO ☺️*
     
-    *.GITCLONE ❮GITHUB REPO LINK❯
+    *.GITCLONE ❮GITHUB REPO LINK❯*
     
    *JAB AP ESE LIKHO GE 😇 TO US REPO KI ZIP FILE DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰❤️*`);
   }
