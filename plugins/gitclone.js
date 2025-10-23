@@ -8,18 +8,23 @@ cmd({
   react: '🥺',
   category: "downloader",
   filename: __filename
-}, async (conn, m, store, {
-  from,
-  quoted,
-  args,
-  reply
-}) => {
+}, async (conn, m, store, { from, quoted, args, reply }) => {
+
+  // 🟢 Agar koi sirf '.gitclone' likhe (without link)
   if (!args[0]) {
-    return reply("AP KO KISI GITHUB REPO KI ZIP FILE CHAHYE 🥺*\n*TO AP ESE LIKHO ☺️* \n\n *.GITCLONE ❮GITHUB REPO LINK❯* \n\n *JAB AP ESE LIKHO GE TO US REPO KI ZIP FILE DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE 🥰🌹*");
+    await conn.sendMessage(from, { react: { text: "🤔", key: m.key } });
+    return reply(`*AGAR AP NE KISI GITHUB REPO KI ZIP FILE DOWNLOAD KARNI HAI 🥺
+    *TO AP ESE LIKHO ☺️*
+    
+    *.GITCLONE ❮GITHUB REPO LINK❯
+    
+   *JAB AP ESE LIKHO GE 😇 TO US REPO KI ZIP FILE DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰❤️*`);
   }
 
+  // 🟡 Invalid link check
   if (!/^(https:\/\/)?github\.com\/.+/.test(args[0])) {
-    return reply("SIRF GITHUB REPO KA LINK DO BAS 🥺 KISI AUR WEBSITE KA LINK NAI ☺️*");
+    await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
+    return reply(`*SIRF GITHUB REPO KA LINK LIKHO 🥺 AP GHALAT LINK LIKH RAHE HO 😥`);
   }
 
   try {
@@ -27,25 +32,30 @@ cmd({
     const match = args[0].match(regex);
 
     if (!match) {
-      throw new Error("*DUBARA KOSHISH KARO 🥺*");
+      await conn.sendMessage(from, { react: { text: "😓", key: m.key } });
+      throw new Error("*YEH GITHUB REPO KA LINK NAHI 😊*");
     }
 
     const [, username, repo] = match;
     const zipUrl = `https://api.github.com/repos/${username}/${repo}/zipball`;
 
-    // Check if repository exists
+    // 🔍 Check if repository exists
     const response = await fetch(zipUrl, { method: "HEAD" });
     if (!response.ok) {
-      throw new Error("*YEH PRIVATE REPO KA LINK HAI 🥺 AP SIRF PUBLIC REPO KA LINK DO ☺️*");
+      await conn.sendMessage(from, { react: { text: "☹️", key: m.key } });
+      throw new Error("YEH PRIVATE REPO KA LINK HAI 🥺 AP SIRF PUBLIC REPO KA LINK DO ☺️");
     }
 
     const contentDisposition = response.headers.get("content-disposition");
-    const fileName = contentDisposition ? contentDisposition.match(/filename=(.*)/)[1] : `${repo}.zip`;
+    const fileName = contentDisposition
+      ? contentDisposition.match(/filename=(.*)/)[1]
+      : `${repo}.zip`;
 
-    // Notify user of the download
-    reply(`*ZIP FILE DOWNLOAD HO RAHI HAI ☺️*\n\n*Repository:* ${username}/${repo}\n*Filename:* ${fileName}\n\n> *Powered by 『BILAL-MD』*`);
+    // 🔵 Notify user
+    await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
+    reply(`*APKI REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 😃*`);
 
-    // Send the zip file to the user with custom contextInfo
+    // 📨 Send zip file
     await conn.sendMessage(from, {
       document: { url: zipUrl },
       fileName: fileName,
@@ -62,8 +72,13 @@ cmd({
       }
     }, { quoted: m });
 
+    await conn.sendMessage(from, { react: { text: "☺️", key: m.key } });
+
   } catch (error) {
-    console.error("*DUBARA KOSHISH KARO 🥺*", error);
-    reply("*DUBARA KOSHISH KARO 🥺*");
+    console.error(error);
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+    reply(`❌ *DUBARA KOSHISH KARO 🥺*
+
+_Maybe link invalid ya repo private hai ☹️_`);
   }
 });
