@@ -1,70 +1,103 @@
 const { cmd } = require('../command');
-const fetch = require('node-fetch');
+const axios = require('axios');
 const yts = require('yt-search');
 
+function extractUrl(text = '') {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[\w\-?=&%.#\/]+)|(youtube\.com\/[\w\-?=&%.#\/]+)/i;
+  const match = text.match(urlRegex);
+  if (!match) return null;
+  return match[0].startsWith('http') ? match[0] : `https://${match[0]}`;
+}
+
 cmd({
-  pattern: "song",
-  alias: ["play", "mp3"],
-  react: "🎶",
-  desc: "Download YouTube song (Audio) via Nekolabs API",
-  category: "download",
-  use: ".song <query>",
+  pattern: 'play',
+  alias: ['song', 'music', 'audio', 'yta', 'ytmp3', 'ytmusic', 'ytsong', 'ytaudio', 'ytsearch', 'ytmp'],
+  desc: 'Download YouTube audio using Nekolabs API.',
+  category: 'download',
+  react: '🥺',
   filename: __filename
-}, async (conn, mek, m, { from, reply, q }) => {
+},
+async (conn, mek, m, { from, args, reply, quoted }) => {
+  let waitingMsg, thumbMsg, captionMsg;
   try {
-    if (!q) return reply("⚠️ Please provide a song name or YouTube link.");
+    await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
 
-    // 🔹 API Call (Nekolabs)
-    const apiUrl = `https://api.nekolabs.my.id/downloader/youtube/play/v1?q=${encodeURIComponent(q)}`;
-    const res = await fetch(apiUrl);
-    const data = await res.json();
-
-    // ✅ Validate response
-    if (!data?.success || !data?.result?.downloadUrl) {
-      return reply("❌ Song not found or API error. Try again later.");
+    if (!args[0]) {
+      return reply(
+        "*AP KO KOI AUDIO DOWNLOAD KARNI HAI 🥺*\n" +
+        "*TO AP ESE LIKHO ☺️*\n\n" +
+        "*PLAY ❮APKE AUDIO KA NAM❯*\n\n" +
+        "*AP COMMAND ❮PLAY❯ LIKH KAR USKE AGE APNE AUDIO KA NAM LIKH DO ☺️ FIR WO AUDIO DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE 🥰💞*"
+      );
     }
 
-    const meta = data.result.metadata;
-    const dlUrl = data.result.downloadUrl;
+    let provided = args.join(' ').trim() || (quoted && (quoted.text || quoted.caption)) || '';
+    let ytUrl = extractUrl(provided);
 
-    // 🔹 Try fetching the thumbnail
-    let buffer;
+    waitingMsg = await conn.sendMessage(
+      from,
+      { text: "*APKA AUDIO DOWNLOAD HO RAHA HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GA ☺️ TO YAHA BHEJ DIYA JAYE GA 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
+      { quoted: m }
+    );
+    await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
+
+    let query = provided;
+
+    // Agar URL nahi mila to search karein
+    if (!ytUrl) {
+      const search = await yts(provided);
+      if (!search?.all?.length) {
+        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+        return reply("*APKA AUDIO MUJHE NAHI MILA 🥺 AP APNA AUDIO DUBARA DOWNLOAD KARO ☺️*");
+      }
+      ytUrl = search.all[0].url;
+      query = ytUrl;
+    }
+
+    // 🔹 New Nekolabs API
+    const apiUrl = `https://api.nekolabs.my.id/downloader/youtube/play/v1?q=${encodeURIComponent(query)}`;
+    const { data } = await axios.get(apiUrl, { headers: { accept: '*/*' }, timeout: 30000 });
+
+    if (!data?.status || !data?.data?.url) {
+      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+      return reply("*APKA AUDIO MUJHE NAHI MILA 🥺 AP APNA AUDIO DUBARA DOWNLOAD KARO ☺️*");
+    }
+
+    const { title, thumbnail, author, duration, url } = data.data;
+
+    // 🔹 Thumbnail caption (audio info)
+    const thumbCaption = `*__________________________________*\n*👑 AUDIO KA NAME 👑*\n *${title}*\n*__________________________________*\n*👑 CHANNEL :❯ ${author || 'Unknown'}*\n*__________________________________*\n*👑 TIME:❯ ${duration || '—'}*\n*__________________________________*`;
+
+    thumbMsg = await conn.sendMessage(from, { image: { url: thumbnail }, caption: thumbCaption }, { quoted: m });
+
     try {
-      const thumbRes = await fetch(meta.cover);
-      buffer = Buffer.from(await thumbRes.arrayBuffer());
-    } catch {
-      buffer = null;
+      // 🔹 Final audio caption (downloaded message)
+      const finalCaption = `*_________________________________________*\n*👑 AUDIO KA NAME 👑* \n*${title}*\n*_________________________________________*\n*MENE APKA AUDIO DOWNLOAD KAR DIA HAI OK ☺️ OR KOI AUDIO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*_________________________________________*\n*👑 BY :❯ BILAL-MD 👑*\n*_________________________________________*`;
+
+      await conn.sendMessage(from, {
+        audio: { url },
+        mimetype: 'audio/mpeg',
+        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp3`,
+        ptt: false
+      }, { quoted: m });
+
+      captionMsg = await conn.sendMessage(from, { text: finalCaption }, { quoted: m });
+
+      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+
+      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
+
+    } catch (err) {
+      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+      await reply("*ERROR: AUDIO SEND KARNE ME PROBLEM A GAYI 🥺 DUBARA TRY KARO ☹️*");
     }
 
-    // 🔹 Song info card
-    const caption = `
-╔═══════════════════════
-🎶 *Now Playing*
-╠═══════════════════════
-🎵 *Title:* ${meta.title}
-👤 *Channel:* ${meta.channel}
-⏱ *Duration:* ${meta.duration}
-🔗 [Watch on YouTube](${meta.url})
-╠═══════════════════════
-⚡ Powered by *BILAL-MD*
-╚═══════════════════════
-`;
-
-    // 🖼️ Send thumbnail + info
-    await conn.sendMessage(from, {
-      image: buffer,
-      caption
-    }, { quoted: mek });
-
-    // 🎧 Send MP3 file
-    await conn.sendMessage(from, {
-      audio: { url: dlUrl },
-      mimetype: "audio/mpeg",
-      fileName: `${meta.title.replace(/[\\/:*?"<>|]/g, "").slice(0, 80)}.mp3`
-    }, { quoted: mek });
-
-  } catch (err) {
-    console.error("song cmd error:", err);
-    reply("⚠️ An unexpected error occurred while processing your request.");
+  } catch (e) {
+    console.error('play cmd error =>', e?.message || e);
+    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
+    if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
+    await reply("*ERROR: KUCH GALAT HO GAYA 🥺 DUBARA KOSHISH KARO ☹️*");
   }
 });
