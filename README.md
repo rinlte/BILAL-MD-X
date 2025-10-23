@@ -11,19 +11,24 @@
 </p>
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
-# _NOW • [START](https://bilal-md-deploy-1x.vercel.app/) • BILAL-MD_
+# NOW • [START](https://bilal-md-deploy-1x.vercel.app/) • BILAL-MD
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
-# *_FOLLOW • [WHATSAPP CHANNEL](https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G) •_*
+# *FOLLOW • [WHATSAPP CHANNEL](https://whatsapp.com/channel/0029Vaj3Xnu17EmtDxTNnQ0G) •*
 
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
-# *_CONTACT ME ON • [WHATSAPP](https://wa.me/923078071982) •_*
+# *JOIN• [WHATSAPP GROUP](https://chat.whatsapp.com/BwWffeDwiqe6cjDDklYJ5m?mode=ems_copy_t) •*
+
+<a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
+
+
+# *CONTACT ME ON • [WHATSAPP](https://wa.me/923078071982) •*
 
 <a><img src='https://i.imgur.com/LyHic3i.gif'/><>
 
-# *_DEVELOPER_*
+# *DEVELOPER*
 <a href="https://github.com/BilalTech05"><img src="https://i.postimg.cc/x8KFHsZ0/BILAL-MD.jpg" width="250" height="250" alt="UMAR"/></a>
-# [👑 HELP 👑](https://akaserein.github.io/Bilal/ )
+# OWNER [👑 INFO 👑](https://akaserein.github.io/Bilal/ )
 
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
