@@ -12,7 +12,7 @@ cmd({
   filename: __filename
 }, async (conn, mek, m, { from, reply, q }) => {
   try {
-    if (!q) return reply("*AP KO KOI AUDIO DOWNLOAD KARNI HAI 🥺*\nTO AP ESE LIKHO ☺️*\n\n*PLAY ❮APKE AUDIO KA NAM❯*\n\n*AP COMMAND ❮PLAY❯ LIKH KAR USKE AGE APNE AUDIO KA NAM LIKH DO ☺️ FIR WO AUDIO DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE 🥰💞*");
+    if (!q) return reply("*AP KO KOI AUDIO DOWNLOAD KARNI HAI 🥺*\n*TO AP ESE LIKHO ☺️*\n\n*PLAY ❮APKE AUDIO KA NAM❯*\n\n*AP COMMAND ❮PLAY❯ LIKH KAR USKE AGE APNE AUDIO KA NAM LIKH DO ☺️ FIR WO AUDIO DOWNLOAD KAR KE YAHA PER BHEJ DE JAYE GE 🥰💞*");
 
     // 🔹 API Call (Nekolabs)
     const apiUrl = `https://api.nekolabs.my.id/downloader/youtube/play/v1?q=${encodeURIComponent(q)}`;
