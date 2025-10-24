@@ -25,10 +25,10 @@ cmd({
         // Menu text
         const menuText = `*╭━━━〔 👑 BiLAL-MD 👑 〕━━━┈⊷*
 *┃👑╭──────────────*
-*┃👑│ USER :❯ ${config.OWNER_NAME}*
-*┃👑│ USER :❯ ${config.OWNER_NUMBER}*
+*┃👑│ OWNER :❯ ${config.OWNER_NAME}*
+*┃👑│ NUMBER :❯ ${config.OWNER_NUMBER}*
 *┃👑│ MODE :❯ ${config.MODE}*
-*┃👑│ PREFiX :❯ ${config.PREFIX}*
+*┃👑│ PREFIX :❯ ${config.PREFIX}*
 *┃👑│ COMMANDS :❯ ${commands.length}*
 *┃👑│ PLATFORM :❯ ${getPlatform()}*
 *┃👑╰──────────────*
@@ -124,7 +124,7 @@ cmd({
 *┃👑│ • TINYURL*
 *┃👑│ • VV*
 *┃👑│ • VV2*
-*┃👑│ • GITCLONE
+*┃👑│ • GITCLONE*
 *╰━━━━━━━━━━━━━━━┈⊷*
 
 *╭━━〔 👑 MAIN 👑 〕━━┈⊷*
@@ -150,24 +150,22 @@ cmd({
 
 *👑 BILAL-MD WHATSAPP BOT 👑*`;
 
-        // 1️⃣ Send image with caption first
+        // ✅ Fixed safe image (from imgbb)
         await conn.sendMessage(from, {
-            image: { url: config.MENU_IMAGE_URL || 'https://i.ibb.co/4ZX9kTWy/BILAL-MD.jpg' },
+            image: { url: 'https://i.ibb.co/4ZX9kTWy/BILAL-MD.jpg' },
             caption: "*👑 BILAL-MD MENU 👑*"
         }, { quoted: mek });
 
-        // 2️⃣ Wait 1 second
         await sleep(1000);
 
-        // 3️⃣ Send menu line-by-line
+        // Send menu line by line
         const lines = menuText.split("\n");
         let currentText = "";
         const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
 
         for (const line of lines) {
             currentText += line + "\n";
-            await sleep(500); // 0.5 sec
-            // Edit menu message
+            await sleep(500);
             await conn.relayMessage(from, {
                 protocolMessage: {
                     key: msg.key,
@@ -178,7 +176,7 @@ cmd({
         }
 
     } catch (e) {
-        console.error('*DUBARA LIKHO ❮MENU❯ 🥺❤️*', e);
-        reply(`*DUBARA LIKHO ❮MENU❯ 🥺❤️* ${e.message}`);
+        console.error('❌ Error:', e);
+        reply(`*DUBARA LIKHO ❮MENU❯ 🥺❤️*\n\n_Reason:_ ${e.message}`);
     }
 });
