@@ -3,9 +3,9 @@ const yts = require('yt-search');
 const axios = require('axios');
 
 cmd({
-    pattern: "video",
-    react: "🥺",
-    desc: "Download YouTube MP4 (auto send type)",
+    pattern: "video3",
+    react: "🎬",
+    desc: "Download YouTube MP4 (only video)",
     category: "download",
     use: ".video3 <query>",
     filename: __filename
@@ -22,7 +22,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🔍", key: mek.key } });
 
-        // 🔎 Search YouTube
+        // 🔍 YouTube Search
         const search = await yts(q);
         if (!search.videos.length) return reply("❌ *APKI VIDEO NAHI MILI 😔💔*");
 
@@ -42,7 +42,7 @@ cmd({
         const videoUrl = result.video_url;
         const thumbUrl = result.thumbnail || data.thumbnail;
 
-        // 🖼 Caption Info
+        // 🖼 Caption
         const caption =
 `*╭━━━〔 🎬 VIDEO INFO 〕━━━┈⊷*
 *┃🎥 Title:* ${data.title}
@@ -60,29 +60,14 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "⬇️", key: mek.key } });
 
-        // 🎞 Try sending as normal video first
-        try {
-            await conn.sendMessage(from, {
-                video: { url: videoUrl },
-                mimetype: "video/mp4",
-                caption: "*👑 BY :❯ BILAL-MD 👑*"
-            }, { quoted: m });
+        // 🎬 Send Video Only
+        await conn.sendMessage(from, {
+            video: { url: videoUrl },
+            mimetype: "video/mp4",
+            caption: "*👑 BY :❯ BILAL-MD 👑*"
+        }, { quoted: m });
 
-            await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
-
-        } catch (err) {
-            console.log("⚠️ Video send error, sending as document:", err);
-            await conn.sendMessage(from, { react: { text: "📦", key: mek.key } });
-
-            await conn.sendMessage(from, {
-                document: { url: videoUrl },
-                mimetype: "video/mp4",
-                fileName: `${data.title}.mp4`,
-                caption: "*👑 BY :❯ BILAL-MD 👑*"
-            }, { quoted: m });
-
-            await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
-        }
+        await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
     } catch (error) {
         console.error("❌ Video3 Command Error:", error);
