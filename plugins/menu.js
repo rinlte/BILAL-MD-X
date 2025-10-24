@@ -152,7 +152,7 @@ cmd({
 
         // 1️⃣ Send image with caption first
         await conn.sendMessage(from, {
-            image: { url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/kunzpz.png' },
+            image: { url: config.MENU_IMAGE_URL || 'https://i.ibb.co/4ZX9kTWy/BILAL-MD.jpg' },
             caption: "*👑 BILAL-MD MENU 👑*"
         }, { quoted: mek });
 
