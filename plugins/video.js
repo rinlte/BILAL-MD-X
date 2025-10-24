@@ -37,7 +37,7 @@ cmd({
 
         await conn.sendMessage(from, {
             image: { url: result.thumbnail },
-            caption: `🎬 *Title:* ${data.title}\n⏱️ *Duration:* ${data.timestamp}\n📊 *Views:* ${data.views}\n📆 *Uploaded:* ${data.ago}\n\n🔗 *Link:* ${data.url}\n\n_📤 Downloading video..._`
+            caption: `*__________________________________*\n*👑 VIDEO KA NAME 👑* \n *${title}*\n*__________________________________*\n*👑 CHANNEL :❯ ${author?.channelTitle || 'Unknown'}*\n*__________________________________*\n👑 VIEWS:❯ *${metadata?.view || '—'}*\n*__________________________________*\n*👑 LIKES :❯ ${metadata?.like || '—'}*\n*__________________________________*\n*👑 TIME:❯ ${metadata?.duration || '—'}*\n*__________________________________*`
         }, { quoted: m });
 
         // 🔹 Try sending as normal video first
@@ -46,11 +46,11 @@ cmd({
             await conn.sendMessage(from, {
                 video: { url: result.video_url },
                 mimetype: "video/mp4",
-                caption: `✅ *Download Completed!*\n🎬 ${data.title}\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙɪʟᴀʟ-ᴍᴅ 👑`
+                caption: `*👑 BY :❯ BILAL-MD 👑*`
             }, { quoted: m });
 
         } catch (sendError) {
-            console.warn("⚠️ Normal video failed, sending as document...");
+            console.warn("*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 THORA SA INTAZAR KARE...☺️🌹");
             await conn.sendMessage(from, { react: { text: "📦", key: mek.key } });
 
             // 🔹 Fallback: send as document type
@@ -58,15 +58,15 @@ cmd({
                 document: { url: result.video_url },
                 mimetype: "video/mp4",
                 fileName: `${data.title}.mp4`,
-                caption: `🎬 *Title:* ${data.title}\n📦 Sent as file (large size)`
+                caption: `*👑 BY :❯ BILAL-MD 👑*`
             }, { quoted: m });
         }
 
-        await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
+        await conn.sendMessage(from, { react: { text: "☺️", key: mek.key } });
 
     } catch (error) {
-        console.error("Video Command Error:", error);
-        await conn.sendMessage(from, { react: { text: "❌", key: mek.key } });
-        reply("❌ *Error aaya bhai!* Dobaara try karo.");
+        console.error("*DUBARA KOSHISH KARO 🥺❤️*", error);
+        await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
+        reply("*DUBARA KOSHISH KARO 🥺❤️*");
     }
 });
