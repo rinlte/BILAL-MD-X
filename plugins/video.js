@@ -22,28 +22,23 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🔍", key: mek.key } });
 
-        // 🔍 Search YouTube
         const search = await yts(q);
-        if (!search.videos.length) return reply("*APKI VIDEO MUJHE NAHI MILI 😔💔*");
+        if (!search || !search.videos || !search.videos.length) return reply("*APKI VIDEO MUJHE NAHI MILI 😔💔*");
 
         const data = search.videos[0];
         const ytUrl = data.url;
 
-        // ⚙️ API (stable + fast)
-        const api = `https://gtech-api-xtp1.onrender.com/api/video/yt?apikey=APIKEY&url=${encodeURIComponent(ytUrl)}`;
-`;
+        const api = `https://gtech-api-xtp1.onrender.com/api/video/yt?apikey=YOUR_REAL_API_KEY&url=${encodeURIComponent(ytUrl)}`;
         const { data: apiRes } = await axios.get(api);
 
         if (!apiRes?.status || !(apiRes.result?.video_url || apiRes.result?.media?.video_url)) {
             return reply("*DUBARA KOSHISH KARO ☹️ API ERROR!*");
         }
 
-        // ✅ Fix result paths
         const result = apiRes.result.media || apiRes.result;
         const videoUrl = result.video_url;
         const thumbUrl = result.thumbnail || data.thumbnail;
 
-        // 🖼️ Send info thumbnail
         const captionText =
 `*╭━━━〔 👑 BILAL-MD 👑 〕━━━┈⊷*
 *┃🎥 Title:* ${data.title}
@@ -60,7 +55,6 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "⬇️", key: mek.key } });
 
-        // 🎬 Try normal video first
         try {
             await conn.sendMessage(from, {
                 video: { url: videoUrl },
