@@ -37,18 +37,19 @@ cmd({
 *👑 VIDEO KA NAME 👑*
 *${data.title}*
 *__________________________________*
-*👑 TIME :❯ ${data.timestamp}*
+*👑 VIDEO KA LINK 👑*
+*${data.url}*
 *__________________________________*
 *👑 VIEWS :❯  ${data.views}*
 *__________________________________*
-*👑 LINK :❯  ${data.url}*
+*👑 LINK   ${data.url}*
 *__________________________________*
 *PEHLE IS MSG KO MENTION KARO 🥺 AUR PHIR AGAR NUMBER ❮1❯ LIKHO GE ☺️ TO NORMAL VIDEO AYE GE 🥰 AGAR NUMBER ❮2❯ LIKHO GE 🥺 TO VIDEO FILE ME AYE GE ☺️🌹*
 *__________________________________*
 *❮1❯ SIMPLE VIDEO*
 *__________________________________*
 *❮2❯ FILE VIDEO*
-* __________________________________*
+*__________________________________*
 *👑 BILAL-MD WHATSAPP BOT 👑*
 *__________________________________*`;
 
