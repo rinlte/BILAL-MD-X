@@ -2,90 +2,91 @@ const { cmd } = require('../command');
 const yts = require('yt-search');
 const axios = require('axios');
 
-
 cmd({
-    pattern: "video3",
-    react: "🎬",
-    desc: "Download YouTube MP4",
+    pattern: "video",
+    react: "🥺",
+    desc: "Download YouTube MP4 (auto send type)",
     category: "download",
-    use: ".video <query>",
+    use: ".video3 <query>",
     filename: __filename
 }, async (conn, mek, m, { from, reply, q }) => {
     try {
-        if (!q) return reply("❓ What video do you want to download?");
+        if (!q) {
+            return reply(
+                "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
+                "*TO AP ESE LIKHO 😇*\n\n" +
+                "*VIDEO3 ❮APKE VIDEO KA NAM❯*\n\n" +
+                "*AP COMMAND ❮VIDEO3❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DI JAYE GI 🥰💞*"
+            );
+        }
 
+        await conn.sendMessage(from, { react: { text: "🔍", key: mek.key } });
+
+        // 🔎 Search YouTube
         const search = await yts(q);
-        if (!search.videos.length) return reply("❌ No results found for your query.");
+        if (!search.videos.length) return reply("❌ *APKI VIDEO NAHI MILI 😔💔*");
 
         const data = search.videos[0];
         const ytUrl = data.url;
 
-        const api = `https://gtech-api-xtp1.onrender.com/api/video/yt?apikey=APIKEY&url=${encodeURIComponent(ytUrl)}`;
+        // ⚙️ API Call
+        const api = `https://gtech-api-xtp1.onrender.com/api/video/yt?apikey=YOUR_REAL_API_KEY&url=${encodeURIComponent(ytUrl)}`;
         const { data: apiRes } = await axios.get(api);
 
-        if (!apiRes?.status || !apiRes.result?.media?.video_url) {
-            return reply("❌ Unable to download the video. Please try another one!");
+        if (!apiRes?.status || !(apiRes.result?.media?.video_url || apiRes.result?.video_url)) {
+            await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
+            return reply("*DUBARA KOSHISH KARO ☹️ API ERROR!*");
         }
 
-        const result = apiRes.result.media;
+        const result = apiRes.result.media || apiRes.result;
+        const videoUrl = result.video_url;
+        const thumbUrl = result.thumbnail || data.thumbnail;
 
-        const caption = `
-📑 *Title:* ${data.title}
-⏱️ *Duration:* ${data.timestamp}
-📆 *Uploaded:* ${data.ago}
-📊 *Views:* ${data.views}
-🔗 *Link:* ${data.url}
+        // 🖼 Caption Info
+        const caption =
+`*╭━━━〔 🎬 VIDEO INFO 〕━━━┈⊷*
+*┃🎥 Title:* ${data.title}
+*┃📺 Channel:* ${data.author?.name || "Unknown"}
+*┃⏱ Duration:* ${data.timestamp}
+*┃📅 Uploaded:* ${data.ago}
+*┃👁 Views:* ${data.views}
+*╰━━━━━━━━━━━━━━━┈⊷*
+*👑 BY :❯ BILAL-MD 👑*`;
 
-🔢 *Reply Below Number*
-
-1️⃣ *Video Type*
-2️⃣ *Document Type*
- 
-> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`;
-
-        const sentMsg = await conn.sendMessage(from, {
-            image: { url: result.thumbnail },
+        await conn.sendMessage(from, {
+            image: { url: thumbUrl },
             caption
         }, { quoted: m });
 
-        const messageID = sentMsg.key.id;
+        await conn.sendMessage(from, { react: { text: "⬇️", key: mek.key } });
 
-    conn.ev.on("messages.upsert", async (msgData) => {
-      const receivedMsg = msgData.messages[0];
-      if (!receivedMsg?.message) return;
+        // 🎞 Try sending as normal video first
+        try {
+            await conn.sendMessage(from, {
+                video: { url: videoUrl },
+                mimetype: "video/mp4",
+                caption: "*👑 BY :❯ BILAL-MD 👑*"
+            }, { quoted: m });
 
-      const receivedText = receivedMsg.message.conversation || receivedMsg.message.extendedTextMessage?.text;
-      const senderID = receivedMsg.key.remoteJid;
-      const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;
+            await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
-      if (isReplyToBot) {
-        await conn.sendMessage(senderID, { react: { text: '⏳', key: receivedMsg.key } });
+        } catch (err) {
+            console.log("⚠️ Video send error, sending as document:", err);
+            await conn.sendMessage(from, { react: { text: "📦", key: mek.key } });
 
-        switch (receivedText.trim()) {
-                case "1":
-                    await conn.sendMessage(senderID, {
-                        video: { url: result.video_url },
-                        mimetype: "video/mp4",
-                        ptt: false,
-                    }, { quoted: receivedMsg });
-                    break;
+            await conn.sendMessage(from, {
+                document: { url: videoUrl },
+                mimetype: "video/mp4",
+                fileName: `${data.title}.mp4`,
+                caption: "*👑 BY :❯ BILAL-MD 👑*"
+            }, { quoted: m });
 
-                case "2":
-                    await conn.sendMessage(senderID, {
-                        document: { url: result.video_url },
-                        mimetype: "video/mp4",
-                        fileName: `${data.title}.mp4`
-                    }, { quoted: receivedMsg });
-                    break;
-
-          default:
-            reply("❌ Invalid option! Please reply with 1, or 2.");
+            await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
         }
-      }
-    });
 
-  } catch (error) {
-    console.error("Video Command Error:", error);
-    reply("❌ An error occurred while processing your request. Please try again later.");
-  }
+    } catch (error) {
+        console.error("❌ Video3 Command Error:", error);
+        await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
+        reply("*DUBARA KOSHISH KARO 🥺 API YA LINK ERROR 💔*");
+    }
 });
