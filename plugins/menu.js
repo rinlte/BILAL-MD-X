@@ -139,7 +139,7 @@ cmd({
 
 *👑 ClICK HERE FOR HELP 👑*
 
-*👑 SUPPORT WEBSITE 👑*
+*👑 DEVELEPER 👑*
 *https://akaserein.github.io/Bilal/*
 
 *👑 SUPPORT CHANNEL 👑* 
