@@ -33,17 +33,24 @@ cmd({
         const result = apiRes.result.media;
 
         const caption = `
-*👑 NAME :❯ ${data.title}*
-*👑 TIME :❯ ${data.timestamp}
-*👑 VIEWS :❯  ${data.views}
-*👑 LINK :❯  ${data.url}
-
+        *__________________________________*
+*👑 VIDEO KA NAME 👑*
+*${data.title}*
+*__________________________________*
+*👑 TIME :❯ ${data.timestamp}*
+*__________________________________*
+*👑 VIEWS :❯  ${data.views}*
+*__________________________________*
+*👑 LINK :❯  ${data.url}*
+*__________________________________*
 *PEHLE IS MSG KO MENTION KARO 🥺 AUR PHIR AGAR NUMBER ❮1❯ LIKHO GE ☺️ TO NORMAL VIDEO AYE GE 🥰 AGAR NUMBER ❮2❯ LIKHO GE 🥺 TO VIDEO FILE ME AYE GE ☺️🌹*
-
+*__________________________________*
 *❮1❯ SIMPLE VIDEO*
-*❮2❯ Document Type*
- 
-*👑 BILAL-MD WHATSAPP BOT 👑*`;
+*__________________________________*
+*❮2❯ FILE VIDEO*
+* __________________________________*
+*👑 BILAL-MD WHATSAPP BOT 👑*
+*__________________________________*`;
 
         const sentMsg = await conn.sendMessage(from, {
             image: { url: result.thumbnail },
