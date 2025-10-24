@@ -12,10 +12,13 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply, q }) => {
     try {
-        if (!q) return reply("❓ What video do you want to download?");
+        if (!q) return reply("*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
+        "*TO AP ESE LIKHO 😇*\n\n" +
+        "*VIDEO ❮APKE VIDEO KA NAM❯*\n\n" +
+        "*AP COMMAND ❮VIDEO❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰💞*");
 
         const search = await yts(q);
-        if (!search.videos.length) return reply("❌ No results found for your query.");
+        if (!search.videos.length) return reply("*DUBARA KOSHISH KARO 🥺❤️*");
 
         const data = search.videos[0];
         const ytUrl = data.url;
@@ -24,24 +27,23 @@ cmd({
         const { data: apiRes } = await axios.get(api);
 
         if (!apiRes?.status || !apiRes.result?.media?.video_url) {
-            return reply("❌ Unable to download the video. Please try another one!");
+            return reply("*APKI VIDEO MUJHE NAHI MILI 😔💔*");
         }
 
         const result = apiRes.result.media;
 
         const caption = `
-📑 *Title:* ${data.title}
-⏱️ *Duration:* ${data.timestamp}
-📆 *Uploaded:* ${data.ago}
-📊 *Views:* ${data.views}
-🔗 *Link:* ${data.url}
+*👑 NAME :❯ ${data.title}*
+*👑 TIME :❯ ${data.timestamp}
+*👑 VIEWS :❯  ${data.views}
+*👑 LINK :❯  ${data.url}
 
-🔢 *Reply Below Number*
+*PEHLE IS MSG KO MENTION KARO 🥺 AUR PHIR AGAR NUMBER ❮1❯ LIKHO GE ☺️ TO NORMAL VIDEO AYE GE 🥰 AGAR NUMBER ❮2❯ LIKHO GE 🥺 TO VIDEO FILE ME AYE GE ☺️🌹*
 
-1️⃣ *Video Type*
-2️⃣ *Document Type*
+*❮1❯ SIMPLE VIDEO*
+*❮2❯ Document Type*
  
-> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`;
+*👑 BILAL-MD WHATSAPP BOT 👑*`;
 
         const sentMsg = await conn.sendMessage(from, {
             image: { url: result.thumbnail },
@@ -79,13 +81,13 @@ cmd({
                     break;
 
           default:
-            reply("❌ Invalid option! Please reply with 1, or 2.");
+            reply("*MERE MSG KO PEHLE MENTION KAR LO 🥺 PHIR SIRF NUMBER ME ❮1❯ YA NUMBER ❮2❯ IN DONO ME SE KOI EK NUMBER LIKHO ☺️🌹*");
         }
       }
     });
 
   } catch (error) {
-    console.error("Video Command Error:", error);
-    reply("❌ An error occurred while processing your request. Please try again later.");
+    console.error("*APKI VIDEO NAHI MILI MUJHE 🥺*", error);
+    reply("*APKI VIDEO NAHI MILI MUJHE 🥺❤️*");
   }
 });
