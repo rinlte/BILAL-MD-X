@@ -1,103 +1,91 @@
 const { cmd } = require('../command');
-const axios = require('axios');
 const yts = require('yt-search');
+const axios = require('axios');
 
-function extractUrl(text = '') {
-  if (!text) return null;
-  const urlRegex = /(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[\w\-?=&%.#\/]+)|(youtube\.com\/[\w\-?=&%.#\/]+)/i;
-  const match = text.match(urlRegex);
-  if (!match) return null;
-  return match[0].startsWith('http') ? match[0] : `https://${match[0]}`;
-}
 
 cmd({
-  pattern: 'video',
-  alias: ['ytmp4', 'mp4', 'ytv', 'vi', 'v', 'vid', 'vide', 'videos', 'ytvi', 'ytvid', 'ytvide', 'ytvideos', 'searchyt', 'download', 'get', 'need', 'search'],
-  desc: 'Download YouTube video using NekoLabs API (auto document fallback).',
-  category: 'download',
-  react: '🥺',
-  filename: __filename
-},
-async (conn, mek, m, { from, args, reply, quoted }) => {
-  let waitingMsg;
-  try {
-    await conn.sendMessage(from, { react: { text: "🥺", key: m.key } });
-
-    if (!args[0]) {
-      return reply(
-        "*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
-        "*TO AP ESE LIKHO 😇*\n\n" +
-        "*VIDEO ❮APKE VIDEO KA NAM❯*\n\n" +
-        "*AP COMMAND ❮VIDEO❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰💞*"
-      );
-    }
-
-    let provided = args.join(' ').trim() || (quoted && (quoted.text || quoted.caption)) || '';
-    let ytUrl = extractUrl(provided);
-
-    waitingMsg = await conn.sendMessage(
-      from,
-      { text: "*APKI VIDEO DOWNLOAD HO RAHI HAI 🥺 JAB DOWNLOAD COMPLETE HO JAYE GE ☺️ TO YAHA PER BHEJ DE JAYE GE 🥰♥️*\n*THORA SA INTAZAR KARE.....😊*" },
-      { quoted: m }
-    );
-    await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
-
-    if (!ytUrl) {
-      const search = await yts(provided);
-      if (!search?.all?.length) {
-        await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-        return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
-      }
-      ytUrl = search.all[0].url;
-    }
-
-    // 🔄 New API Integration
-    const apiUrl = `https://api.nekolabs.my.id/downloader/youtube/play/v1?q=${encodeURIComponent(ytUrl)}`;
-    const { data } = await axios.get(apiUrl, { headers: { accept: '*/*' }, timeout: 30000 });
-
-    if (!data?.status || !data?.data?.url) {
-      await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-      if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-      return reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
-    }
-
-    const result = data.data;
-    const title = result.title || "Unknown Title";
-    const thumbnail = result.thumbnail || "";
-    const download = result.url;
-
-    const caption = `*__________________________________*\n*👑 VIDEO KA NAME 👑* \n *${title}*\n*__________________________________*\n*👑 SOURCE :❯ YOUTUBE*\n*__________________________________*\n*👑 BY :❯ NEKOLABS API 💻*\n*__________________________________*`;
-
-    await conn.sendMessage(from, { image: { url: thumbnail }, caption }, { quoted: m });
-
+    pattern: "video",
+    react: "🎬",
+    desc: "Download YouTube MP4",
+    category: "download",
+    use: ".video <query>",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, q }) => {
     try {
-      await conn.sendMessage(from, {
-        video: { url: download },
-        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp4`,
-        mimetype: 'video/mp4',
-        caption: `*_________________________________*\n*👑 VIDEO KA NAME 👑* \n*${title}*\n*_________________________________*\n*MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*\n*_________________________________*\n *👑 BY :❯ BILAL-MD 👑*\n*_________________________________*`
-      }, { quoted: m });
+        if (!q) return reply("❓ What video do you want to download?");
 
-      await conn.sendMessage(from, { delete: waitingMsg.key });
-      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-    } catch (err) {
-      await reply(`*APKI VIDEO BAHUT BARI HAI 🥺 IS LIE DUCUMENT ME SEND HO RAHI HAI ☺️*`);
-      await conn.sendMessage(from, {
-        document: { url: download },
-        mimetype: 'video/mp4',
-        fileName: `${title.replace(/[\\/:*?"<>|]/g, '')}.mp4`,
-        caption: `${title}\n\n*MENE APKI VIDEO DOWNLOAD KAR DI HAI OK ☺️ OR KOI VIDEO CHAHYE TO MUJHE BATANA 😍 KAR DE GE DOWNLOAD KOI MASLA NAHI BEE HAPPY DEAR 🥰💞*`
-      }, { quoted: m });
+        const data = search.videos[0];
+        const ytUrl = data.url;
 
-      await conn.sendMessage(from, { delete: waitingMsg.key });
-      await conn.sendMessage(from, { react: { text: "🥰", key: m.key } });
-    }
+        const api = `https://gtech-api-xtp1.onrender.com/api/video/yt?apikey=APIKEY&url=${encodeURIComponent(ytUrl)}`;
+        const { data: apiRes } = await axios.get(api);
 
-  } catch (e) {
-    console.error('video cmd error =>', e?.message || e);
-    if (waitingMsg) await conn.sendMessage(from, { delete: waitingMsg.key });
-    await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
-    reply("*APKI VIDEO MUJHE NAHI MIL RAHI 🥺*\n*DUBARA KOSHISH KARE 🥺*");
+        if (!apiRes?.status || !apiRes.result?.media?.video_url) {
+            return reply("❌ Unable to download the video. Please try another one!");
+        }
+
+        const result = apiRes.result.media;
+
+        const caption = `
+📑 *Title:* ${data.title}
+⏱️ *Duration:* ${data.timestamp}
+📆 *Uploaded:* ${data.ago}
+📊 *Views:* ${data.views}
+🔗 *Link:* ${data.url}
+
+🔢 *Reply Below Number*
+
+1️⃣ *Video Type*
+2️⃣ *Document Type*
+ 
+> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`;
+
+        const sentMsg = await conn.sendMessage(from, {
+            image: { url: result.thumbnail },
+            caption
+        }, { quoted: m });
+
+        const messageID = sentMsg.key.id;
+
+    conn.ev.on("messages.upsert", async (msgData) => {
+      const receivedMsg = msgData.messages[0];
+      if (!receivedMsg?.message) return;
+
+      const receivedText = receivedMsg.message.conversation || receivedMsg.message.extendedTextMessage?.text;
+      const senderID = receivedMsg.key.remoteJid;
+      const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;
+
+      if (isReplyToBot) {
+        await conn.sendMessage(senderID, { react: { text: '⏳', key: receivedMsg.key } });
+
+        switch (receivedText.trim()) {
+                case "1":
+                    await conn.sendMessage(senderID, {
+                        video: { url: result.video_url },
+                        mimetype: "video/mp4",
+                        ptt: false,
+                    }, { quoted: receivedMsg });
+                    break;
+
+                case "2":
+                    await conn.sendMessage(senderID, {
+                        document: { url: result.video_url },
+                        mimetype: "video/mp4",
+                        fileName: `${data.title}.mp4`
+                    }, { quoted: receivedMsg });
+                    break;
+
+          default:
+            reply("❌ Invalid option! Please reply with 1, or 2.");
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Video Command Error:", error);
+    reply("❌ An error occurred while processing your request. Please try again later.");
   }
 });
