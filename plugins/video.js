@@ -4,19 +4,22 @@ const axios = require('axios');
 
 cmd({
     pattern: "video",
-    react: "🎬",
+    react: "🥺",
     desc: "Download YouTube video (auto type select)",
     category: "download",
     use: ".video <query>",
     filename: __filename
 }, async (conn, mek, m, { from, reply, q }) => {
     try {
-        if (!q) return reply("❓ *Konsa video download karna hai?*\n_Example:_ *.video Alan Walker Faded*");
+        if (!q) return reply("*AP NE KOI VIDEO DOWNLOAD KARNI HAI 🥺*\n" +
+        "*TO AP ESE LIKHO 😇*\n\n" +
+        "*VIDEO ❮APKE VIDEO KA NAM❯*\n\n" +
+        "*AP COMMAND ❮VIDEO❯ LIKH KAR USKE AGE APNI VIDEO KA NAME LIKH DO ☺️ FIR WO VIDEO DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰💞*");
 
-        await conn.sendMessage(from, { react: { text: "🔍", key: mek.key } });
+        await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
 
         const search = await yts(q);
-        if (!search.videos.length) return reply("❌ Koi result nahi mila!");
+        if (!search.videos.length) return reply("*APKI VIDEO MUJHE NAHI MILI 😔💔*");
 
         const data = search.videos[0];
         const ytUrl = data.url;
@@ -25,12 +28,12 @@ cmd({
         const { data: apiRes } = await axios.get(api);
 
         if (!apiRes?.status || !apiRes.result?.media?.video_url) {
-            return reply("❌ Video download nahi ho saka, dusra try karo!");
+            return reply("*DUBARA KOSHISH KARO ☹️*");
         }
 
         const result = apiRes.result.media;
 
-        await conn.sendMessage(from, { react: { text: "⬇️", key: mek.key } });
+        await conn.sendMessage(from, { react: { text: "☹️", key: mek.key } });
 
         await conn.sendMessage(from, {
             image: { url: result.thumbnail },
@@ -39,7 +42,7 @@ cmd({
 
         // 🔹 Try sending as normal video first
         try {
-            await conn.sendMessage(from, { react: { text: "🎥", key: mek.key } });
+            await conn.sendMessage(from, { react: { text: "😃", key: mek.key } });
             await conn.sendMessage(from, {
                 video: { url: result.video_url },
                 mimetype: "video/mp4",
