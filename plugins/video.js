@@ -42,7 +42,7 @@ cmd({
 *__________________________________*
 *👑 VIEWS :❯  ${data.views}*
 *__________________________________*
-*👑 LINK   ${data.url}*
+*👑 TIME :❯ ${data.timestamp}*
 *__________________________________*
 *PEHLE IS MSG KO MENTION KARO 🥺 AUR PHIR AGAR NUMBER ❮1❯ LIKHO GE ☺️ TO NORMAL VIDEO AYE GE 🥰 AGAR NUMBER ❮2❯ LIKHO GE 🥺 TO VIDEO FILE ME AYE GE ☺️🌹*
 *__________________________________*
