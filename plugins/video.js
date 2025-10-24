@@ -30,7 +30,8 @@ cmd({
         const ytUrl = data.url;
 
         // ⚙️ API (stable + fast)
-        const api = `https://api.guruapi.tech/api/video/yt?apikey=guruapi&url=${encodeURIComponent(ytUrl)}`;
+        const api = `https://gtech-api-xtp1.onrender.com/api/video/yt?apikey=APIKEY&url=${encodeURIComponent(ytUrl)}`;
+`;
         const { data: apiRes } = await axios.get(api);
 
         if (!apiRes?.status || !(apiRes.result?.video_url || apiRes.result?.media?.video_url)) {
