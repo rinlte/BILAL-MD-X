@@ -13,12 +13,9 @@ cmd({
 }, async (conn, mek, m, { from, reply }) => {
     try {
         const quoted = m.quoted || m.quotedMessage || m.quotedMsg;
-
-        // ✅ Detect image MIME (multi-version compatible)
         const mime = (quoted?.mimetype || quoted?.msg?.mimetype || quoted?.message?.imageMessage?.mimetype || '');
-        const isImage = /image/.test(mime);
 
-        if (!quoted || !isImage) {
+        if (!quoted || !/image/.test(mime)) {
             return reply(
                 "*📸 HDR BANANA HAI?*\n\n" +
                 "❗ Pehle koi image bhejo\n" +
@@ -27,37 +24,32 @@ cmd({
             );
         }
 
-        // 🪄 React start
         await conn.sendMessage(from, { react: { text: "🔄", key: mek.key } });
 
-        // 📥 Download image buffer
-        const mediaPath = await conn.downloadAndSaveMediaMessage(quoted);
+        // ✅ Download image as buffer (more reliable)
+        const buffer = await quoted.download();
+        if (!buffer) return reply("❌ Image download failed. Try again!");
 
-        // 🌐 Free HDR API (no key required)
-        const apiUrl = "https://api.itsrose.rest/remini?apikey=freeapi";
+        // 🌐 Working free HDR API (no key required)
+        const apiUrl = "https://api.neoxr.eu/api/remini?apikey=freeapi";
 
         const form = new FormData();
-        form.append("image", fs.createReadStream(mediaPath));
+        form.append("image", buffer, { filename: "input.jpg" });
 
         const response = await axios.post(apiUrl, form, {
             headers: form.getHeaders(),
             responseType: "arraybuffer",
         });
 
-        // 🧹 Clean temp file
-        fs.unlinkSync(mediaPath);
-
-        // 🖼️ Send enhanced image
         await conn.sendMessage(from, {
             image: Buffer.from(response.data),
             caption: "*✨ HDR Image Enhanced Successfully!*\n*👑 BY :❯ BILAL-MD 👑*"
         }, { quoted: m });
 
-        // ✅ React done
         await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
     } catch (error) {
-        console.error("❌ HDR Command Error:", error);
+        console.error("❌ HDR Command Error:", error?.response?.data || error.message);
         await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
         reply("*❌ Kuch galat ho gaya! Dobaara try karo 🥺*");
     }
