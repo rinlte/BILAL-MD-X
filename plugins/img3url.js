@@ -28,20 +28,21 @@ cmd({
     const buffer = await quoted.download();
     if (!buffer) return reply("❌ Media download failed. Try again!");
 
-    // ✅ Proper form with correct field name & filename
+    // Force image/jpeg mimetype
     const form = new FormData();
     form.append("file", buffer, {
-      filename: "image.jpg",
-      contentType: mime || "image/jpeg",
+      filename: "upload.jpg",
+      contentType: "image/jpeg"
     });
 
-    const { data } = await axios.post("https://telegra.ph/upload", form, {
+    const res = await axios.post("https://telegra.ph/upload", form, {
       headers: form.getHeaders(),
-      maxBodyLength: Infinity
+      maxBodyLength: Infinity,
+      timeout: 20000
     });
 
-    if (Array.isArray(data) && data[0]?.src) {
-      const imageUrl = "https://telegra.ph" + data[0].src;
+    if (Array.isArray(res.data) && res.data[0]?.src) {
+      const imageUrl = "https://telegra.ph" + res.data[0].src;
       await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
       reply(
         `*🌐 Uploaded Successfully!*\n\n` +
@@ -50,7 +51,7 @@ cmd({
         `_👑 BY: BILAL-MD 👑_`
       );
     } else {
-      reply("*❌ Telegraph API response invalid!*");
+      reply("*❌ Telegraph response invalid!*");
     }
 
   } catch (err) {
