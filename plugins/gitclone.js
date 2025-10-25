@@ -44,7 +44,7 @@ cmd({
     }
 
     await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
-    const wait = await conn.sendMessage(from, { text: "*IS REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 🥺 THORA SA INNTAZAR KARE...☺️🌹**", quoted: m });
+    const wait = await conn.sendMessage(from, { text: "*IS REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 🥺 THORA SA INNTAZAR KARE...☺️🌹*", quoted: m });
 
     await conn.sendMessage(from, {
       document: { url: zipUrl },
