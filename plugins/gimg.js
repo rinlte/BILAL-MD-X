@@ -4,7 +4,7 @@ const axios = require('axios');
 cmd({
     pattern: "gimg",
     alias: ["googleimage", "img", "image", "pic", "photo", "searchimg"],
-    react: "🖼️",
+    react: "❤️",
     desc: "Search Google Images using Dexter API",
     category: "search",
     use: ".gimg <query>",
