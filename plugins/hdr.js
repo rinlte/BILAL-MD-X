@@ -1,12 +1,11 @@
 const { cmd } = require('../command');
 const axios = require('axios');
-const fs = require('fs');
 const FormData = require('form-data');
 
 cmd({
     pattern: "hdr",
     react: "🪄",
-    desc: "Enhance replied image using AI HDR (Remini)",
+    desc: "Enhance replied image using AI HDR (Remini Style)",
     category: "image",
     use: ".hdr (reply to an image)",
     filename: __filename
@@ -26,24 +25,27 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🔄", key: mek.key } });
 
-        // ✅ Download image as buffer (more reliable)
+        // Download the replied image buffer
         const buffer = await quoted.download();
         if (!buffer) return reply("❌ Image download failed. Try again!");
 
-        // 🌐 Working free HDR API (no key required)
-        const apiUrl = "https://api.neoxr.eu/api/remini?apikey=freeapi";
+        // Using a stable API (no key needed)
+        const apiUrl = "https://aemt.me/remini";
 
         const form = new FormData();
-        form.append("image", buffer, { filename: "input.jpg" });
+        form.append("image", buffer, "input.jpg");
 
         const response = await axios.post(apiUrl, form, {
             headers: form.getHeaders(),
-            responseType: "arraybuffer",
+            responseType: "arraybuffer"
         });
 
+        const enhancedImage = Buffer.from(response.data);
+
+        // send enhanced image
         await conn.sendMessage(from, {
-            image: Buffer.from(response.data),
-            caption: "*✨ HDR Image Enhanced Successfully!*\n*👑 BY :❯ BILAL-MD 👑*"
+            image: enhancedImage,
+            caption: "*✨ HDR Image Enhanced Successfully!*\n> 🪄 by Bilal-MD"
         }, { quoted: m });
 
         await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
