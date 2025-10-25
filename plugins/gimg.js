@@ -4,7 +4,7 @@ const axios = require('axios');
 cmd({
     pattern: "gimg",
     alias: ["googleimage", "img", "image", "pic", "photo", "searchimg"],
-    react: "❤️",
+    react: "🥰",
     desc: "Search Google Images using Dexter API",
     category: "search",
     use: ".gimg <query>",
@@ -12,41 +12,41 @@ cmd({
 }, async (conn, mek, m, { from, reply, q }) => {
     try {
         if (!q) {
-            return reply("*AP NE KOI IMAGE SEARCH KARNI HAI 🥺*\n" +
-                "*TO AP ESE LIKHO 😇*\n\n" +
-                "*GIMG ❮APKE SEARCH KA NAM❯*\n\n" +
-                "*AP COMMAND ❮GIMG❯ LIKH KAR USKE AGE APNA WORD LIKH DO ☺️ FIR WO IMAGE YAHA BHEJ DI JAYE GE 🥰💞*");
+            return reply("*AP NE KOI IMAGE SEARCH KARNI HAI 🥺*\n*Usage:* `.gimg <word>`");
         }
 
         const api = `https://api.id.dexter.it.com/search/google/image?q=${encodeURIComponent(q)}`;
-        console.log("📡 API Request:", api); // <== show full API link
+        console.log("📡 Sending API request:", api);
 
-        const { data: apiRes } = await axios.get(api);
-        console.log("✅ API Response:", apiRes); // <== log full API response
+        let apiRes;
+        try {
+            const res = await axios.get(api, { timeout: 15000 });
+            apiRes = res.data;
+            console.log("✅ API response received:", apiRes);
+        } catch (err) {
+            console.error("❌ Axios request failed:", err.message);
+            console.error("📄 Full Axios Error:", err);
+            return reply(`⚠️ API request failed: ${err.message}`);
+        }
 
         const results = apiRes.results || apiRes.data || apiRes.items || apiRes;
         if (!Array.isArray(results) || results.length === 0) {
-            console.error("❌ No results found for:", q);
-            return reply("*KOI IMAGE NAHI MILI 🥺 DUBARA TRY KARO ❤️*");
+            console.error("❌ No image results found for query:", q);
+            return reply(`😔 No images found for: ${q}`);
         }
 
         const img = results[0].url || results[0].image || results[0].src || results[0];
         const img2 = results[1]?.url || results[1]?.image || results[1]?.src || results[1];
 
+        if (!img) {
+            console.error("❌ First image URL missing in API response:", results[0]);
+            return reply("⚠️ Image URL missing in API response.");
+        }
+
         const caption = `
-        *__________________________________*
-*👑 SEARCH KIYA GAYA :* ${q}
+*👑 SEARCH KIYA GAYA:* ${q}
 *__________________________________*
-*👑 IMAGE SOURCE :* Google
-*__________________________________*
-*PEHLE IS MSG KO MENTION KARO 🥺 AUR PHIR AGAR NUMBER ❮1❯ LIKHO GE ☺️ TO PEHLI IMAGE AYE GE 🥰 AGAR NUMBER ❮2❯ LIKHO GE 🥺 TO DUSRI IMAGE AYE GE ☺️🌹*
-*__________________________________*
-*❮1❯ PEHLI IMAGE*
-*__________________________________*
-*❮2❯ DUSRI IMAGE*
-*__________________________________*
-*👑 BILAL-MD WHATSAPP BOT 👑*
-*__________________________________*`;
+*PEHLE IS MSG KO MENTION KARO 🥺 PHIR NUMBER ❮1❯ YA ❮2❯ LIKHO GE*`;
 
         const sentMsg = await conn.sendMessage(from, {
             image: { url: img },
@@ -68,34 +68,26 @@ cmd({
 
                 switch (receivedText.trim()) {
                     case "1":
-                        console.log("📤 Sending first image for:", q);
-                        await conn.sendMessage(senderID, {
-                            image: { url: img },
-                            caption: `🔍 ${q} (Image 1)`
-                        }, { quoted: receivedMsg });
+                        console.log("📤 Sending first image for query:", q);
+                        await conn.sendMessage(senderID, { image: { url: img }, caption: `🔍 ${q} (Image 1)` }, { quoted: receivedMsg });
                         break;
-
                     case "2":
                         if (!img2) {
-                            console.error("⚠️ Second image not found for:", q);
-                            return reply("*DUSRI IMAGE NAHI MILI 🥺*");
+                            console.error("⚠️ Second image not found for query:", q);
+                            return reply("❌ Second image not found!");
                         }
-                        console.log("📤 Sending second image for:", q);
-                        await conn.sendMessage(senderID, {
-                            image: { url: img2 },
-                            caption: `🔍 ${q} (Image 2)`
-                        }, { quoted: receivedMsg });
+                        console.log("📤 Sending second image for query:", q);
+                        await conn.sendMessage(senderID, { image: { url: img2 }, caption: `🔍 ${q} (Image 2)` }, { quoted: receivedMsg });
                         break;
-
                     default:
-                        reply("*MERE MSG KO PEHLE MENTION KAR LO 🥺 PHIR SIRF NUMBER ME ❮1❯ YA ❮2❯ IN DONO ME SE KOI EK NUMBER LIKHO ☺️🌹*");
+                        reply("⚠️ Reply with ❮1❯ or ❮2❯ only.");
                 }
             }
         });
 
-    } catch (error) {
-        console.error("❌ IMAGE SEARCH ERROR:", error.message);
-        console.error("📄 Full Error Object:", error);
-        reply("*APKI IMAGE MUJHE NAHI MILI 🥺❤️*");
+    } catch (err) {
+        console.error("❌ IMAGE COMMAND ERROR:", err.message);
+        console.error("📄 Full Error Object:", err);
+        reply(`❌ Something went wrong: ${err.message}`);
     }
 });
