@@ -12,10 +12,13 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
-        const quoted = m.quoted;
+        const quoted = m.quoted || m.quotedMessage || m.quotedMsg;
 
-        // 🖼️ Check if user replied to an image
-        if (!quoted || !quoted.message || !/image/.test((quoted.msg || quoted).mimetype || '')) {
+        // ✅ Detect image MIME (multi-version compatible)
+        const mime = (quoted?.mimetype || quoted?.msg?.mimetype || quoted?.message?.imageMessage?.mimetype || '');
+        const isImage = /image/.test(mime);
+
+        if (!quoted || !isImage) {
             return reply(
                 "*📸 HDR BANANA HAI?*\n\n" +
                 "❗ Pehle koi image bhejo\n" +
@@ -24,13 +27,13 @@ cmd({
             );
         }
 
-        // 🔄 React: processing start
+        // 🪄 React start
         await conn.sendMessage(from, { react: { text: "🔄", key: mek.key } });
 
-        // 📥 Download the replied image
+        // 📥 Download image buffer
         const mediaPath = await conn.downloadAndSaveMediaMessage(quoted);
 
-        // 🌐 Use free HDR API (no key required)
+        // 🌐 Free HDR API (no key required)
         const apiUrl = "https://api.itsrose.rest/remini?apikey=freeapi";
 
         const form = new FormData();
@@ -38,19 +41,19 @@ cmd({
 
         const response = await axios.post(apiUrl, form, {
             headers: form.getHeaders(),
-            responseType: "arraybuffer"
+            responseType: "arraybuffer",
         });
 
-        // 🧹 Cleanup original image
+        // 🧹 Clean temp file
         fs.unlinkSync(mediaPath);
 
-        // 🖼️ Send enhanced HDR image
+        // 🖼️ Send enhanced image
         await conn.sendMessage(from, {
             image: Buffer.from(response.data),
             caption: "*✨ HDR Image Enhanced Successfully!*\n*👑 BY :❯ BILAL-MD 👑*"
         }, { quoted: m });
 
-        // ✅ Final react
+        // ✅ React done
         await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
     } catch (error) {
