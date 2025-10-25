@@ -16,7 +16,7 @@ cmd({
     
     *.GITCLONE ❮GITHUB REPO LINK❯*
     
-   *JAB AP ESE LIKHO GE 😇 TO US REPO KI ZIP FILE DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰❤️`);
+   *JAB AP ESE LIKHO GE 😇 TO US REPO KI ZIP FILE DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰❤️*`);
   }
 
   if (!/^(https:\/\/)?github\.com\/.+/i.test(args[0])) {
