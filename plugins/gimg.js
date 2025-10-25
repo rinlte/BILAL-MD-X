@@ -11,17 +11,24 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply, q }) => {
     try {
-        if (!q) return reply("*AP NE KOI IMAGE SEARCH KARNI HAI 🥺*\n" +
-        "*TO AP ESE LIKHO 😇*\n\n" +
-        "*GIMG ❮APKE SEARCH KA NAM❯*\n\n" +
-        "*AP COMMAND ❮GIMG❯ LIKH KAR USKE AGE APNA WORD LIKH DO ☺️ FIR WO IMAGE YAHA BHEJ DI JAYE GE 🥰💞*");
+        if (!q) {
+            return reply("*AP NE KOI IMAGE SEARCH KARNI HAI 🥺*\n" +
+                "*TO AP ESE LIKHO 😇*\n\n" +
+                "*GIMG ❮APKE SEARCH KA NAM❯*\n\n" +
+                "*AP COMMAND ❮GIMG❯ LIKH KAR USKE AGE APNA WORD LIKH DO ☺️ FIR WO IMAGE YAHA BHEJ DI JAYE GE 🥰💞*");
+        }
 
         const api = `https://api.id.dexter.it.com/search/google/image?q=${encodeURIComponent(q)}`;
+        console.log("📡 API Request:", api); // <== show full API link
+
         const { data: apiRes } = await axios.get(api);
+        console.log("✅ API Response:", apiRes); // <== log full API response
 
         const results = apiRes.results || apiRes.data || apiRes.items || apiRes;
-        if (!Array.isArray(results) || results.length === 0)
+        if (!Array.isArray(results) || results.length === 0) {
+            console.error("❌ No results found for:", q);
             return reply("*KOI IMAGE NAHI MILI 🥺 DUBARA TRY KARO ❤️*");
+        }
 
         const img = results[0].url || results[0].image || results[0].src || results[0];
         const img2 = results[1]?.url || results[1]?.image || results[1]?.src || results[1];
@@ -32,7 +39,7 @@ cmd({
 *__________________________________*
 *👑 IMAGE SOURCE :* Google
 *__________________________________*
-*PEHLE IS MSG KO MENTION KARO 🥺 AUR PHIR AGAR NUMBER ❮1❯ LIKHO GE ☺️ TO NORMAL IMAGE AYE GE 🥰 AGAR NUMBER ❮2❯ LIKHO GE 🥺 TO DUSRI IMAGE AYE GE ☺️🌹*
+*PEHLE IS MSG KO MENTION KARO 🥺 AUR PHIR AGAR NUMBER ❮1❯ LIKHO GE ☺️ TO PEHLI IMAGE AYE GE 🥰 AGAR NUMBER ❮2❯ LIKHO GE 🥺 TO DUSRI IMAGE AYE GE ☺️🌹*
 *__________________________________*
 *❮1❯ PEHLI IMAGE*
 *__________________________________*
@@ -61,6 +68,7 @@ cmd({
 
                 switch (receivedText.trim()) {
                     case "1":
+                        console.log("📤 Sending first image for:", q);
                         await conn.sendMessage(senderID, {
                             image: { url: img },
                             caption: `🔍 ${q} (Image 1)`
@@ -68,7 +76,11 @@ cmd({
                         break;
 
                     case "2":
-                        if (!img2) return reply("*DUSRI IMAGE NAHI MILI 🥺*");
+                        if (!img2) {
+                            console.error("⚠️ Second image not found for:", q);
+                            return reply("*DUSRI IMAGE NAHI MILI 🥺*");
+                        }
+                        console.log("📤 Sending second image for:", q);
                         await conn.sendMessage(senderID, {
                             image: { url: img2 },
                             caption: `🔍 ${q} (Image 2)`
@@ -76,13 +88,14 @@ cmd({
                         break;
 
                     default:
-                        reply("*MERE MSG KO PEHLE MENTION KAR LO 🥺 PHIR SIRF NUMBER ME ❮1❯ YA NUMBER ❮2❯ IN DONO ME SE KOI EK NUMBER LIKHO ☺️🌹*");
+                        reply("*MERE MSG KO PEHLE MENTION KAR LO 🥺 PHIR SIRF NUMBER ME ❮1❯ YA ❮2❯ IN DONO ME SE KOI EK NUMBER LIKHO ☺️🌹*");
                 }
             }
         });
 
     } catch (error) {
-        console.error("*IMAGE SEARCH ERROR 🥺*", error);
+        console.error("❌ IMAGE SEARCH ERROR:", error.message);
+        console.error("📄 Full Error Object:", error);
         reply("*APKI IMAGE MUJHE NAHI MILI 🥺❤️*");
     }
 });
