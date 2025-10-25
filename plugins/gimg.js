@@ -4,7 +4,7 @@ const axios = require('axios');
 cmd({
     pattern: "gimg",
     alias: ["googleimage", "img", "image", "pic", "photo", "searchimg"],
-    react: "🖼️",
+    react: "❤️",
     desc: "Search Google Images using Dexter API",
     category: "search",
     use: ".gimg <query>",
@@ -20,7 +20,13 @@ cmd({
 
         let apiRes;
         try {
-            const res = await axios.get(api, { timeout: 15000 });
+            const res = await axios.get(api, {
+                timeout: 15000,
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                    "Accept": "application/json"
+                }
+            });
             apiRes = res.data;
             console.log("✅ API response received:", apiRes);
         } catch (err) {
