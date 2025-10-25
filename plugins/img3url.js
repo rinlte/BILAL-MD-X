@@ -1,62 +1,40 @@
 const { cmd } = require('../command');
 const axios = require('axios');
 const FormData = require('form-data');
+const fs = require('fs');
 
 cmd({
-  pattern: "img3url",
-  react: "🌐",
-  desc: "Upload image to Telegraph (Permanent Link)",
+  pattern: "url",
+  react: "🔗",
+  desc: "Upload media to Telegraph and get a permanent URL.",
   category: "tools",
-  use: ".url (reply to image)",
   filename: __filename
-}, async (conn, mek, m, { from, reply }) => {
+}, async (conn, mek, store, { from, quoted, mime, reply }) => {
   try {
-    const quoted = m.quoted || m.quotedMessage || m.quotedMsg;
-    const mime = quoted?.mimetype || quoted?.msg?.mimetype || '';
+    const q = quoted || mek;
+    const mimeType = (q.msg || q).mimetype || "";
+    if (!mimeType) return reply("*📸 Ya 🎥 bhejo aur uspe reply karo likh ke `.url`*");
 
-    if (!quoted || !/image/.test(mime)) {
-      return reply(
-        "*🖼️ TELEGRAPH URL BANANA HAI?*\n\n" +
-        "❗ Pehle koi *image* bhejo\n" +
-        "👉 Uspe reply karo likh kar `.url`\n\n" +
-        "_Example:_\n`(reply to image)` → `.url`"
-      );
-    }
+    const media = await q.download();
+    const filePath = `./temp_${Date.now()}.${mimeType.split('/')[1]}`;
+    fs.writeFileSync(filePath, media);
 
-    await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
-
-    const buffer = await quoted.download();
-    if (!buffer) return reply("❌ Media download failed. Try again!");
-
-    // Force image/jpeg mimetype
     const form = new FormData();
-    form.append("file", buffer, {
-      filename: "upload.jpg",
-      contentType: "image/jpeg"
+    form.append("file", fs.createReadStream(filePath));
+
+    const upload = await axios.post("https://telegra.ph/upload", form, {
+      headers: form.getHeaders()
     });
 
-    const res = await axios.post("https://telegra.ph/upload", form, {
-      headers: form.getHeaders(),
-      maxBodyLength: Infinity,
-      timeout: 20000
-    });
+    const url = "https://telegra.ph" + upload.data[0].src;
+    await conn.sendMessage(from, { text: `✅ *Telegraph URL bana liya!* 🔗\n\n${url}` }, { quoted: mek });
 
-    if (Array.isArray(res.data) && res.data[0]?.src) {
-      const imageUrl = "https://telegra.ph" + res.data[0].src;
-      await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
-      reply(
-        `*🌐 Uploaded Successfully!*\n\n` +
-        `🔗 *Telegraph URL:* ${imageUrl}\n` +
-        `♾️ *Never expires*\n\n` +
-        `_👑 BY: BILAL-MD 👑_`
-      );
-    } else {
-      reply("*❌ Telegraph response invalid!*");
-    }
-
+    fs.unlinkSync(filePath);
   } catch (err) {
-    console.error("Telegraph Upload Error:", err.response?.data || err.message);
-    await conn.sendMessage(from, { react: { text: "💥", key: mek.key } });
+    console.log("---- TELEGRAPH UPLOAD DEBUG ----");
+    console.log(err.response ? err.response.status : "NO STATUS");
+    console.log(err.response ? err.response.data : err.message);
+    console.log("--------------------------------");
     reply("*❌ Kuch galat ho gaya! Dobaara try karo 🥺*");
   }
 });
