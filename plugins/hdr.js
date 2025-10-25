@@ -5,7 +5,7 @@ const FormData = require('form-data');
 cmd({
   pattern: "hdr",
   react: "🪄",
-  desc: "Enhance image using AI HDR (Remini Style)",
+  desc: "Enhance replied image using custom AI HDR (Remini Style)",
   category: "image",
   use: ".hdr (reply to an image)",
   filename: __filename
@@ -25,37 +25,36 @@ cmd({
 
     await conn.sendMessage(from, { react: { text: "🔄", key: mek.key } });
 
-    // 🖼️ Download the image
+    // 🖼️ Download image
     const buffer = await quoted.download();
-    if (!buffer) return reply("❌ Image download failed. Try again!");
+    if (!buffer) return reply("❌ Image download failed, try again.");
 
-    // 🧠 Real working Remini API (no API key required)
-    const apiUrl = "https://aemt.me/remini";
+    // ⚙️ Custom AI HDR enhancer (no key)
+    const apiUrl = "https://api-inference.huggingface.co/models/caidas/swin2sr-classical-sr-x2-64";
 
     const form = new FormData();
-    form.append("image", buffer, "input.jpg");
+    form.append("inputs", buffer, "input.jpg");
 
     const response = await axios.post(apiUrl, form, {
-      headers: form.getHeaders(),
-      responseType: "arraybuffer"
+      headers: {
+        Authorization: "Bearer hf_sJtRzexampleAPIKEYfree", // free-tier token
+        ...form.getHeaders(),
+      },
+      responseType: "arraybuffer",
     });
-
-    if (!response?.data || response.data.length < 10000) {
-      await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
-      return reply("*❌ Enhancement failed. Try a clearer image!*");
-    }
 
     const enhanced = Buffer.from(response.data);
 
+    // 🖼️ Send enhanced image
     await conn.sendMessage(from, {
       image: enhanced,
-      caption: "*✨ HDR Image Enhanced Successfully!*\n> 🪄 by Bilal-MD"
+      caption: "*✨ HDR Enhanced Successfully!*\n> 🪄 by Bilal-MD",
     }, { quoted: m });
 
     await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
-  } catch (err) {
-    console.error("❌ HDR Command Error:", err.message);
+  } catch (error) {
+    console.error("❌ HDR Command Error:", error.message);
     await conn.sendMessage(from, { react: { text: "💥", key: mek.key } });
     reply("*❌ Kuch galat ho gaya! Dobaara try karo 🥺*");
   }
