@@ -4,7 +4,7 @@ global.aliveCommandLoaded = true;
 const { cmd } = require('../command');
 const { sleep } = require('../lib/functions');
 
-// List of greeting words (in multiple languages)
+// All greeting words it will detect
 const greetings = [
   "hi", "hii", "hy", "hey", "hello", "hola", "salam", "slm",
   "aslam", "assalam", "assalamu", "assalamualaikum",
@@ -12,29 +12,9 @@ const greetings = [
   "سلام", "hai", "halo"
 ];
 
-// -------------------
-// AUTO GREETING HANDLER
-// -------------------
-cmd({
-  on: "text" // Triggered for every incoming message
-}, async (conn, mek, m, { body, from, reply }) => {
-  try {
-    const text = (body || "").trim().toLowerCase();
-
-    // Check if user's message contains any greeting
-    if (greetings.some(word => text.includes(word))) {
-      await conn.sendMessage(from, { react: { text: "🤲", key: mek.key } }); // react to message
-      await runAliveCommand(conn, mek, from); // run alive lines
-    }
-
-  } catch (err) {
-    console.error("Auto Greeting Error:", err);
-  }
-});
-
-// -------------------
-// MANUAL ALIVE COMMAND (optional)
-// -------------------
+// ======================
+//  ALIVE COMMAND (manual)
+// ======================
 cmd({
   pattern: "alive",
   alias: ["status", "online", "a", "active"],
@@ -46,9 +26,31 @@ cmd({
   await runAliveCommand(conn, mek, from);
 });
 
-// -------------------
-// FUNCTION TO SEND LINES
-// -------------------
+// ======================
+//  AUTO GREETING REPLY
+// ======================
+cmd({
+  pattern: ".*", // match all messages
+  dontAddCommandList: true
+}, async (conn, mek, m, { body, from, isCmd }) => {
+  try {
+    if (isCmd) return; // skip commands with prefix like .alive, .menu, etc.
+    const text = (body || "").toLowerCase().trim();
+
+    // check if text includes greeting
+    if (greetings.some(word => text.includes(word))) {
+      await conn.sendMessage(from, { react: { text: "🤲", key: mek.key } });
+      await runAliveCommand(conn, mek, from);
+    }
+
+  } catch (err) {
+    console.error("Auto Greeting Error:", err);
+  }
+});
+
+// ======================
+//  MAIN FUNCTION
+// ======================
 async function runAliveCommand(conn, mek, from) {
   try {
     const lines = [
@@ -70,7 +72,6 @@ async function runAliveCommand(conn, mek, from) {
     let currentText = "";
     const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
 
-    // Gradually edit the message line by line
     for (const line of lines) {
       currentText += line + "\n";
       await sleep(3000);
