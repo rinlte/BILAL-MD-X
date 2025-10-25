@@ -5,7 +5,7 @@ const FormData = require('form-data');
 cmd({
   pattern: "hdr",
   react: "🪄",
-  desc: "Enhance replied image using custom AI HDR (Remini Style)",
+  desc: "Enhance replied image using free AI HDR service",
   category: "image",
   use: ".hdr (reply to an image)",
   filename: __filename
@@ -25,34 +25,38 @@ cmd({
 
     await conn.sendMessage(from, { react: { text: "🔄", key: mek.key } });
 
-    // 🖼️ Download image
+    // 🖼️ Download the replied image
     const buffer = await quoted.download();
-    if (!buffer) return reply("❌ Image download failed, try again.");
+    if (!buffer) return reply("❌ Image download failed. Try again!");
 
-    // ⚙️ Custom AI HDR enhancer (no key)
-    const apiUrl = "https://api-inference.huggingface.co/models/caidas/swin2sr-classical-sr-x2-64";
+    // 🌐 Working free AI endpoint
+    const apiUrl = "https://api.itsrose.rest/image/enhance"; // open endpoint, no key needed
 
     const form = new FormData();
-    form.append("inputs", buffer, "input.jpg");
+    form.append("file", buffer, "photo.jpg");
 
     const response = await axios.post(apiUrl, form, {
-      headers: {
-        Authorization: "Bearer hf_sJtRzexampleAPIKEYfree", // free-tier token
-        ...form.getHeaders(),
-      },
+      headers: form.getHeaders(),
       responseType: "arraybuffer",
     });
 
+    if (!response?.data || response.data.length < 10000) {
+      await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
+      return reply("*❌ Enhancement failed. Try a clearer image!*");
+    }
+
     const enhanced = Buffer.from(response.data);
 
-    // 🖼️ Send enhanced image
-    await conn.sendMessage(from, {
-      image: enhanced,
-      caption: "*✨ HDR Enhanced Successfully!*\n> 🪄 by Bilal-MD",
-    }, { quoted: m });
+    await conn.sendMessage(
+      from,
+      {
+        image: enhanced,
+        caption: "*✨ HDR Image Enhanced Successfully!*\n> 🪄 by Bilal-MD",
+      },
+      { quoted: m }
+    );
 
     await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
-
   } catch (error) {
     console.error("❌ HDR Command Error:", error.message);
     await conn.sendMessage(from, { react: { text: "💥", key: mek.key } });
