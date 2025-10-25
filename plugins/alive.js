@@ -4,6 +4,7 @@ global.aliveCommandLoaded = true;
 const { cmd } = require('../command');
 const { sleep } = require('../lib/functions');
 
+// List of greeting words (in multiple languages)
 const greetings = [
   "hi", "hii", "hy", "hey", "hello", "hola", "salam", "slm",
   "aslam", "assalam", "assalamu", "assalamualaikum",
@@ -12,18 +13,18 @@ const greetings = [
 ];
 
 // -------------------
-// AUTO REPLY HANDLER
+// AUTO GREETING HANDLER
 // -------------------
 cmd({
-  on: "text" // this will trigger for every incoming message
+  on: "text" // Triggered for every incoming message
 }, async (conn, mek, m, { body, from, reply }) => {
   try {
     const text = (body || "").trim().toLowerCase();
 
-    // check if message includes any greeting word
+    // Check if user's message contains any greeting
     if (greetings.some(word => text.includes(word))) {
-      await reply("❤️");
-      await runAliveCommand(conn, mek, from);
+      await conn.sendMessage(from, { react: { text: "🤲", key: mek.key } }); // react to message
+      await runAliveCommand(conn, mek, from); // run alive lines
     }
 
   } catch (err) {
@@ -32,7 +33,7 @@ cmd({
 });
 
 // -------------------
-// ALIVE COMMAND
+// MANUAL ALIVE COMMAND (optional)
 // -------------------
 cmd({
   pattern: "alive",
@@ -46,7 +47,7 @@ cmd({
 });
 
 // -------------------
-// MAIN FUNCTION LOGIC
+// FUNCTION TO SEND LINES
 // -------------------
 async function runAliveCommand(conn, mek, from) {
   try {
@@ -69,6 +70,7 @@ async function runAliveCommand(conn, mek, from) {
     let currentText = "";
     const msg = await conn.sendMessage(from, { text: currentText }, { quoted: mek });
 
+    // Gradually edit the message line by line
     for (const line of lines) {
       currentText += line + "\n";
       await sleep(3000);
