@@ -5,7 +5,7 @@ const FormData = require('form-data');
 cmd({
   pattern: "hdr",
   react: "🪄",
-  desc: "Enhance replied image using AI HDR (Remini Style)",
+  desc: "Enhance image using AI HDR (Remini Style)",
   category: "image",
   use: ".hdr (reply to an image)",
   filename: __filename
@@ -25,36 +25,37 @@ cmd({
 
     await conn.sendMessage(from, { react: { text: "🔄", key: mek.key } });
 
-    // 🖼️ Image download
+    // 🖼️ Download the image
     const buffer = await quoted.download();
-    if (!buffer) return reply("❌ Image download failed, try again.");
+    if (!buffer) return reply("❌ Image download failed. Try again!");
 
-    // 🌐 New working AI HDR API (no key required)
-    const apiUrl = "https://api.neoxr.eu/api/ai-enhance?apikey=freeapi";
+    // 🧠 Real working Remini API (no API key required)
+    const apiUrl = "https://aemt.me/remini";
 
     const form = new FormData();
-    form.append("image", buffer, "image.jpg");
+    form.append("image", buffer, "input.jpg");
 
-    const { data } = await axios.post(apiUrl, form, {
+    const response = await axios.post(apiUrl, form, {
       headers: form.getHeaders(),
-      responseType: "json"
+      responseType: "arraybuffer"
     });
 
-    if (!data.status || !data.result?.image) {
+    if (!response?.data || response.data.length < 10000) {
       await conn.sendMessage(from, { react: { text: "😔", key: mek.key } });
       return reply("*❌ Enhancement failed. Try a clearer image!*");
     }
 
-    // 📤 Send enhanced image
+    const enhanced = Buffer.from(response.data);
+
     await conn.sendMessage(from, {
-      image: { url: data.result.image },
+      image: enhanced,
       caption: "*✨ HDR Image Enhanced Successfully!*\n> 🪄 by Bilal-MD"
     }, { quoted: m });
 
     await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
-  } catch (error) {
-    console.error("❌ HDR Command Error:", error?.response?.data || error.message);
+  } catch (err) {
+    console.error("❌ HDR Command Error:", err.message);
     await conn.sendMessage(from, { react: { text: "💥", key: mek.key } });
     reply("*❌ Kuch galat ho gaya! Dobaara try karo 🥺*");
   }
