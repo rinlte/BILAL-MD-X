@@ -11,12 +11,17 @@ cmd({
 }, async (conn, m, store, { from, quoted, args, reply }) => {
 
   if (!args[0]) {
-    return reply(`*📦 GITHUB REPO ZIP DOWNLOAD COMMAND 🥺*\n\nExample:\n*.gitclone https://github.com/user/repo*`);
+    return reply(`*AGAR AP NE KISI GITHUB REPO KI ZIP FILE DOWNLOAD KARNI HAI 🥺*
+    *TO AP ESE LIKHO ☺️*
+    
+    *.GITCLONE ❮GITHUB REPO LINK❯*
+    
+   *JAB AP ESE LIKHO GE 😇 TO US REPO KI ZIP FILE DOWNLOAD KAR KE YAHA BHEJ DE JAYE GE 🥰❤️`);
   }
 
   if (!/^(https:\/\/)?github\.com\/.+/i.test(args[0])) {
     await conn.sendMessage(from, { react: { text: "😥", key: m.key } });
-    return reply(`*SIRF GITHUB REPO LINK DO 😥*`);
+    return reply(`*SIRF GITHUB REPO KA LINK LIKHO 😥*`);
   }
 
   try {
@@ -39,7 +44,7 @@ cmd({
     }
 
     await conn.sendMessage(from, { react: { text: "😃", key: m.key } });
-    const wait = await conn.sendMessage(from, { text: "*Downloading your repo... 😃*", quoted: m });
+    const wait = await conn.sendMessage(from, { text: "*IS REPO KI ZIP FILE DOWNLOAD HO RAHI HAI 🥺 THORA SA INNTAZAR KARE...☺️🌹**", quoted: m });
 
     await conn.sendMessage(from, {
       document: { url: zipUrl },
@@ -64,7 +69,7 @@ cmd({
     console.error("❌ Error:", error.message);
     await conn.sendMessage(from, { react: { text: "😔", key: m.key } });
     reply(error.message.includes("PRIVATE REPO")
-      ? "*YEH PRIVATE REPO KA LINK HAI 🥺 SIRF PUBLIC REPO DO 😊*"
+      ? "*YEH PRIVATE REPO KA LINK HAI 🥺 SIRF PUBLIC REPO KA LINK LIKHO 😊*"
       : `❌ *Error:* ${error.message}`);
   }
 });
