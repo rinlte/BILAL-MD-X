@@ -3,7 +3,7 @@ const axios = require("axios");
 
 cmd({
     pattern: "img",
-    alias: ["image", "googleimage", "searchimg"],
+    alias: ["image", "googleimage", "searchimg", "pic", "photo"],
     react: "🦋",
     desc: "Search and download Google images",
     category: "fun",
@@ -13,7 +13,7 @@ cmd({
     try {
         const query = args.join(" ");
         if (!query) {
-            return reply("🖼️ Please provide a search query\nExample: .img cute cats");
+            return reply("*AP NE KOI PHOTOS DOWNLOAD KARNI HAI 🥺* \n *TO AP ESE LIKHO ☺️* \\n\n *IMG ❮PHOTOS KA NAME❯* \n\n *TO APKI PHOTO DOWNLOAD KAR KE 😇 YAHA PER BHEJ DE JAYE GE 🥰❤️* ");
         }
 
         await reply(`🔍 Searching images for "${query}"...`);
@@ -27,7 +27,7 @@ cmd({
             !response.data?.success || 
             !response.data.result?.result?.search_data?.length
         ) {
-            return reply("❌ No images found. Try different keywords");
+            return reply("APKI PHOTOS NAHI MILI 😔*");
         }
 
         const results = response.data.result.result.search_data;
@@ -41,7 +41,7 @@ cmd({
                 from,
                 { 
                     image: { url: imageUrl },
-                    caption: `📷 Result for: ${query}\n> © Powered by 『𝗪𝗵𝗶𝘁𝗲𝗦𝗵𝗮𝗱𝗼𝘄-MD』`
+                    caption: `*👑 BILAL-MD WHATSAPP BOT 👑*`
                 },
                 { quoted: mek }
             );
@@ -50,7 +50,7 @@ cmd({
         }
 
     } catch (error) {
-        console.error('Image Search Error:', error);
-        reply(`❌ Error: ${error.message || "Failed to fetch images"}`);
+        console.error('*PHOTOS NAHI MILI 🥺*', error);
+        reply(`❌ Error: ${error.message || "*IMG COMMAND ERROR 🥺*"}`);
     }
 });
