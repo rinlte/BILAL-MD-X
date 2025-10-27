@@ -17,22 +17,24 @@ cmd({
             );
         }
 
-        // 🌀 React during processing
+        // 🌀 React while processing
         await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
 
+        // ✅ Use only Starlight API with query
+        const api = `https://apis-starlights-team.koyeb.app/starlight/spotify-search?query=${encodeURIComponent(query)}`;
 
-        // ⚙️ Replace with your actual source API internally
-        const realApi = `https://apis-starlights-team.koyeb.app/starlight/spotify-search?query=${encodeURIComponent(query)}`;
-
-        // 🔹 Call real API
-        const response = await axios.get(realApi);
+        // 🔹 Call API
+        const response = await axios.get(api);
 
         if (!response.data?.result || response.data.result.length === 0) {
             await conn.sendMessage(from, { react: { text: "❌", key: mek.key } });
             return reply("*😔 No songs found for your search.*");
         }
 
-        const results = response.data.result.slice(0, 15); // limit to 15 songs
+        // 🎶 Limit results to 15
+        const results = response.data.result.slice(0, 15);
+
+        // 🧾 Format output message
         let msg = `🎧 *SPOTIFY SEARCH RESULT*\n\n🔍 *Query:* ${query}\n\n`;
 
         results.forEach((song, i) => {
