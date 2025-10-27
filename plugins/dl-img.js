@@ -3,8 +3,8 @@ const axios = require("axios");
 
 cmd({
     pattern: "img",
-    alias: ["image", "googleimage", "searchimg", "pic", "photo"],
-    react: "🦋",
+    alias: ["image", "googleimage", "searchimg", "pic", "photo", "pics", "imgs", "photos"],
+    react: "🖼️",
     desc: "Search and download Google images",
     category: "fun",
     use: ".img <keywords>",
@@ -16,7 +16,7 @@ cmd({
             return reply("*AP NE KOI PHOTOS DOWNLOAD KARNI HAI 🥺* \n *TO AP ESE LIKHO ☺️* \\n\n *IMG ❮PHOTOS KA NAME❯* \n\n *TO APKI PHOTO DOWNLOAD KAR KE 😇 YAHA PER BHEJ DE JAYE GE 🥰❤️* ");
         }
 
-        await reply(`🔍 Searching images for "${query}"...`);
+        await reply(`*APKI PHOTOS DOWNLOAD HO RAHI HAI ☺️ THORA SA INTAZAR KARE...🌹*`);
 
         // Dexter API
         const url = `https://api.id.dexter.it.com/search/google/image?q=${encodeURIComponent(query)}`;
