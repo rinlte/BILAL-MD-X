@@ -3,7 +3,7 @@ const axios = require("axios");
 const uploadImage = require("../lib/uploadImage.js");
 
 cmd({
-  pattern: "remini",
+  pattern: "reminix",
   alias: ["enhance", "hdphoto", "clearphoto"],
   desc: "Enhance any image using AI (Remini)",
   category: "tools",
@@ -11,46 +11,47 @@ cmd({
   filename: __filename
 }, async (conn, mek, m, { from, reply, quoted }) => {
   try {
-    const mime = (quoted?.mimetype || "");
+    await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
+    await reply("✅ Command triggered successfully!");
+
+    const mime = quoted?.mimetype || "";
     if (!/image/.test(mime)) {
-      return reply("*📸 Reply kisi image par kare jise enhance karna hai!*");
+      return reply("📸 *Reply kisi image par kare jise enhance karna hai!*");
     }
 
-    await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
-    reply("🔄 *Processing your image...*");
+    await reply("📥 Downloading image...");
+    const media = await quoted.download();
+    if (!media) throw new Error("Media download failed!");
 
-    // 📤 Upload image
-    const media = await quoted.download().catch(err => {
-      throw new Error("Image download failed: " + err.message);
-    });
+    await reply("☁️ Uploading image...");
+    const imageUrl = await uploadImage(media);
+    if (!imageUrl) throw new Error("Upload failed – no image URL found!");
 
-    const imageUrl = await uploadImage(media).catch(err => {
-      throw new Error("Image upload failed: " + err.message);
-    });
+    await reply(`🌐 Upload successful!\nURL: ${imageUrl}`);
 
-    if (!imageUrl) throw new Error("Image URL not found after upload.");
-
-    reply("🌐 *Calling Remini API...*");
-
-    // 🌐 API Call
+    // ✅ Test API endpoint directly
     const apiUrl = `https://api.id.dexter.it.com/imagecreator/remini?image=${encodeURIComponent(imageUrl)}`;
+    await reply(`🚀 Calling API:\n${apiUrl}`);
+
     const { data } = await axios.get(apiUrl, { timeout: 60000 });
 
+    await reply("📦 API response received!");
+
     if (!data?.result?.url) {
-      throw new Error("API didn't return a valid image URL.");
+      throw new Error("API didn’t return a valid image URL!");
     }
 
-    // ✅ Send enhanced image
     await conn.sendMessage(from, {
       image: { url: data.result.url },
       caption: `✨ *Image Enhanced Successfully!*`
     }, { quoted: mek });
 
     await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
+    await reply("✅ *Process complete!*");
 
   } catch (err) {
+    console.error("Remini Error:", err);
     await conn.sendMessage(from, { react: { text: "⚠️", key: mek.key } });
-    let errorMsg = err?.response?.data?.message || err?.message || String(err);
-    reply(`⚠️ *Remini Command Error:*\n\n\`\`\`${errorMsg}\`\`\``);
+    reply(`⚠️ *Error:* \`\`\`${err?.message || err}\`\`\``);
   }
 });
