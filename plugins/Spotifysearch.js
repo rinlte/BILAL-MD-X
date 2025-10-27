@@ -1,38 +1,52 @@
-const { cmd } = require('../command');
-const axios = require('axios');
+const { cmd } = require("../command");
+const axios = require("axios");
 
 cmd({
-  pattern: "spsearch",
-  desc: "Search Spotify songs using Zen API",
-  react: "🎧",
-  category: "music",
-  use: ".spotify <song name>",
-  filename: __filename
-}, async (conn, m, store, { from, args, reply }) => {
-  try {
-    if (!args[0]) return reply("🎶 *Please provide a song name!*\nExample: .spotify new songs");
+    pattern: "sptsearch",
+    alias: ["spotifysearch", "spotisearch", "spsearch"],
+    desc: "Search new Spotify songs or albums",
+    category: "downloader",
+    react: "🎧",
+    filename: __filename
+}, async (conn, mek, m, { from, args, reply }) => {
+    try {
+        const query = args.join(" ");
+        if (!query) {
+            return reply(
+                "*🎶 Example:* .sptsearch Arijit Singh\n\n👉 Yeh command Spotify se nayi songs list dikhayegi 💿"
+            );
+        }
 
-    const query = args.join(" ");
-    const apiUrl = `https://api.zenzxz.my.id/api/search/spotify?query=${encodeURIComponent(query)}`;
-    
-    const { data } = await axios.get(apiUrl);
+        // 🌀 React during processing
+        await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
 
-    if (!data || !data.result || data.result.length === 0)
-      return reply("❌ No results found for your query!");
+        // 🎯 Dexter-style API format (using ?query=)
+        const api = `https://api.id.dexter.it.com/search/spotify/songs?query=${encodeURIComponent(query)}`;
 
-    let txt = `🎵 *SPOTIFY SEARCH RESULTS*\n\n🔍 *Query:* ${query}\n\n`;
-    let limit = Math.min(data.result.length, 5); // Show top 5 results only
+        // ⚙️ Replace with your actual source API internally
+        const realApi = `https://apis-starlights-team.koyeb.app/starlight/spotify-search?query=${encodeURIComponent(query)}`;
 
-    for (let i = 0; i < limit; i++) {
-      const song = data.result[i];
-      txt += `🎧 *Title:* ${song.title || "Unknown"}\n`;
-      txt += `👤 *Artist:* ${song.artist || "Unknown"}\n`;
-      txt += `🔗 *URL:* ${song.url || "N/A"}\n\n`;
+        // 🔹 Call real API
+        const response = await axios.get(realApi);
+
+        if (!response.data?.result || response.data.result.length === 0) {
+            await conn.sendMessage(from, { react: { text: "❌", key: mek.key } });
+            return reply("*😔 No songs found for your search.*");
+        }
+
+        const results = response.data.result.slice(0, 15); // limit to 15 songs
+        let msg = `🎧 *SPOTIFY SEARCH RESULT*\n\n🔍 *Query:* ${query}\n\n`;
+
+        results.forEach((song, i) => {
+            msg += `*${i + 1}. ${song.title}*\n👨‍🎤 ${song.artist}\n🔗 ${song.url}\n\n`;
+        });
+
+        await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
+        reply(msg.trim());
+
+    } catch (err) {
+        console.error("Spotify Search Error:", err);
+        await conn.sendMessage(from, { react: { text: "⚠️", key: mek.key } });
+        reply("*⚠️ Error fetching Spotify search results.*");
     }
-
-    await reply(txt);
-  } catch (err) {
-    console.error(err);
-    reply("⚠️ Error fetching Spotify results. Please try again later.");
-  }
 });
