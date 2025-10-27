@@ -16,7 +16,7 @@
     "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@dark-yasiya/yt-dl.js": "^1.0.5",
-    "@ffmpeg-installer/ffmpeg": "^1.2.0",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@vitalets/google-translate-api": "^9.2.1",
     "@dark-yasiya/scrap": "^1.0.1",
     "pino": "^9.3.0",
