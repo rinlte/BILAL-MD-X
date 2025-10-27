@@ -3,6 +3,10 @@
   "version": "3.1.0",
   "description": "A WhatsApp Bot Created By BILAL",
   "main": "index.js",
+  "engines": {
+    "node": "22.x",
+    "npm": "10.x"
+  },
   "scripts": {
     "start": "pm2 start index.js --name BILAL-MD --attach",
     "stop": "pm2 stop BILAL-MD",
@@ -18,7 +22,7 @@
     "pino": "^9.3.0",
     "pm2": "^6.0.8",
     "util": "^0.12.5",
-    "jimp": "^0.22.12",
+    "jimp": "^1.6.0",
     "express": "^4.21.1",
     "moment-timezone": "^0.5.46",
     "axios": "^1.7.9",
