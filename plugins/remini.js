@@ -16,14 +16,14 @@ cmd({
       return reply("*📸 Reply kisi image par kare jise enhance karna hai!*");
     }
 
-    // ⏳ React while processing
+    // ⏳ Processing Reaction
     await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
 
-    // 🔹 Upload image to get direct URL
+    // 📤 Upload image to get direct URL
     const media = await quoted.download();
     const imageUrl = await uploadImage(media);
 
-    // 🔹 Call Remini API
+    // 🌐 Call Remini API
     const apiUrl = `https://api.id.dexter.it.com/imagecreator/remini?image=${encodeURIComponent(imageUrl)}`;
     const { data } = await axios.get(apiUrl, { timeout: 60000 });
 
@@ -41,8 +41,13 @@ cmd({
     await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
   } catch (err) {
-    console.error("Remini API Error:", err);
     await conn.sendMessage(from, { react: { text: "⚠️", key: mek.key } });
-    reply("*⚠️ Error enhancing image. Please try again later.*");
+
+    // 📨 Error message send in chat instead of console
+    let errorText = err?.response?.data?.message 
+      ? err.response.data.message 
+      : err?.message || "Unknown error occurred.";
+
+    reply(`⚠️ *Remini API Error:*\n\n\`\`\`${errorText}\`\`\``);
   }
 });
