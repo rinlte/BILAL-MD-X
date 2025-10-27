@@ -29,7 +29,7 @@ return await conn.sendMessage(from , { text: '*DUBARA KOSHISH KARO 🥺*' }, { q
 }
 var mesaj = '';
 arama.all.map((video) => {
-mesaj += ' *__________________________________*\n*👑' + video.title + '*\n🔗 ' + video.url + '\n*__________________________________*\n'
+mesaj += ' *__________________________________*\n*👑 ' + video.title + '*\n🔗 ' + video.url + '\n\n'
 });
 await conn.sendMessage(from , { text:  mesaj }, { quoted: mek } )
 } catch (e) {
