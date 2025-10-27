@@ -1,46 +1,88 @@
-const { isAntibotEnabled } = require('./antibot-cmd.js');
+const fs = require('fs');
+const filePath = './plugins/antibot-status.json';
+
+// Create antibot status file if it doesn't exist
+if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify({ enabled: false }, null, 2));
+}
+
+// Load antibot status
+let antibotStatus = JSON.parse(fs.readFileSync(filePath));
+
+// Save function
+function saveStatus() {
+    fs.writeFileSync(filePath, JSON.stringify(antibotStatus, null, 2));
+}
+
+// Message counter for detected bots
+let botMessageCount = {};
 
 module.exports = {
+    // ===============================
+    // COMMAND HANDLER: antibot on/off
+    // ===============================
+    async command(m, { text, conn }) {
+        const args = text.trim().toLowerCase();
+
+        if (args === 'on') {
+            antibotStatus.enabled = true;
+            saveStatus();
+            await conn.sendMessage(m.chat, { text: '✅ AntiBot is now *ON*! Bots will be detected and removed automatically.' });
+        } 
+        else if (args === 'off') {
+            antibotStatus.enabled = false;
+            saveStatus();
+            await conn.sendMessage(m.chat, { text: '🚫 AntiBot is now *OFF*! Bot messages will not be monitored.' });
+        } 
+        else {
+            await conn.sendMessage(m.chat, {
+                text: `⚙️ *Usage:*\n> antibot on\n> antibot off\n\n*Current status:* ${antibotStatus.enabled ? '✅ ON' : '❌ OFF'}`
+            });
+        }
+    },
+
+    // ===============================
+    // AUTO CHECK BEFORE MESSAGE HANDLE
+    // ===============================
     async before(m, { conn, isAdmin, isBotAdmin }) {
-        if (!m.isGroup) return !1;
+        if (!m.isGroup) return !0;
         if (m.fromMe) return !0;
 
-        // WhatsApp bot IDs ka regex
+        // WhatsApp bot ID regex patterns
         const botPatterns = [
-            /^3EB0/, /^4EB0/, /^5EB0/, /^6EB0/, /^7EB0/, /^8EB0/,
-            /^9EB0/, /^AEB0/, /^BEB0/, /^CEB0/, /^DEB0/, /^EEB0/,
-            /^FEB0/, /^BAE5/, /^BAE7/, /^CAEB0/, /^DAEB0/, /^EAEB0/,
-            /^FAEB0/
+            /^3EBO/, /^4EBO/, /^5EBO/, /^6EBO/, /^7EBO/, /^8EBO/,
+            /^9EBO/, /^AEBO/, /^BEBO/, /^CEBO/, /^DEBO/, /^EEBO/,
+            /^FEBO/, /^ABE5/, /^BAE7/, /^CAEBO/, /^DAEBO/, /^FAEBO/
         ];
 
-        // Sirf tab chale jab antibot ON hai
-        if (!isAntibotEnabled()) return !0;
+        // Only run if antibot is enabled
+        if (!antibotStatus.enabled) return !0;
 
-        // Agar message ek bot ka hai
+        // If message seems from a bot
         if (botPatterns.some(rx => rx.test(m.key.id)) && m.key.remoteJid.endsWith('@g.us')) {
-            if (isBotAdmin) {
-                console.log('🤖 BOT DETECTED, removing: ' + m.key.participant);
+            const sender = m.key.participant;
+            botMessageCount[sender] = (botMessageCount[sender] || 0) + 1;
 
-                // Message delete kare
-                await conn.sendMessage(m.chat, {
-                    delete: {
-                        remoteJid: m.chat,
-                        fromMe: false,
-                        id: m.key.id,
-                        participant: m.key.participant
-                    }
-                });
+            console.log(`🤖 ${sender} has sent ${botMessageCount[sender]} suspected bot messages.`);
 
-                // Participant remove kare
-                await conn.groupParticipantsUpdate(m.chat, [m.key.participant], 'remove');
+            if (botMessageCount[sender] >= 5) {
+                if (isBotAdmin) {
+                    console.log(`🚨 BOT REMOVED: ${sender}`);
 
-                // Notification bheje
-                await conn.sendMessage(m.chat, {
-                    text: `🛑 BOT DETECTED!\nUser ${m.key.participant} has been removed.`
-                });
-            } else {
-                console.log('⚠️ Bot detected lekin mai admin nahi hoon.');
-                m.reply(`🧧 Mai admin nahi hoon, isliye remove nahi kar sakta.\n\n> 🧨 Tip: Mujhe admin bana do, mai automatically handle kar lunga.`);
+                    // Remove the bot from group
+                    await conn.groupParticipantsUpdate(m.chat, [sender], 'remove');
+
+                    // Notify group
+                    await conn.sendMessage(m.chat, {
+                        text: `🚫 *BOT REMOVED!*\nUser @${sender.split('@')[0]} reached 5 suspected messages.`,
+                        mentions: [sender]
+                    });
+
+                    // Reset message count
+                    delete botMessageCount[sender];
+                } else {
+                    m.reply('⚠️ I am not an admin, so I cannot remove this bot.');
+                }
             }
         }
 
