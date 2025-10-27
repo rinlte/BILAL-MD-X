@@ -1,7 +1,3 @@
-## Files
-
----
-
 <p align="center">
   <img src="https://files.catbox.moe/kunzpz.png" 
        alt="Project Banner" 
