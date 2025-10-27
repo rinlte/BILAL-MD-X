@@ -20,8 +20,6 @@ cmd({
         // 🌀 React during processing
         await conn.sendMessage(from, { react: { text: "⏳", key: mek.key } });
 
-        // 🎯 Dexter-style API format (using ?query=)
-        const api = `https://api.id.dexter.it.com/search/spotify/songs?query=${encodeURIComponent(query)}`;
 
         // ⚙️ Replace with your actual source API internally
         const realApi = `https://apis-starlights-team.koyeb.app/starlight/spotify-search?query=${encodeURIComponent(query)}`;
