@@ -1,15 +1,14 @@
-
 {
   "name": "BILAL-MD",
-  "version": "2.0.0",
-  "description": "A WhatsApp Bot Created By BILAL KING",
+  "version": "3.0.0",
+  "description": "A WhatsApp Bot Created By BILAL",
   "main": "index.js",
   "scripts": {
     "start": "pm2 start index.js --deep-monitoring --attach --name BILAL-MD",
     "stop": "pm2 stop BILAL-MD",
     "restart": "pm2 restart BILAL-MD"
   },
-  "dependencies": {
+"dependencies": {
     "@whiskeysockets/baileys": "github:Drayyyxd/XD-Baileys",
     "@adiwajshing/keyed-db": "latest",
     "@dark-yasiya/yt-dl.js": "1.0.5",
@@ -62,6 +61,8 @@
     "qrcode-reader": "^1.0.4", 
     "@mrnima/tiktok-downloader":"1.0.0",
     "@mrnima/facebook-downloader":"1.0.0",
-    "mrnima-moviedl":"1.0.0"
+    "mrnima-moviedl":"1.0.0",
+    "openai": "^4.7.0",
+  "@google/genai":"1.22.0"
   }
 }
