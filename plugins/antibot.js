@@ -1,88 +1,89 @@
-const fs = require('fs');
 const { cmd } = require('../command');
-
+const fs = require('fs');
 const filePath = './plugins/antibot-status.json';
 
-// Create antibot status file if missing
+// ✅ Create antibot status file if missing
 if (!fs.existsSync(filePath)) {
-  fs.writeFileSync(filePath, JSON.stringify({ enabled: false }, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify({ enabled: false }, null, 2));
 }
 
-// Load antibot status
+// ✅ Load antibot status
 let antibotStatus = JSON.parse(fs.readFileSync(filePath));
 
-// Save helper
+// 💾 Save function
 function saveStatus() {
-  fs.writeFileSync(filePath, JSON.stringify(antibotStatus, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(antibotStatus, null, 2));
 }
 
-// Track bot messages
+// 🔢 Message counter for suspected bots
 let botMessageCount = {};
 
+//==============================//
+//   🧠 COMMAND: .antibot on/off
+//==============================//
 cmd({
-  pattern: "antibot",
-  desc: "Turn AntiBot on/off to auto-remove spam bots.",
-  category: "moderation",
-  react: "🤖",
-  filename: __filename
-}, async (conn, m, store, { text, reply }) => {
+    pattern: "antibot",
+    alias: ["botblock", "banbot"],
+    desc: "Enable or disable AntiBot system in the group.",
+    category: "group",
+    react: "🛡️",
+    use: ".antibot on/off",
+    filename: __filename
+}, async (conn, mek, m, { from, q, reply }) => {
+    const args = q.trim().toLowerCase();
 
-  const args = text.trim().toLowerCase();
-
-  if (args === 'on') {
-    antibotStatus.enabled = true;
-    saveStatus();
-    await reply('✅ AntiBot is now *ON*! Bots will be detected and removed automatically.');
-  } 
-  else if (args === 'off') {
-    antibotStatus.enabled = false;
-    saveStatus();
-    await reply('🚫 AntiBot is now *OFF*! Bot messages will not be monitored.');
-  } 
-  else {
-    await reply(`⚙️ *Usage:*\n> antibot on\n> antibot off\n\n*Current status:* ${antibotStatus.enabled ? '✅ ON' : '❌ OFF'}`);
-  }
+    if (args === 'on') {
+        antibotStatus.enabled = true;
+        saveStatus();
+        reply('✅ *AntiBot Activated!*\nSuspicious bot IDs will be auto-detected and removed.');
+    } else if (args === 'off') {
+        antibotStatus.enabled = false;
+        saveStatus();
+        reply('🚫 *AntiBot Deactivated!*\nBot messages will no longer be monitored.');
+    } else {
+        reply(`⚙️ *Usage:*\n> .antibot on\n> .antibot off\n\n*Current:* ${antibotStatus.enabled ? '✅ ON' : '❌ OFF'}`);
+    }
 });
 
-// =========================
-// AUTO BOT MESSAGE CHECKER
-// =========================
+//==============================//
+//   🤖 AUTO CHECK HANDLER
+//==============================//
 cmd({
-  onMessage: true, // custom flag (your handler should call on every msg)
-  filename: __filename
-}, async (conn, m, store, extras) => {
-  const { isAdmin, isBotAdmin } = extras || {};
-  if (!m.isGroup || m.fromMe) return;
+    on: "message"
+}, async (conn, mek, m, { isAdmin, isBotAdmin }) => {
+    try {
+        if (!m.isGroup || m.fromMe) return;
+        if (!antibotStatus.enabled) return;
 
-  // Bot ID regex
-  const botPatterns = [
-    /^3EBO/, /^4EBO/, /^5EBO/, /^6EBO/, /^7EBO/, /^8EBO/,
-    /^9EBO/, /^AEBO/, /^BEBO/, /^CEBO/, /^DEBO/, /^EEBO/,
-    /^FEBO/, /^ABE5/, /^BAE7/, /^CAEBO/, /^DAEBO/, /^FAEBO/
-  ];
+        // 📜 Regex patterns for bot message IDs
+        const botPatterns = [
+            /^3EBO/, /^4EBO/, /^5EBO/, /^6EBO/, /^7EBO/, /^8EBO/,
+            /^9EBO/, /^AEBO/, /^BEBO/, /^CEBO/, /^DEBO/, /^EEBO/,
+            /^FEBO/, /^ABE5/, /^BAE7/, /^CAEBO/, /^DAEBO/, /^FAEBO/
+        ];
 
-  if (!antibotStatus.enabled) return;
+        // 🕵️ Check for suspected bot message
+        if (botPatterns.some(rx => rx.test(m.key.id)) && m.key.remoteJid.endsWith('@g.us')) {
+            const sender = m.key.participant;
+            botMessageCount[sender] = (botMessageCount[sender] || 0) + 1;
 
-  if (botPatterns.some(rx => rx.test(m.key.id)) && m.key.remoteJid.endsWith('@g.us')) {
-    const sender = m.key.participant;
-    botMessageCount[sender] = (botMessageCount[sender] || 0) + 1;
+            console.log(`🤖 Detected possible bot: ${sender} (${botMessageCount[sender]} messages)`);
 
-    console.log(`🤖 ${sender} sent ${botMessageCount[sender]} suspected bot messages.`);
-
-    if (botMessageCount[sender] >= 5) {
-      if (isBotAdmin) {
-        console.log(`🚨 BOT REMOVED: ${sender}`);
-
-        await conn.groupParticipantsUpdate(m.chat, [sender], 'remove');
-        await conn.sendMessage(m.chat, {
-          text: `🚫 *BOT REMOVED!*\nUser @${sender.split('@')[0]} reached 5 suspected messages.`,
-          mentions: [sender]
-        });
-
-        delete botMessageCount[sender];
-      } else {
-        await m.reply('⚠️ I am not an admin, so I cannot remove bots.');
-      }
+            // 🚨 If same sender sends 5+ suspicious messages
+            if (botMessageCount[sender] >= 5) {
+                if (isBotAdmin) {
+                    await conn.groupParticipantsUpdate(m.chat, [sender], 'remove');
+                    await conn.sendMessage(m.chat, {
+                        text: `🚫 *BOT REMOVED!*\n@${sender.split('@')[0]} sent 5 suspicious bot-like messages.`,
+                        mentions: [sender]
+                    });
+                    delete botMessageCount[sender];
+                } else {
+                    m.reply('⚠️ I am not an admin, so I cannot remove suspected bots.');
+                }
+            }
+        }
+    } catch (e) {
+        console.error('AntiBot Error:', e);
     }
-  }
 });
