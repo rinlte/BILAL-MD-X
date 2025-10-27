@@ -23,10 +23,10 @@ let botMessageCount = {};
 //==============================//
 cmd({
     pattern: "antibot",
-    alias: ["botblock", "banbot"],
+    alias: ["botblock", "banbot", "abot", "anbot", "antbot", "kbot", "kickbot"],
     desc: "Enable or disable AntiBot system in the group.",
     category: "group",
-    react: "🛡️",
+    react: "😌",
     use: ".antibot on/off",
     filename: __filename
 }, async (conn, mek, m, { from, q, reply }) => {
@@ -35,7 +35,7 @@ cmd({
     if (args === 'on') {
         antibotStatus.enabled = true;
         saveStatus();
-        reply('✅ *AntiBot Activated!*\nSuspicious bot IDs will be auto-detected and removed.');
+        reply('*AB IS GROUP ME ❮ANTIBOT❯ ON HO GAYA HAI ☺️ AB AP SAB GROUP WALO SE GUZARISH HAI 🥺 KE APNE BOTS PRIVATE KAR LO 🙂 YA GROUP LEFT KAR LO 😇 WO APKI MERZI HAI 😅 AGAR MUJHE IS GROUP ME KOI DUSRA BOT 🤨 NAZAR AYA TO WO REMOVE HOGA ☺️❤️*');
     } else if (args === 'off') {
         antibotStatus.enabled = false;
         saveStatus();
