@@ -1,75 +1,56 @@
-const axios = require('axios');
-const { cmd } = require('../command');
+const { cmd } = require("../command");
+const axios = require("axios");
 
 cmd({
-    pattern: 'img',
-    alias: ['image', 'googleimage', 'searchimg'],
-    react: '🖼️',
-    desc: 'search google images 📷',
-    category: 'download',
-    use: '.img <keywords>',
+    pattern: "img",
+    alias: ["image", "googleimage", "searchimg"],
+    react: "🦋",
+    desc: "Search and download Google images",
+    category: "fun",
+    use: ".img <keywords>",
     filename: __filename
-}, async (malvin, mek, m, { reply, args, from }) => {
+}, async (conn, mek, m, { reply, args, from }) => {
     try {
-        const query = args.join(' ');
+        const query = args.join(" ");
         if (!query) {
-            return reply('❌ please provide a search query\nexample: .img cute cats');
+            return reply("🖼️ Please provide a search query\nExample: .img cute cats");
         }
 
-        await malvin.sendMessage(from, { react: { text: '⏳', key: m.key } });
-        await reply(`🔍 searching for *${query}*...`);
+        await reply(`🔍 Searching images for "${query}"...`);
 
-        const url = `https://apis.davidcyriltech.my.id/googleimage?query=${encodeURIComponent(query)}`;
-        const response = await axios.get(url, { timeout: 15000 });
+        // Dexter API
+        const url = `https://api.id.dexter.it.com/search/google/image?q=${encodeURIComponent(query)}`;
+        const response = await axios.get(url);
 
-        if (!response.data?.success || !response.data.results?.length) {
-            await reply('❌ no images found 😔\ntry different keywords');
-            await malvin.sendMessage(from, { react: { text: '❌', key: m.key } });
-            return;
+        // Validate response
+        if (
+            !response.data?.success || 
+            !response.data.result?.result?.search_data?.length
+        ) {
+            return reply("❌ No images found. Try different keywords");
         }
 
-        const results = response.data.results;
-        const maxImages = Math.min(results.length, 5);
-        await reply(`✅ found *${results.length}* images for *${query}*\nsending top ${maxImages}...`);
-
+        const results = response.data.result.result.search_data;
+        // Random 5 images
         const selectedImages = results
             .sort(() => 0.5 - Math.random())
-            .slice(0, maxImages);
+            .slice(0, 5);
 
-        for (const [index, imageUrl] of selectedImages.entries()) {
-            try {
-                const caption = `
-╭───[ *ɪᴍᴀɢᴇ sᴇᴀʀᴄʜ* ]───
-├ *ǫᴜᴇʀʏ*: ${query} 🔍
-├ *ʀᴇsᴜʟᴛ*: ${index + 1} of ${maxImages} 🖼️
-╰───[ *popkid xtr* ]───
-> *powered by popkid* ♡`;
-
-                await cmd.sendMessage(
-                    from,
-                    {
-                        image: { url: imageUrl },
-                        caption,
-                        contextInfo: { mentionedJid: [m.sender] }
-                    },
-                    { quoted: mek }
-                );
-            } catch (err) {
-                console.warn(`⚠️ failed to send image ${index + 1}: ${imageUrl}`, err);
-                continue;
-            }
-
+        for (const imageUrl of selectedImages) {
+            await conn.sendMessage(
+                from,
+                { 
+                    image: { url: imageUrl },
+                    caption: `📷 Result for: ${query}\n> © Powered by 『𝗪𝗵𝗶𝘁𝗲𝗦𝗵𝗮𝗱𝗼𝘄-MD』`
+                },
+                { quoted: mek }
+            );
+            // Delay to avoid spam
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
-        await cmd.sendMessage(from, { react: { text: '✅', key: m.key } });
-
     } catch (error) {
-        console.error('❌ image search error:', error);
-        const errorMsg = error.message.includes('timeout')
-            ? '❌ request timed out ⏰'
-            : '❌ failed to fetch images 😞';
-        await reply(errorMsg);
-        await cmd.sendMessage(from, { react: { text: '❌', key: m.key } });
+        console.error('Image Search Error:', error);
+        reply(`❌ Error: ${error.message || "Failed to fetch images"}`);
     }
 });
