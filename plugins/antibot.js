@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { cmd } = require('../command');
 const filePath = './plugins/antibot-status.json';
 
 // Create antibot status file if it doesn't exist
