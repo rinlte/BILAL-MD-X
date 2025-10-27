@@ -19,7 +19,7 @@ cmd({
 
 async(conn, mek, m,{from, l, quoted, body, isCmd, umarmd, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
 try{
-if (!q) return reply('*AP NE YOUTUBE KI VIDEOS KI LIST CHAHYE 🥺* \n *TO AP ESE LIKHO ☺️*\n\n *YTS ❮VIDEO KA NAME❯* \n\n *TO YOUTUBE VIDEOS KI LIST APKE SAMNE AA JAYE GE ☺️🌹*')
+if (!q) return reply('*AP NE YOUTUBE KI VIDEOS KI LIST DEKHNI HAI 🤔* \n *TO AP ESE LIKHO ☺️*\n\n *YTS ❮VIDEO KA NAME❯* \n\n *TO YOUTUBE VIDEOS KI LIST APKE SAMNE AA JAYE GE ☺️🌹*')
 try {
 let yts = require("yt-search")
 var arama = await yts(q);
