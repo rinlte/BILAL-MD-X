@@ -10,7 +10,7 @@ cmd({
     pattern: "yts",
     alias: ["ytsearch"],
     use: '.yts chamod',
-    react: "🔎",
+    react: "🥺",
     desc: "Search and get details from youtube.",
     category: "search",
     filename: __filename
@@ -19,21 +19,21 @@ cmd({
 
 async(conn, mek, m,{from, l, quoted, body, isCmd, umarmd, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
 try{
-if (!q) return reply('*Please give me words to search*')
+if (!q) return reply('*AP NE YOUTUBE KI VIDEOS KI LIST CHAHYE 🥺* \n *TO AP ESE LIKHO ☺️*\n\n *YTS ❮VIDEOS KA NAME❯ \n\n *TO YOUTUBE VIDEOS KI LIST APKE SAMNE AA JAYE GE ☺️🌹*')
 try {
 let yts = require("yt-search")
 var arama = await yts(q);
 } catch(e) {
     l(e)
-return await conn.sendMessage(from , { text: '*Error !!*' }, { quoted: mek } )
+return await conn.sendMessage(from , { text: '*DUBARA KOSHISH KARO 🥺*' }, { quoted: mek } )
 }
 var mesaj = '';
 arama.all.map((video) => {
-mesaj += ' *🖲️' + video.title + '*\n🔗 ' + video.url + '\n\n'
+mesaj += ' *__________________________________*\n*👑' + video.title + '*\n🔗 ' + video.url + '\n*__________________________________*\n'
 });
 await conn.sendMessage(from , { text:  mesaj }, { quoted: mek } )
 } catch (e) {
     l(e)
-  reply('*Error !!*')
+  reply('*COMMAND ERROR 🥺*')
 }
 });
