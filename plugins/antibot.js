@@ -35,13 +35,13 @@ cmd({
     if (args === 'on') {
         antibotStatus.enabled = true;
         saveStatus();
-        reply('*AB IS GROUP ME ❮ANTIBOT❯ ON HO GAYA HAI ☺️ AB AP SAB GROUP WALO SE GUZARISH HAI 🥺 KE APNE BOTS PRIVATE KAR LO 🙂 YA GROUP LEFT KAR LO 😇 WO APKI MERZI HAI 😅 AGAR MUJHE IS GROUP ME KOI DUSRA BOT 🤨 NAZAR AYA TO WO REMOVE HOGA ☺️❤️*');
+        reply('*IS GROUP ME ❮ANTIBOT❯ ON HO GAYA HAI ☺️ AB AP SAB GROUP WALO SE GUZARISH HAI 🥺 KE APNE BOTS PRIVATE KAR LO 🙂 YA GROUP LEFT KAR LO 😇 WO APKI MERZI HAI 😅 AGAR MUJHE IS GROUP ME KOI DUSRA BOT 🤨 NAZAR AYA TO WO REMOVE HOGA 😏 PHIR BAD ME MUJHE MAT KEHNA 🙄 KE HUME PEHLE BATAYA NAHI 😒*');
     } else if (args === 'off') {
         antibotStatus.enabled = false;
         saveStatus();
-        reply('🚫 *AntiBot Deactivated!*\nBot messages will no longer be monitored.');
+        reply('*IS GROUP ME ❮ANTIBOT❯ OFF KAR DYA GAYA HAI 🙂 AB AP SAB APNE BOTS IS GROUP 😃 ME USE KAR SAKTE HAI ☺️❤️*');
     } else {
-        reply(`⚙️ *Usage:*\n> .antibot on\n> .antibot off\n\n*Current:* ${antibotStatus.enabled ? '✅ ON' : '❌ OFF'}`);
+        reply(`*AP ESE LIKHO ☺️* \n\n *ANTIBOT ON ❮ANTIBOT ON KARNE K LIE❯* \n\n *ANTIBOT OFF ❮ANTIBOT OFF KARNE K LIE❯* \n\n\n *ABHI ${antibotStatus.enabled ? '✅ ON' : '❌ OFF'} HAI 😇*`);
     }
 });
 
@@ -67,23 +67,23 @@ cmd({
             const sender = m.key.participant;
             botMessageCount[sender] = (botMessageCount[sender] || 0) + 1;
 
-            console.log(`🤖 Detected possible bot: ${sender} (${botMessageCount[sender]} messages)`);
+            console.log(`YEH  ${sender} KOI OR BOT USE KAR RAHE HAI 😐*\n\n *BOT KA MSG DEKHO 👇 \n\n (${botMessageCount[sender]} messages)*`);
 
             // 🚨 If same sender sends 5+ suspicious messages
             if (botMessageCount[sender] >= 5) {
                 if (isBotAdmin) {
                     await conn.groupParticipantsUpdate(m.chat, [sender], 'remove');
                     await conn.sendMessage(m.chat, {
-                        text: `🚫 *BOT REMOVED!*\n@${sender.split('@')[0]} sent 5 suspicious bot-like messages.`,
+                        text: `*MENE ISKO REMOVE KAR DIYA HAI 🥺\n@${sender.split('@')[0]}*\n\n *Q KE INKE PAS KOI OR BOT HAI 😒*`,
                         mentions: [sender]
                     });
                     delete botMessageCount[sender];
                 } else {
-                    m.reply('⚠️ I am not an admin, so I cannot remove suspected bots.');
+                    m.reply('*PEHLE MUJHE IS GROUP ME ADMIN BANAO 🥺 YAHA PER IS GROUP DUSRE BOTS ACTIVE HAI 🙄 JO SPAM MSGS BHEJ RAHE HAI ☹️ IN SE HAMARY WHATSAPP BAN BHI HO SAKTY HAI 😥 AP MUJHE ADMIN BANAO 🙂 HUM IN SAB BOTS KO REMOVE KAR DE GE ☺️❤️* \n\n *GROUP ADMINS 🙄*');
                 }
             }
         }
     } catch (e) {
-        console.error('AntiBot Error:', e);
+        console.error('*ANTIBOT ERROR 🥺*', e);
     }
 });
