@@ -6,7 +6,7 @@ const { sleep } = require("../lib/functions");
 
 const statusFile = path.join(__dirname, "./autotyping-status.json");
 
-// Create status file if missing
+// ✅ Create status file if not exist
 if (!fs.existsSync(statusFile)) {
   fs.writeFileSync(statusFile, JSON.stringify({ enabled: false }, null, 2));
 }
@@ -17,7 +17,7 @@ function saveStatus() {
   fs.writeFileSync(statusFile, JSON.stringify(typingStatus, null, 2));
 }
 
-// 👇 Auto Typing Trigger
+// 👇 Auto Typing On Message
 cmd(
   { on: "body" },
   async (conn, mek, m, { from }) => {
@@ -27,41 +27,45 @@ cmd(
   }
 );
 
-// 👑 Composing Command
+// 👇 Main Command
 cmd(
   {
     pattern: "composing",
-    desc: "Enable/Disable or Check Auto Typing (PM2 Restart)",
+    desc: "Control Auto Typing (ON/OFF/STATUS)",
     category: "settings",
     react: "⌨️",
     filename: __filename,
   },
-  async (conn, mek, m, context) => {
+  async (conn, mek, m, extra) => {
     try {
-      const { reply } = context;
-      const isOwner = context.isOwner || context.isCreator || false;
-      const args = context.args || m.text.split(" ").slice(1); // fix for missing args
-
-      if (!isOwner)
-        return reply("❌ Only the *Bot Owner* can use this command.");
-
+      const text = (m.text || "").trim();
+      const args = text.split(" ").slice(1); // manual split
       const input = (args[0] || "").toLowerCase();
+      const from = extra?.from || mek.chat || m.key.remoteJid;
+      const sender = m.sender || mek.sender || "";
+      const isOwner =
+        global.ownernumber?.includes(sender.split("@")[0]) || false;
 
-      // 📘 No argument → show guide
+      const reply = async (msg) => await conn.sendMessage(from, { text: msg }, { quoted: mek });
+
+      // 🧠 No Argument → Show Guide
       if (!input) {
         return reply(
           `🧠 *Auto Typing Control Panel*\n\n` +
             `Use:\n` +
             `> .composing on — Enable auto typing\n` +
             `> .composing off — Disable auto typing\n` +
-            `> .composing status — Check current state\n\n` +
-            `📊 Current Status: ${
+            `> .composing status — Show current state\n\n` +
+            `📊 Current: ${
               typingStatus.enabled ? "✅ *ON*" : "❌ *OFF*"
             }`
         );
       }
 
-      // 💡 Show current status
+      // ❌ Owner Restriction
+      if (!isOwner) return reply("❌ Only *Bot Owner* can use this command.");
+
+      // 📊 STATUS
       if (input === "status") {
         return reply(
           `💡 Auto Typing is currently: ${
@@ -70,30 +74,26 @@ cmd(
         );
       }
 
-      // ✅ Enable
+      // ✅ ON
       if (input === "on") {
         typingStatus.enabled = true;
         saveStatus();
-        await reply(
-          "✅ Auto Typing *Enabled Successfully!*\n🔁 Restarting bot..."
-        );
+        await reply("✅ Auto Typing *Enabled!* Restarting bot...");
         await sleep(1500);
         exec("pm2 restart all", (err) => {
-          if (err) return reply(`❌ Restart Error:\n${err.message}`);
+          if (err) reply(`❌ Restart failed:\n${err.message}`);
         });
         return;
       }
 
-      // ❌ Disable
+      // ❌ OFF
       if (input === "off") {
         typingStatus.enabled = false;
         saveStatus();
-        await reply(
-          "❌ Auto Typing *Disabled Successfully!*\n🔁 Restarting bot..."
-        );
+        await reply("❌ Auto Typing *Disabled!* Restarting bot...");
         await sleep(1500);
         exec("pm2 restart all", (err) => {
-          if (err) return reply(`❌ Restart Error:\n${err.message}`);
+          if (err) reply(`❌ Restart failed:\n${err.message}`);
         });
         return;
       }
@@ -101,7 +101,7 @@ cmd(
       // ⚠️ Invalid Input
       reply("⚙️ Usage:\n.composing on\n.composing off\n.composing status");
     } catch (e) {
-      console.error(e);
+      console.log("Composing Error:", e);
     }
   }
 );
