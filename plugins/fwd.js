@@ -1,5 +1,3 @@
-// 💫 FORWARD ALL — Umar Farooq v3 (Auto Chats + Group Sync Fixed)
-
 const { cmd } = require("../command");
 const fs = require("fs");
 
@@ -21,12 +19,8 @@ cmd({
     const fullBody = body || "";
     const input = fullBody.replace(/^[.!/]?(forward|fwd)\s*/i, "").trim();
 
-    // 🧭 Help Message
-    if (!input) {
-      return await reply(
-        `⚙️ *Forward Command Help*\n\n📤 *Usage:*\n• .fwd all\n• .fwd 5 chats 3 groups\n• .fwd del all\n\n💡 *Examples:*\n> .fwd all\n> .fwd 10 chats 5 groups\n> .fwd del all`
-      );
-    }
+    if (!input)
+      return await reply(`⚙️ *Forward Command Help*\n\n📤 *Usage:*\n• .fwd all\n• .fwd 5 chats 3 groups\n• .fwd del all\n\n💡 *Examples:*\n> .fwd all\n> .fwd 10 chats 5 groups\n> .fwd del all`);
 
     // 🗑 Delete All
     if (/^del\s+all$/i.test(input)) {
@@ -45,10 +39,8 @@ cmd({
       return await reply(`🗑️ Deleted ${deleted} messages.`);
     }
 
-    // ⚠️ Must Reply
     if (!m.quoted) return await reply("⚠️ Please reply to a message to forward.");
 
-    // 🎯 Parse user input
     let chatLimit = 0, groupLimit = 0;
     if (/all/i.test(input)) {
       chatLimit = SAFETY.MAX_JIDS;
@@ -72,30 +64,31 @@ cmd({
       console.log("Group fetch error:", e.message);
     }
 
-    // 🧠 Fetch Chats (contacts + opened chats)
+    // 🧠 Fetch Chats (contacts + opened + live sync)
     let chatJids = [];
     try {
-      // Step 1: load all saved contacts
       const contacts = Object.keys(conn.contacts || {}).filter(j => j.endsWith("@s.whatsapp.net"));
-
-      // Step 2: load all opened chats
       const openedChats = Object.keys(conn.chats || {}).filter(j => j.endsWith("@s.whatsapp.net"));
-
-      // Step 3: merge both
       chatJids = [...new Set([...contacts, ...openedChats])];
 
-      // Step 4: fallback — if still empty, fetch from conn.onWhatsApp()
+      // ⚡ Live sync — fetch from WhatsApp if chats empty
       if (chatJids.length === 0) {
-        const numbers = ["923001234567", "923451234567"]; // optional fallback
-        const exists = await conn.onWhatsApp(numbers);
-        chatJids = exists.filter(x => x.exists).map(x => x.jid);
+        const { version } = require("@whiskeysockets/baileys");
+        console.log(`[SYNC] Baileys v${version} — Fetching live numbers...`);
+
+        // ⚠️ Example fallback — you can increase or edit below
+        const possibleNumbers = [];
+        for (let i = 3000000000; i < 3000000020; i++) possibleNumbers.push(`92${i}`);
+
+        const checks = await conn.onWhatsApp(possibleNumbers);
+        chatJids = checks.filter(x => x.exists).map(x => x.jid);
       }
     } catch (e) {
       console.log("Chat fetch error:", e.message);
     }
 
     if (!chatJids.length && !groupJids.length)
-      return await reply("❌ No chats or groups found! Try messaging someone first.");
+      return await reply("❌ No chats or groups found, even after sync!");
 
     const selectedChats = chatJids.slice(0, chatLimit || chatJids.length);
     const selectedGroups = groupJids.slice(0, groupLimit || groupJids.length);
@@ -105,7 +98,6 @@ cmd({
 
     await reply(`🚀 Forwarding started!\n\n📩 ${selectedChats.length} chats\n👥 ${selectedGroups.length} groups`);
 
-    // 🧾 Prepare message content
     const q = m.quoted;
     const mtype = q.mtype;
     let content = {};
