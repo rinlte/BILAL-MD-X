@@ -1,10 +1,12 @@
 const { cmd } = require("../command");
 const config = require("../config");
-const { exec } = require("child_process");
+
+// Interval map for live typing
+const typingIntervals = {};
 
 cmd({
   pattern: "composing",
-  desc: "Enable/disable/check AUTO_TYPING",
+  desc: "Enable/disable/check AUTO_TYPING with live presence",
   category: "settings",
   react: "❤️",
   filename: __filename
@@ -12,7 +14,6 @@ cmd({
   const { reply } = extras;
 
   try {
-    // Extract text reliably
     const text = m.text || m.message?.conversation || m.message?.extendedTextMessage?.text || "";
     const parts = text.trim().split(/\s+/);
     const cmdName = parts[0].replace(/^[.!/]/, "").toLowerCase();
@@ -28,41 +29,54 @@ cmd({
     const isOwner = owners.some(num => sender.endsWith(num.slice(-8)));
     if (!isOwner) return;
 
-    if (!arg) return; // no argument → silently ignore
-
-    let msg = "";
+    // Guidance message if no argument
+    if (!arg) {
+      return reply(
+        `⚙️ *Composing Command Help*\n\n` +
+        `📤 *Usage:*\n` +
+        `• .composing on → Enable AUTO_TYPING\n` +
+        `• .composing off → Disable AUTO_TYPING\n` +
+        `• .composing status → Check current status`
+      );
+    }
 
     switch (arg) {
       case "on":
         config.AUTO_TYPING = true;
-        msg = "✅ AUTO_TYPING is now ON\n🔄 Restarting bot...";
-        await reply(msg);
-        // PM2 restart after short delay
-        setTimeout(() => {
-          exec("pm2 restart all", (err) => {
-            if (err) console.error("PM2 Restart Error:", err);
-          });
-        }, 1000);
+        reply("✅ AUTO_TYPING is now ON\n📝 Live typing enabled");
+
+        // Start live typing interval
+        if (!typingIntervals["global"]) {
+          typingIntervals["global"] = setInterval(async () => {
+            try {
+              // Send composing to every active chat
+              if (conn.chats) {
+                for (const jid of Object.keys(conn.chats)) {
+                  await conn.sendPresenceUpdate("composing", jid);
+                }
+              }
+            } catch (e) { console.error("Typing interval error:", e); }
+          }, 5000); // every 5s
+        }
         break;
 
       case "off":
         config.AUTO_TYPING = false;
-        msg = "❌ AUTO_TYPING is now OFF\n🔄 Restarting bot...";
-        await reply(msg);
-        setTimeout(() => {
-          exec("pm2 restart all", (err) => {
-            if (err) console.error("PM2 Restart Error:", err);
-          });
-        }, 1000);
+        reply("❌ AUTO_TYPING is now OFF\n🛑 Live typing disabled");
+
+        // Stop interval
+        if (typingIntervals["global"]) {
+          clearInterval(typingIntervals["global"]);
+          delete typingIntervals["global"];
+        }
         break;
 
       case "status":
-        msg = `💡 AUTO_TYPING is currently: ${config.AUTO_TYPING ? "✅ ON" : "❌ OFF"}`;
-        await reply(msg);
+        reply(`💡 AUTO_TYPING is currently: ${config.AUTO_TYPING ? "✅ ON" : "❌ OFF"}`);
         break;
 
       default:
-        return; // silently ignore invalid arguments
+        return; // silently ignore invalid args
     }
 
   } catch (e) {
