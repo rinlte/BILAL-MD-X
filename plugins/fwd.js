@@ -1,100 +1,74 @@
+// ⚡ Forward Everything Script — Umar Farooq Edition
+// by whiteshadow + Umar Final Version
 
 const { cmd } = require("../command");
 const fs = require("fs");
 
-// File to track forwarded messages for deletion
 const TRACK_FILE = "./forward-tracker.json";
 
-// Ensure tracker file exists automatically
-if (!fs.existsSync(TRACK_FILE))
+// Auto create tracker file if missing
+if (!fs.existsSync(TRACK_FILE)) {
   fs.writeFileSync(TRACK_FILE, JSON.stringify([]));
+}
 
 const SAFETY = {
-  MAX_JIDS: 30,
-  BASE_DELAY: 2000,
-  EXTRA_DELAY: 4000,
+  MAX_JIDS: 500, // limit increased for "all"
+  DELAY: 2000,
 };
 
 cmd({
   pattern: "forward",
   alias: ["fwd"],
-  desc: "Bulk forward or delete forwarded messages",
+  desc: "Forward any replied message to all chats, groups, or delete history.",
   category: "owner",
   filename: __filename,
-}, async (client, message, match, { isOwner }) => {
+}, async (conn, m, match, { isOwner }) => {
   try {
-    if (!isOwner) return await message.reply("*📛 Owner Only Command*");
+    if (!isOwner) return await m.reply("⚠️ *Owner Only Command!*");
 
-    // ✅ Safe argument handling fix
     let args = [];
     if (typeof match === "string") args = match.trim().split(/\s+/);
-    else if (Array.isArray(match)) args = match;
-    else if (match && typeof match === "object")
-      args = match.text ? match.text.split(/\s+/) : [];
     else args = [];
 
-    // =========================
-    // 🔹 DELETE MODE
-    // =========================
+    // ===================== 🔹 DELETE MODE =====================
     if (args[0] === "del" && args[1] === "all") {
       const history = JSON.parse(fs.readFileSync(TRACK_FILE));
       if (!history.length)
-        return await message.reply("⚠️ No forwarded messages found to delete.");
+        return await m.reply("⚠️ No forwarded messages to delete.");
 
       let deleted = 0;
       for (const h of history) {
         try {
-          await client.sendMessage(h.jid, {
+          await conn.sendMessage(h.jid, {
             delete: { remoteJid: h.jid, fromMe: true, id: h.msgId },
           });
           deleted++;
-          await new Promise((r) => setTimeout(r, 500));
         } catch {}
+        await new Promise((r) => setTimeout(r, 500));
       }
 
       fs.writeFileSync(TRACK_FILE, JSON.stringify([]));
-      return await message.reply(`🗑️ Deleted ${deleted} forwarded messages.`);
+      return await m.reply(`🗑️ Deleted ${deleted} forwarded messages.`);
     }
 
-    // =========================
-    // 🔹 FORWARD MODE
-    // =========================
-    if (!message.quoted)
-      return await message.reply("*🍁 Please reply to a message to forward.*");
+    // ===================== 🔹 FORWARD MODE =====================
+    if (!m.quoted)
+      return await m.reply("⚠️ Please *reply* to a message to forward.");
 
-    let targets = [];
+    // --- get all chats + groups ---
+    const chats = Object.keys(conn.chats || {});
+    const allJids = chats.filter(
+      (jid) => jid.endsWith("@s.whatsapp.net") || jid.endsWith("@g.us")
+    );
 
-    // -------- fwd all -----------
-    if (args[0] === "all") {
-      const chats = Object.keys(client.chats || {});
-      targets = chats.filter(
-        (j) => j.endsWith("@s.whatsapp.net") || j.endsWith("@g.us")
-      );
-      await message.reply(`🚀 Forwarding to *${targets.length}* chats/groups...`);
-    }
-    // -------- manual numbers / jids ----------
-    else {
-      const raw = args.join(" ").split(/[\s,]+/).filter(Boolean);
-      targets = raw
-        .map((id) => {
-          id = id.replace(/[@\s]/g, "").replace(/[^0-9+]/g, "");
-          if (id.startsWith("+")) id = id.slice(1);
-          if (/^\d+$/.test(id)) {
-            if (id.length > 11) return `${id}@g.us`; // group id
-            else return `${id}@s.whatsapp.net`; // normal number
-          }
-          return null;
-        })
-        .filter(Boolean);
-    }
+    if (!allJids.length)
+      return await m.reply("❌ No chats or groups found to forward.");
 
-    // Safety limit
-    targets = targets.slice(0, SAFETY.MAX_JIDS);
-    if (!targets.length)
-      return await message.reply("❌ No valid numbers or groups found.");
+    const limited = allJids.slice(0, SAFETY.MAX_JIDS);
+    await m.reply(`🚀 Forwarding to ${limited.length} chats & groups...`);
 
-    // ----- Media/Text handling -----
-    const q = message.quoted;
+    // prepare message
+    const q = m.quoted;
     const mtype = q.mtype;
     let content = {};
 
@@ -125,35 +99,27 @@ cmd({
       content = { text: q.text || q.caption || " " };
     }
 
-    // ----- Forwarding -----
     const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
-    let success = 0,
-      failed = [];
+    let success = 0;
 
-    for (const [i, jid] of targets.entries()) {
+    for (let i = 0; i < limited.length; i++) {
+      const jid = limited[i];
       try {
-        const sent = await client.sendMessage(jid, content);
-        success++;
+        const sent = await conn.sendMessage(jid, content);
         tracker.push({ jid, msgId: sent.key.id });
-
-        // Progress message every 10 sends
-        if ((i + 1) % 10 === 0)
-          await message.reply(`🔄 Sent to ${i + 1}/${targets.length}...`);
-      } catch {
-        failed.push(jid);
-      }
-      await new Promise((r) => setTimeout(r, SAFETY.BASE_DELAY));
+        success++;
+      } catch (e) {}
+      if ((i + 1) % 10 === 0)
+        await m.reply(`📤 Progress: ${i + 1}/${limited.length}`);
+      await new Promise((r) => setTimeout(r, SAFETY.DELAY));
     }
 
     fs.writeFileSync(TRACK_FILE, JSON.stringify(tracker, null, 2));
 
-    let msg = `✅ *Forward Complete*\n\n📤 Success: ${success}/${targets.length}`;
-    if (failed.length) msg += `\n❌ Failed: ${failed.length}`;
-    if (args[0] === "all") msg += `\n🌐 Mode: Forwarded to all chats`;
+    await m.reply(`✅ Forwarded to *${success}/${limited.length}* chats/groups successfully!`);
 
-    await message.reply(msg);
   } catch (err) {
     console.error(err);
-    await message.reply("💢 Error: " + err.message);
+    await m.reply("💢 Error: " + err.message);
   }
 });
