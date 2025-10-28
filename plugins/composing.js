@@ -39,14 +39,18 @@ cmd(
   async (conn, mek, m, extra) => {
     try {
       const text = (m.text || "").trim();
-      const args = text.split(" ").slice(1); // manual split
+      const args = text.split(" ").slice(1);
       const input = (args[0] || "").toLowerCase();
       const from = extra?.from || mek.chat || m.key.remoteJid;
-      const sender = m.sender || mek.sender || "";
-      const isOwner =
-        global.ownernumber?.includes(sender.split("@")[0]) || false;
+      const sender = (m.sender || mek.sender || "").replace(/[^0-9]/g, ""); // 👈 clean number (remove +, @, etc.)
 
-      const reply = async (msg) => await conn.sendMessage(from, { text: msg }, { quoted: mek });
+      // ✅ Fix Owner Check
+      const ownerList = (global.ownernumber || [])
+        .map((num) => num.replace(/[^0-9]/g, "")); // clean owner number
+      const isOwner = ownerList.includes(sender);
+
+      const reply = async (msg) =>
+        await conn.sendMessage(from, { text: msg }, { quoted: mek });
 
       // 🧠 No Argument → Show Guide
       if (!input) {
@@ -63,7 +67,8 @@ cmd(
       }
 
       // ❌ Owner Restriction
-      if (!isOwner) return reply("❌ Only *Bot Owner* can use this command.");
+      if (!isOwner)
+        return reply("❌ Only *Bot Owner* can use this command.");
 
       // 📊 STATUS
       if (input === "status") {
@@ -98,7 +103,7 @@ cmd(
         return;
       }
 
-      // ⚠️ Invalid Input
+      // ⚙️ Invalid Input
       reply("⚙️ Usage:\n.composing on\n.composing off\n.composing status");
     } catch (e) {
       console.log("Composing Error:", e);
