@@ -1,4 +1,4 @@
-// 💫 FORWARD ALL — Umar Farooq Edition (Ultimate Fix)
+// 💫 FORWARD ALL — Umar Farooq Final Compatible Edition
 // Made with ❤️ by whiteshadow + Umar
 
 const { cmd } = require("../command");
@@ -6,49 +6,37 @@ const fs = require("fs");
 
 const TRACK_FILE = "./forward-tracker.json";
 
-// Auto create tracker file
+// Auto create tracker file if missing
 if (!fs.existsSync(TRACK_FILE)) fs.writeFileSync(TRACK_FILE, JSON.stringify([]));
 
-const SAFETY = { MAX_JIDS: 1000, DELAY: 2000 };
-
-const HELP_MSG = `⚙️ *Forward Command Help*
-
-📤 *Usage:*
-1. Reply to a message then type:
-   • .fwd all → Send to *all chats & groups*
-   • .fwd 5 chats 3 groups → Send to limited chats/groups
-   • .fwd del all → Delete all forwarded messages
-
-💡 *Examples:*
-> .fwd all  
-> .fwd 10 chats 5 groups  
-> .fwd del all`;
+const SAFETY = {
+  MAX_JIDS: 1000,
+  DELAY: 2000,
+};
 
 cmd({
   pattern: "forward",
   alias: ["fwd"],
-  desc: "Forward messages to all chats or specific number of chats/groups.",
+  desc: "Forward a replied message to chats/groups",
   category: "owner",
   filename: __filename
-}, async (conn, m, match, { isOwner }) => {
+}, async (conn, mek, m, { reply, isOwner, body }) => {
   try {
-    if (!isOwner) return await m.reply("⚠️ *Owner Only Command!*");
+    if (!isOwner) return await reply("⚠️ *Owner Only Command!*");
 
-    // 🔒 Safely normalize input
-    let input = "";
-    if (typeof match === "string") input = match.trim();
-    else if (Array.isArray(match)) input = match.join(" ").trim();
-    else if (match && typeof match === "object" && match.text) input = match.text.trim();
+    // Extract user text (everything after command)
+    const input = (body || "").split(/^\.(forward|fwd)\s*/i)[1]?.trim() || "";
 
-    const args = input.split(/\s+/).filter(a => a && a.length);
+    // 📘 HELP MESSAGE
+    if (!input) {
+      return await reply(`⚙️ *Forward Command Help*\n\n📤 *Usage:*\n1. Reply to a message then type:\n   • .fwd all → Send to *all chats & groups*\n   • .fwd 5 chats 3 groups → Send to limited chats/groups\n   • .fwd del all → Delete all forwarded messages\n\n💡 *Examples:*\n> .fwd all\n> .fwd 10 chats 5 groups\n> .fwd del all`);
+    }
 
-    // 🧾 No arguments = show help
-    if (!args.length) return await m.reply(HELP_MSG);
-
-    // 🗑️ DELETE MODE
-    if (args[0].toLowerCase() === "del" && args[1]?.toLowerCase() === "all") {
+    // 🗑 DELETE MODE
+    if (/^del\s+all$/i.test(input)) {
       const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
-      if (!tracker.length) return await m.reply("⚠️ No forwarded messages to delete.");
+      if (!tracker.length) return await reply("⚠️ No forwarded messages to delete.");
+
       let deleted = 0;
       for (const x of tracker) {
         try {
@@ -58,47 +46,42 @@ cmd({
         await new Promise(r => setTimeout(r, 500));
       }
       fs.writeFileSync(TRACK_FILE, JSON.stringify([]));
-      return await m.reply(`🗑️ Deleted ${deleted} forwarded messages.`);
+      return await reply(`🗑️ Deleted ${deleted} messages.`);
     }
 
-    // 📤 FORWARD MODE
-    if (!m.quoted) return await m.reply("⚠️ Please reply to a message to forward.");
+    // ✅ FORWARD MODE
+    if (!m.quoted) return await reply("⚠️ Please reply to a message to forward.");
 
-    // 🔍 Fetch chats + groups
-    const contacts = Object.keys(conn.contacts || {});
-    const groupsData = await conn.groupFetchAllParticipating().catch(() => ({}));
-    const groupJids = Object.keys(groupsData);
-    let allJids = [...new Set([...contacts, ...groupJids])]
-      .filter(j => j.endsWith("@s.whatsapp.net") || j.endsWith("@g.us"));
-
-    if (!allJids.length)
-      return await m.reply("❌ No chats or groups found. Try messaging someone first!");
-
-    // 🧮 Parse command
-    let chatLimit = 0, groupLimit = 0, mode = "custom";
-    if (args[0].toLowerCase() === "all") mode = "all";
-    else {
-      const chatIndex = args.indexOf("chats");
-      const groupIndex = args.indexOf("groups");
-      if (chatIndex > 0) chatLimit = parseInt(args[chatIndex - 1]) || 0;
-      if (groupIndex > 0) groupLimit = parseInt(args[groupIndex - 1]) || 0;
-
-      if (chatLimit === 0 && groupLimit === 0) return await m.reply(HELP_MSG);
+    // 🧠 Parse input like "5 chats 3 groups"
+    let chatLimit = 0, groupLimit = 0;
+    if (/all/i.test(input)) {
+      chatLimit = SAFETY.MAX_JIDS;
+      groupLimit = SAFETY.MAX_JIDS;
+    } else {
+      chatLimit = parseInt(input.match(/(\d+)\s*chats?/i)?.[1]) || 0;
+      groupLimit = parseInt(input.match(/(\d+)\s*groups?/i)?.[1]) || 0;
+      if (chatLimit === 0 && groupLimit === 0)
+        return await reply("⚠️ Invalid format! Example: `.fwd 5 chats 3 groups` or `.fwd all`");
     }
 
-    // 🧩 Divide chats & groups
-    const chats = allJids.filter(j => j.endsWith("@s.whatsapp.net"));
-    const groups = allJids.filter(j => j.endsWith("@g.us"));
-    const finalChats = mode === "all" ? chats : chats.slice(0, chatLimit);
-    const finalGroups = mode === "all" ? groups : groups.slice(0, groupLimit);
-    const sendList = [...finalChats, ...finalGroups].slice(0, SAFETY.MAX_JIDS);
+    // 🧭 Fetch all chats and groups
+    let allJids = Object.keys(conn.chats || {});
+    const groups = await conn.groupFetchAllParticipating().catch(() => ({}));
+    const groupJids = Object.keys(groups);
 
-    if (!sendList.length)
-      return await m.reply("❌ No valid chats or groups to send.");
+    const chatJids = allJids.filter(j => j.endsWith("@s.whatsapp.net"));
+    const validGroups = groupJids.filter(j => j.endsWith("@g.us"));
 
-    await m.reply(`🚀 Forwarding to ${sendList.length} destinations (${finalChats.length} chats, ${finalGroups.length} groups)...`);
+    // Limit counts
+    const selectedChats = chatJids.slice(0, chatLimit || chatJids.length);
+    const selectedGroups = validGroups.slice(0, groupLimit || validGroups.length);
+    const targets = [...new Set([...selectedChats, ...selectedGroups])];
 
-    // 🖼️ Prepare message
+    if (!targets.length) return await reply("❌ No valid chats or groups found.");
+
+    await reply(`🚀 Forwarding to *${targets.length}* chats & groups...`);
+
+    // Prepare message
     const q = m.quoted;
     const mtype = q.mtype;
     let content = {};
@@ -112,26 +95,26 @@ cmd({
         case "stickerMessage": content = { sticker: buffer }; break;
         case "documentMessage": content = { document: buffer, fileName: q.fileName || "file" }; break;
       }
-    } else {
-      content = { text: q.text || q.caption || " " };
-    }
+    } else content = { text: q.text || q.caption || " " };
 
+    // Forwarding...
     const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
     let success = 0;
 
-    for (let i = 0; i < sendList.length; i++) {
+    for (let i = 0; i < targets.length; i++) {
+      const jid = targets[i];
       try {
-        const sent = await conn.sendMessage(sendList[i], content);
-        tracker.push({ jid: sendList[i], msgId: sent.key.id });
+        const sent = await conn.sendMessage(jid, content);
+        tracker.push({ jid, msgId: sent.key.id });
         success++;
       } catch {}
       if ((i + 1) % 20 === 0)
-        await m.reply(`📤 Progress: ${i + 1}/${sendList.length}`);
+        await reply(`📤 Progress: ${i + 1}/${targets.length}`);
       await new Promise(r => setTimeout(r, SAFETY.DELAY));
     }
 
     fs.writeFileSync(TRACK_FILE, JSON.stringify(tracker, null, 2));
-    await m.reply(`✅ Forwarded to *${success}/${sendList.length}* chats/groups successfully!`);
+    await reply(`✅ Forwarded to *${success}/${targets.length}* chats/groups successfully!`);
 
   } catch (err) {
     console.error("Forward Error:", err);
