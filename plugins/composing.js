@@ -1,44 +1,22 @@
-const fs = require("fs");
-const path = require("path");
 const { cmd } = require("../command");
 const config = require("../config");
 
-// Status file
-const statusFile = path.join(__dirname, "./autotyping-status.json");
-if (!fs.existsSync(statusFile)) fs.writeFileSync(statusFile, JSON.stringify({ enabled: false }, null, 2));
-
-let typingStatus = JSON.parse(fs.readFileSync(statusFile));
-
-function saveStatus() {
-  fs.writeFileSync(statusFile, JSON.stringify(typingStatus, null, 2));
-}
-
-// Auto typing presence
-cmd({ on: "body" }, async (conn, mek, m, { from }) => {
-  if (typingStatus.enabled) {
-    await conn.sendPresenceUpdate("composing", from);
-  }
-});
-
-// Main composing command
 cmd({
-  pattern: "^composing(?:\\s+(.*))?$", // optional argument
-  desc: "Enable/disable/check auto typing",
+  pattern: "^composing(?:\\s+.*)?$",
+  desc: "Enable/disable/check AUTO_TYPING",
   category: "settings",
-  react: "⌨️",
   filename: __filename
-}, async (conn, mek, m, { reply }) => {
+}, async (conn, mek, m, extras) => {
+  const { reply } = extras;
+
   try {
     // Reliable text extraction
-    let text = "";
-    if (m.text) text = m.text;
-    else if (m.message?.conversation) text = m.message.conversation;
-    else if (m.message?.extendedTextMessage?.text) text = m.message.extendedTextMessage.text;
-    text = text.trim();
+    const text = m.text || m.message?.conversation || m.message?.extendedTextMessage?.text || "";
+    const parts = text.trim().split(/\s+/);
+    const cmdName = parts[0].replace(/^[.!/]/, "").toLowerCase();
+    const arg = parts[1]?.toLowerCase();
 
-    // Extract argument
-    const match = text.match(/^\.?composing\s*(.*)/i);
-    const arg = match?.[1]?.toLowerCase()?.trim();
+    if (cmdName !== "composing") return;
 
     // Owner check
     const sender = (m.sender || "").replace(/[^0-9]/g, "");
@@ -46,36 +24,26 @@ cmd({
     if (!Array.isArray(owners)) owners = [owners];
     owners = owners.map(num => num.replace(/[^0-9]/g, ""));
     const isOwner = owners.some(num => sender.endsWith(num.slice(-8)));
-    if (!isOwner) return; // silently ignore non-owners
+    if (!isOwner) return;
 
-    // ⚡ If no argument, do nothing (silently)
+    // If no argument, do nothing
     if (!arg) return;
 
-    // Handle argument
-    if (arg === "on") {
-      if (!typingStatus.enabled) {
-        typingStatus.enabled = true;
-        saveStatus();
-        return reply("✅ Auto Typing Enabled (Live)");
-      } else return reply("⚠️ Auto Typing is already ON");
-    }
+    switch (arg) {
+      case "on":
+        config.AUTO_TYPING = true;
+        return reply("✅ AUTO_TYPING is now ON");
 
-    if (arg === "off") {
-      if (typingStatus.enabled) {
-        typingStatus.enabled = false;
-        saveStatus();
-        return reply("❌ Auto Typing Disabled (Live)");
-      } else return reply("⚠️ Auto Typing is already OFF");
-    }
+      case "off":
+        config.AUTO_TYPING = false;
+        return reply("❌ AUTO_TYPING is now OFF");
 
-    if (arg === "status") {
-      return reply(`💡 Auto Typing is currently: ${typingStatus.enabled ? "✅ ON" : "❌ OFF"}`);
-    }
+      case "status":
+        return reply(`💡 AUTO_TYPING is currently: ${config.AUTO_TYPING ? "✅ ON" : "❌ OFF"}`);
 
-    // Invalid argument → show optional guidance
-    return reply(
-      `⚠️ Invalid option!\nUsage:\n.composing on\n.composing off\n.composing status`
-    );
+      default:
+        return; // silently ignore invalid arguments
+    }
 
   } catch (e) {
     console.error(e);
