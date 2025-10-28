@@ -2,7 +2,7 @@ const { cmd } = require("../command");
 const config = require("../config");
 
 cmd({
-  pattern: "composing",
+  pattern: /^composing$/i, // Exact match, case-insensitive
   desc: "Enable/disable/check AUTO_TYPING",
   category: "settings",
   filename: __filename
@@ -25,9 +25,11 @@ cmd({
     const isOwner = owners.some(num => sender.endsWith(num.slice(-8)));
     if (!isOwner) return;
 
+    // Guidance if no argument
     if (!arg) {
       return reply(
-        `⚙️ *Composing Command Help*\n` +
+        `⚙️ *Composing Command Help*\n\n` +
+        `📤 Usage:\n` +
         `• .composing on → Enable AUTO_TYPING\n` +
         `• .composing off → Disable AUTO_TYPING\n` +
         `• .composing status → Check current status`
@@ -47,7 +49,7 @@ cmd({
         return reply(`💡 AUTO_TYPING is currently: ${config.AUTO_TYPING ? "✅ ON" : "❌ OFF"}`);
 
       default:
-        return; // ignore invalid
+        return; // silently ignore invalid args
     }
 
   } catch (e) {
