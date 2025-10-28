@@ -7,7 +7,7 @@ const { sleep } = require("../lib/functions");
 
 const statusFile = path.join(__dirname, "./autotyping-status.json");
 
-// ✅ Create status file if missing
+// ✅ Ensure status file exists
 if (!fs.existsSync(statusFile)) {
   fs.writeFileSync(statusFile, JSON.stringify({ enabled: false }, null, 2));
 }
@@ -18,7 +18,7 @@ function saveStatus() {
   fs.writeFileSync(statusFile, JSON.stringify(typingStatus, null, 2));
 }
 
-// 🟢 Auto Typing
+// 🟢 Auto Typing (when body event triggers)
 cmd({ on: "body" }, async (conn, mek, m, { from }) => {
   if (typingStatus.enabled) {
     await conn.sendPresenceUpdate("composing", from);
@@ -34,51 +34,41 @@ cmd(
     react: "⌨️",
     filename: __filename,
   },
-  async (conn, mek, m, extra) => {
+  async (conn, mek, m, { from, isOwner, body }) => {
     try {
-      const text = (m.text || "").trim();
-      const args = text.split(" ").slice(1);
+      // ✅ Fix input parsing (handles all cases)
+      const fullText =
+        (m?.text ||
+          mek?.text ||
+          body ||
+          (m?.message?.conversation || "")).trim() || "";
+      const args = fullText.split(/\s+/).slice(1);
       const input = (args[0] || "").toLowerCase();
-      const from = extra?.from || mek.chat || m.key.remoteJid;
 
-      const senderRaw = m.sender || mek.sender || "";
-      const sender = senderRaw.replace(/[^0-9]/g, "");
-
-      // 🧩 Get Owner numbers from config
+      // ✅ Normalize numbers (for global owner detection)
+      const sender = (m.sender || "").replace(/[^0-9]/g, "");
       let ownerNumbers = [];
 
       if (config.OWNER_NUMBER) {
-        if (typeof config.OWNER_NUMBER === "string") {
-          ownerNumbers = [config.OWNER_NUMBER];
-        } else if (Array.isArray(config.OWNER_NUMBER)) {
-          ownerNumbers = config.OWNER_NUMBER;
-        }
+        ownerNumbers = Array.isArray(config.OWNER_NUMBER)
+          ? config.OWNER_NUMBER
+          : [config.OWNER_NUMBER];
       }
+      ownerNumbers = ownerNumbers.map((n) => n.replace(/[^0-9]/g, ""));
 
-      // 🧹 Normalize all numbers (remove +, spaces)
-      ownerNumbers = ownerNumbers.map((num) =>
-        num.replace(/[^0-9]/g, "")
-      );
-
-      console.log("📞 Sender:", sender);
-      console.log("👑 Owners:", ownerNumbers);
-
-      // ✅ Smart match: check ending digits
-      const isOwner = ownerNumbers.some((num) => {
-        // match if last 8+ digits same (to avoid country-code mismatch)
+      const isBotOwner = ownerNumbers.some((n) => {
         const shortSender = sender.slice(-8);
-        const shortOwner = num.slice(-8);
-        return shortSender === shortOwner || sender.endsWith(num);
+        const shortOwner = n.slice(-8);
+        return shortSender === shortOwner || sender.endsWith(n);
       });
 
       const reply = async (msg) =>
-        await conn.sendMessage(from, { text: msg }, { quoted: mek });
+        conn.sendMessage(from, { text: msg }, { quoted: mek });
 
-      // 🧭 No args → Help message
+      // ⚙️ Help message (if no argument)
       if (!input) {
         return reply(
           `🧠 *Auto Typing Control Panel*\n\n` +
-            `Use:\n` +
             `> .composing on — Enable auto typing\n` +
             `> .composing off — Disable auto typing\n` +
             `> .composing status — Show current state\n\n` +
@@ -88,8 +78,8 @@ cmd(
         );
       }
 
-      // 🚫 Not owner
-      if (!isOwner) {
+      // ❌ Not owner
+      if (!isBotOwner) {
         return reply(
           `❌ Only *Bot Owner* can use this command.\n\n📞 Sender: ${sender}\n👑 Owners: ${ownerNumbers.join(
             ", "
@@ -131,9 +121,11 @@ cmd(
       }
 
       // ⚙️ Invalid input
-      reply("⚙️ Usage:\n.composing on\n.composing off\n.composing status");
+      return reply(
+        `⚙️ Usage:\n.composing on\n.composing off\n.composing status`
+      );
     } catch (e) {
-      console.log("Composing Error:", e);
+      console.error("❌ Composing Error:", e);
     }
   }
 );
