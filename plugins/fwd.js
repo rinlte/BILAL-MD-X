@@ -1,4 +1,4 @@
-// 💫 FORWARD ALL — Umar Farooq FINAL (Chats + Groups Working)
+// 💫 FORWARD ALL — Umar Farooq FINAL (Auto Chats + Groups Sync)
 
 const { cmd } = require("../command");
 const fs = require("fs");
@@ -6,12 +6,12 @@ const fs = require("fs");
 const TRACK_FILE = "./forward-tracker.json";
 if (!fs.existsSync(TRACK_FILE)) fs.writeFileSync(TRACK_FILE, JSON.stringify([]));
 
-const SAFETY = { MAX_JIDS: 1000, DELAY: 2000 };
+const SAFETY = { MAX_JIDS: 2000, DELAY: 2000 };
 
 cmd({
   pattern: "forward",
   alias: ["fwd"],
-  desc: "Forward a replied message to chats & groups",
+  desc: "Forward replied message to chats & groups automatically",
   category: "owner",
   filename: __filename
 }, async (conn, mek, m, { reply, isOwner, body }) => {
@@ -21,9 +21,10 @@ cmd({
     const fullBody = body || "";
     const input = fullBody.replace(/^[.!/]?(forward|fwd)\s*/i, "").trim();
 
+    // 📘 Show help if no args
     if (!input) {
       return await reply(
-        `⚙️ *Forward Command Help*\n\n📤 *Usage:*\n1. Reply to a message then type:\n   • .fwd all\n   • .fwd 3 chats 2 groups\n   • .fwd del all\n\n💡 *Examples:*\n> .fwd all\n> .fwd 5 chats 3 groups\n> .fwd del all`
+        `⚙️ *Forward Command Help*\n\n📤 *Usage:*\n1. Reply to a message then type:\n   • .fwd all\n   • .fwd 5 chats 3 groups\n   • .fwd del all\n\n💡 *Examples:*\n> .fwd all\n> .fwd 5 chats 3 groups\n> .fwd del all`
       );
     }
 
@@ -38,13 +39,12 @@ cmd({
           await conn.sendMessage(x.jid, { delete: { remoteJid: x.jid, fromMe: true, id: x.msgId } });
           deleted++;
         } catch {}
-        await new Promise(r => setTimeout(r, 400));
+        await new Promise(r => setTimeout(r, 300));
       }
       fs.writeFileSync(TRACK_FILE, JSON.stringify([]));
       return await reply(`🗑️ Deleted ${deleted} messages.`);
     }
 
-    // ⚠️ MUST REPLY
     if (!m.quoted) return await reply("⚠️ Please reply to a message to forward.");
 
     // 🧮 Parse user input
@@ -62,39 +62,35 @@ cmd({
     if (!chatLimit && !groupLimit)
       return await reply("⚠️ Example:\n`.fwd 5 chats 3 groups` ya `.fwd all`");
 
-    // 🧠 Fetch groups
+    // 🧠 Fetch all groups
     const groups = await conn.groupFetchAllParticipating().catch(() => ({}));
     const groupJids = Object.keys(groups);
 
-    // 🧠 Fetch chats (fallback support)
+    // 🧠 Fetch all chats (contacts from WhatsApp)
     let chatJids = [];
     try {
-      // Method 1: Baileys recent chat map
-      if (conn.chats) {
-        chatJids = Object.keys(conn.chats).filter(j => j.endsWith("@s.whatsapp.net"));
-      }
+      // get all contacts (non-blocked)
+      const contacts = Object.entries(conn.contacts || {})
+        .filter(([jid, data]) => jid.endsWith("@s.whatsapp.net") && !data.blocked)
+        .map(([jid]) => jid);
 
-      // Method 2: use contact list if above empty
-      if (!chatJids.length && conn.contacts) {
-        chatJids = Object.keys(conn.contacts).filter(j => j.endsWith("@s.whatsapp.net"));
-      }
+      // get from chats map (open conversations)
+      const openChats = Object.keys(conn.chats || {}).filter(j => j.endsWith("@s.whatsapp.net"));
 
-      // Method 3: fallback to getChats (for latest Baileys)
-      if (!chatJids.length && conn.getChats) {
-        const all = await conn.getChats();
-        chatJids = all.map(c => c.id).filter(id => id.endsWith("@s.whatsapp.net"));
-      }
+      // merge both
+      chatJids = [...new Set([...contacts, ...openChats])];
     } catch (e) {
       console.log("⚠️ Chat fetch error:", e.message);
     }
 
-    const selectedChats = chatJids.slice(0, chatLimit || 0);
-    const selectedGroups = groupJids.slice(0, groupLimit || 0);
-    const targets = [...new Set([...selectedChats, ...selectedGroups])];
+    const selectedChats = chatJids.slice(0, chatLimit || chatJids.length);
+    const selectedGroups = groupJids.slice(0, groupLimit || groupJids.length);
+    const totalTargets = [...new Set([...selectedChats, ...selectedGroups])];
 
-    if (!targets.length) return await reply("❌ No valid chats/groups found.");
+    if (!totalTargets.length)
+      return await reply("❌ No chats or groups found. Try messaging someone first!");
 
-    // 🧾 Prepare message content
+    // 🧾 Prepare quoted message
     const q = m.quoted;
     const mtype = q.mtype;
     let content = {};
@@ -116,8 +112,7 @@ cmd({
     let sentChats = 0, sentGroups = 0;
 
     // 📨 Send to chats
-    for (let i = 0; i < selectedChats.length; i++) {
-      const jid = selectedChats[i];
+    for (let jid of selectedChats) {
       try {
         const sent = await conn.sendMessage(jid, content);
         tracker.push({ jid, msgId: sent.key.id });
@@ -129,8 +124,7 @@ cmd({
     }
 
     // 📨 Send to groups
-    for (let i = 0; i < selectedGroups.length; i++) {
-      const jid = selectedGroups[i];
+    for (let jid of selectedGroups) {
       try {
         const sent = await conn.sendMessage(jid, content);
         tracker.push({ jid, msgId: sent.key.id });
@@ -144,7 +138,7 @@ cmd({
     fs.writeFileSync(TRACK_FILE, JSON.stringify(tracker, null, 2));
 
     await reply(
-      `✅ *Forwarding Completed!*\n\n` +
+      `✅ *Forward Completed!*\n\n` +
       `📩 ${sentChats} chats me message forward ho gaya\n` +
       `👥 ${sentGroups} groups me message send ho gaya`
     );
