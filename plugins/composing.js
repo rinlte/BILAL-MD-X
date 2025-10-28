@@ -16,7 +16,7 @@ let typingStatus = JSON.parse(fs.readFileSync(statusFile));
 
 // Save function
 function saveStatus() {
-  fs.writeFileSync(statusFile, JSON.stringify(autotypingStatus, null, 2));
+  fs.writeFileSync(statusFile, JSON.stringify(typingStatus, null, 2));
 }
 
 // 👇 Auto Typing Trigger (on any message)
@@ -26,7 +26,7 @@ cmd({ on: "body" }, async (conn, mek, m, { from }) => {
   }
 });
 
-// 👇 Toggle / Status Command
+// 👇 Command: .composing on/off/status
 cmd({
   pattern: "composing",
   desc: "Enable, disable or check auto typing status",
@@ -39,7 +39,7 @@ cmd({
   const input = (args[0] || "").toLowerCase();
 
   if (!input) {
-    return reply(`⚙️ Usage:\n.autotyping on\n.autotyping off\n.autotyping status`);
+    return reply(`⚙️ Usage:\n.composing on\n.composing off\n.composing status`);
   }
 
   if (input === "status") {
@@ -60,5 +60,5 @@ cmd({
     return setTimeout(() => process.exit(0), 2000);
   }
 
-  reply("⚙️ Usage:\n.autotyping on/off/status");
+  reply("⚙️ Usage:\n.composing on/off/status");
 });
