@@ -1,4 +1,4 @@
-// 💫 FORWARD ALL — Umar Farooq FINAL (Auto Chats + Groups Sync)
+// 💫 FORWARD ALL — Umar Farooq v3 (Auto Chats + Group Sync Fixed)
 
 const { cmd } = require("../command");
 const fs = require("fs");
@@ -11,7 +11,7 @@ const SAFETY = { MAX_JIDS: 2000, DELAY: 2000 };
 cmd({
   pattern: "forward",
   alias: ["fwd"],
-  desc: "Forward replied message to chats & groups automatically",
+  desc: "Forward replied message to all or selected chats/groups.",
   category: "owner",
   filename: __filename
 }, async (conn, mek, m, { reply, isOwner, body }) => {
@@ -21,14 +21,14 @@ cmd({
     const fullBody = body || "";
     const input = fullBody.replace(/^[.!/]?(forward|fwd)\s*/i, "").trim();
 
-    // 📘 Show help if no args
+    // 🧭 Help Message
     if (!input) {
       return await reply(
-        `⚙️ *Forward Command Help*\n\n📤 *Usage:*\n1. Reply to a message then type:\n   • .fwd all\n   • .fwd 5 chats 3 groups\n   • .fwd del all\n\n💡 *Examples:*\n> .fwd all\n> .fwd 5 chats 3 groups\n> .fwd del all`
+        `⚙️ *Forward Command Help*\n\n📤 *Usage:*\n• .fwd all\n• .fwd 5 chats 3 groups\n• .fwd del all\n\n💡 *Examples:*\n> .fwd all\n> .fwd 10 chats 5 groups\n> .fwd del all`
       );
     }
 
-    // 🗑 DELETE ALL
+    // 🗑 Delete All
     if (/^del\s+all$/i.test(input)) {
       const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
       if (!tracker.length) return await reply("⚠️ No forwarded messages to delete.");
@@ -39,15 +39,16 @@ cmd({
           await conn.sendMessage(x.jid, { delete: { remoteJid: x.jid, fromMe: true, id: x.msgId } });
           deleted++;
         } catch {}
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 200));
       }
       fs.writeFileSync(TRACK_FILE, JSON.stringify([]));
       return await reply(`🗑️ Deleted ${deleted} messages.`);
     }
 
+    // ⚠️ Must Reply
     if (!m.quoted) return await reply("⚠️ Please reply to a message to forward.");
 
-    // 🧮 Parse user input
+    // 🎯 Parse user input
     let chatLimit = 0, groupLimit = 0;
     if (/all/i.test(input)) {
       chatLimit = SAFETY.MAX_JIDS;
@@ -62,35 +63,49 @@ cmd({
     if (!chatLimit && !groupLimit)
       return await reply("⚠️ Example:\n`.fwd 5 chats 3 groups` ya `.fwd all`");
 
-    // 🧠 Fetch all groups
-    const groups = await conn.groupFetchAllParticipating().catch(() => ({}));
-    const groupJids = Object.keys(groups);
+    // 🧠 Fetch All Groups
+    let groupJids = [];
+    try {
+      const groups = await conn.groupFetchAllParticipating().catch(() => ({}));
+      groupJids = Object.keys(groups || {});
+    } catch (e) {
+      console.log("Group fetch error:", e.message);
+    }
 
-    // 🧠 Fetch all chats (contacts from WhatsApp)
+    // 🧠 Fetch Chats (contacts + opened chats)
     let chatJids = [];
     try {
-      // get all contacts (non-blocked)
-      const contacts = Object.entries(conn.contacts || {})
-        .filter(([jid, data]) => jid.endsWith("@s.whatsapp.net") && !data.blocked)
-        .map(([jid]) => jid);
+      // Step 1: load all saved contacts
+      const contacts = Object.keys(conn.contacts || {}).filter(j => j.endsWith("@s.whatsapp.net"));
 
-      // get from chats map (open conversations)
-      const openChats = Object.keys(conn.chats || {}).filter(j => j.endsWith("@s.whatsapp.net"));
+      // Step 2: load all opened chats
+      const openedChats = Object.keys(conn.chats || {}).filter(j => j.endsWith("@s.whatsapp.net"));
 
-      // merge both
-      chatJids = [...new Set([...contacts, ...openChats])];
+      // Step 3: merge both
+      chatJids = [...new Set([...contacts, ...openedChats])];
+
+      // Step 4: fallback — if still empty, fetch from conn.onWhatsApp()
+      if (chatJids.length === 0) {
+        const numbers = ["923001234567", "923451234567"]; // optional fallback
+        const exists = await conn.onWhatsApp(numbers);
+        chatJids = exists.filter(x => x.exists).map(x => x.jid);
+      }
     } catch (e) {
-      console.log("⚠️ Chat fetch error:", e.message);
+      console.log("Chat fetch error:", e.message);
     }
+
+    if (!chatJids.length && !groupJids.length)
+      return await reply("❌ No chats or groups found! Try messaging someone first.");
 
     const selectedChats = chatJids.slice(0, chatLimit || chatJids.length);
     const selectedGroups = groupJids.slice(0, groupLimit || groupJids.length);
-    const totalTargets = [...new Set([...selectedChats, ...selectedGroups])];
+    const targets = [...new Set([...selectedChats, ...selectedGroups])];
 
-    if (!totalTargets.length)
-      return await reply("❌ No chats or groups found. Try messaging someone first!");
+    if (!targets.length) return await reply("❌ No valid JIDs found.");
 
-    // 🧾 Prepare quoted message
+    await reply(`🚀 Forwarding started!\n\n📩 ${selectedChats.length} chats\n👥 ${selectedGroups.length} groups`);
+
+    // 🧾 Prepare message content
     const q = m.quoted;
     const mtype = q.mtype;
     let content = {};
@@ -111,7 +126,7 @@ cmd({
     const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
     let sentChats = 0, sentGroups = 0;
 
-    // 📨 Send to chats
+    // 📨 Send to Chats
     for (let jid of selectedChats) {
       try {
         const sent = await conn.sendMessage(jid, content);
@@ -123,7 +138,7 @@ cmd({
       await new Promise(r => setTimeout(r, SAFETY.DELAY));
     }
 
-    // 📨 Send to groups
+    // 📨 Send to Groups
     for (let jid of selectedGroups) {
       try {
         const sent = await conn.sendMessage(jid, content);
