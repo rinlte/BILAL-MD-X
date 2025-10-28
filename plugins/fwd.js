@@ -1,5 +1,4 @@
-// 💫 FORWARD ALL — Umar Farooq Final Ready Version
-// Made with ❤️ by WhiteShadow + Umar Farooq
+// 💫 FORWARD ALL — Umar Farooq Final Smart Limited Version
 
 const { cmd } = require("../command");
 const fs = require("fs");
@@ -19,18 +18,16 @@ cmd({
   try {
     if (!isOwner) return await reply("⚠️ *Owner Only Command!*");
 
-    // 🧠 Get full command text
     const fullBody = body || "";
     const input = fullBody.replace(/^[.!/]?(forward|fwd)\s*/i, "").trim();
 
-    // 🧭 HELP — only when nothing written
     if (!input) {
       return await reply(
-        `⚙️ *Forward Command Help*\n\n📤 *Usage:*\n1. Reply to a message then type:\n   • .fwd all → Send to *all chats & groups*\n   • .fwd 5 chats 3 groups → Send to limited chats/groups\n   • .fwd del all → Delete all forwarded messages\n\n💡 *Examples:*\n> .fwd all\n> .fwd 10 chats 5 groups\n> .fwd del all`
+        `⚙️ *Forward Command Help*\n\n📤 *Usage:*\n1. Reply to a message then type:\n   • .fwd all\n   • .fwd 3 chats 2 groups\n   • .fwd del all\n\n💡 *Examples:*\n> .fwd all\n> .fwd 5 chats 3 groups\n> .fwd del all`
       );
     }
 
-    // 🗑 DELETE MODE
+    // 🗑 DELETE ALL
     if (/^del\s+all$/i.test(input)) {
       const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
       if (!tracker.length) return await reply("⚠️ No forwarded messages to delete.");
@@ -38,9 +35,7 @@ cmd({
       let deleted = 0;
       for (const x of tracker) {
         try {
-          await conn.sendMessage(x.jid, {
-            delete: { remoteJid: x.jid, fromMe: true, id: x.msgId }
-          });
+          await conn.sendMessage(x.jid, { delete: { remoteJid: x.jid, fromMe: true, id: x.msgId } });
           deleted++;
         } catch {}
         await new Promise(r => setTimeout(r, 400));
@@ -49,10 +44,10 @@ cmd({
       return await reply(`🗑️ Deleted ${deleted} messages.`);
     }
 
-    // ⚠️ Must reply to a message
+    // ⚠️ MUST REPLY
     if (!m.quoted) return await reply("⚠️ Please reply to a message to forward.");
 
-    // 🧮 Parse input for limits
+    // 🧮 Parse user input
     let chatLimit = 0, groupLimit = 0;
     if (/all/i.test(input)) {
       chatLimit = SAFETY.MAX_JIDS;
@@ -65,22 +60,19 @@ cmd({
     }
 
     if (!chatLimit && !groupLimit)
-      return await reply("⚠️ Invalid format! Example:\n`.fwd 5 chats 3 groups` or `.fwd all`");
+      return await reply("⚠️ Example:\n`.fwd 5 chats 3 groups` ya `.fwd all`");
 
-    // 🧠 Fetch all chats and groups
+    // 🧠 Fetch chats & groups
     const allChats = Object.keys(conn.chats || {});
     const groups = await conn.groupFetchAllParticipating().catch(() => ({}));
     const groupJids = Object.keys(groups);
     const chatJids = allChats.filter(j => j.endsWith("@s.whatsapp.net"));
 
-    const selectedChats = chatJids.slice(0, chatLimit || chatJids.length);
-    const selectedGroups = groupJids.slice(0, groupLimit || groupJids.length);
+    const selectedChats = chatJids.slice(0, chatLimit || 0);
+    const selectedGroups = groupJids.slice(0, groupLimit || 0);
     const targets = [...new Set([...selectedChats, ...selectedGroups])];
 
-    if (!targets.length)
-      return await reply("❌ No valid chats or groups found. Try messaging someone first!");
-
-    await reply(`🚀 Forwarding to *${targets.length}* chats/groups...`);
+    if (!targets.length) return await reply("❌ No valid chats/groups found.");
 
     // 🧾 Prepare message content
     const q = m.quoted;
@@ -101,22 +93,37 @@ cmd({
     }
 
     const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
-    let success = 0;
+    let sentChats = 0, sentGroups = 0;
 
-    for (let i = 0; i < targets.length; i++) {
-      const jid = targets[i];
+    // 📨 Send to chats first
+    for (let i = 0; i < selectedChats.length; i++) {
+      const jid = selectedChats[i];
       try {
         const sent = await conn.sendMessage(jid, content);
         tracker.push({ jid, msgId: sent.key.id });
-        success++;
+        sentChats++;
       } catch {}
-      if ((i + 1) % 20 === 0)
-        await reply(`📤 Progress: ${i + 1}/${targets.length}`);
+      await new Promise(r => setTimeout(r, SAFETY.DELAY));
+    }
+
+    // 📨 Then send to groups
+    for (let i = 0; i < selectedGroups.length; i++) {
+      const jid = selectedGroups[i];
+      try {
+        const sent = await conn.sendMessage(jid, content);
+        tracker.push({ jid, msgId: sent.key.id });
+        sentGroups++;
+      } catch {}
       await new Promise(r => setTimeout(r, SAFETY.DELAY));
     }
 
     fs.writeFileSync(TRACK_FILE, JSON.stringify(tracker, null, 2));
-    await reply(`✅ Forwarded to *${success}/${targets.length}* chats/groups successfully!`);
+
+    await reply(
+      `✅ *Forwarding Completed!*\n\n` +
+      `📩 ${sentChats} chats me message forward ho gaya\n` +
+      `👥 ${sentGroups} groups me message send ho gaya`
+    );
 
   } catch (err) {
     console.error("Forward Error:", err);
