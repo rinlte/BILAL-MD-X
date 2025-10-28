@@ -2,9 +2,10 @@ const { cmd } = require("../command");
 const config = require("../config");
 
 cmd({
-  pattern: "^composing(?:\\s+.*)?$",
+  pattern: "composing",
   desc: "Enable/disable/check AUTO_TYPING",
   category: "settings",
+  react: "❤️",
   filename: __filename
 }, async (conn, mek, m, extras) => {
   const { reply } = extras;
@@ -50,3 +51,4 @@ cmd({
     reply(`❌ Error: ${e.message}`);
   }
 });
+    
