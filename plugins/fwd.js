@@ -1,4 +1,4 @@
-// 💫 FORWARD ALL — Umar Farooq Edition (Final Fixed v2)
+// 💫 FORWARD ALL — Umar Farooq Edition (Final Fixed v3)
 // Made with ❤️ by whiteshadow + Umar
 
 const { cmd } = require("../command");
@@ -14,7 +14,6 @@ const SAFETY = {
   DELAY: 2000,
 };
 
-// 🧾 Help message (for reuse)
 const HELP_MSG = `⚙️ *Forward Command Help*
 
 📤 *Usage:*
@@ -41,10 +40,10 @@ cmd({
     const input = (typeof match === "string" ? match.trim() : "");
     const args = input.split(/\s+/).filter(a => a);
 
-    // =============== HELP ===============
-    if (!args.length) return await m.reply(HELP_MSG);
+    // 🧾 If no arguments → show help only
+    if (args.length === 0) return await m.reply(HELP_MSG);
 
-    // =============== DELETE MODE ===============
+    // 🗑️ DELETE MODE
     if (args[0] === "del" && args[1] === "all") {
       const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
       if (!tracker.length) return await m.reply("⚠️ No forwarded messages to delete.");
@@ -62,10 +61,10 @@ cmd({
       return await m.reply(`🗑️ Deleted ${deleted} messages.`);
     }
 
-    // =============== FORWARD MODE ===============
+    // 📤 FORWARD MODE
     if (!m.quoted) return await m.reply("⚠️ Please reply to a message to forward.");
 
-    // Auto fetch chats + groups
+    // Fetch all contacts + groups
     const contacts = Object.keys(conn.contacts || {});
     const groupsData = await conn.groupFetchAllParticipating().catch(() => ({}));
     const groupJids = Object.keys(groupsData);
@@ -73,29 +72,38 @@ cmd({
     allJids = allJids.filter(jid => jid.endsWith("@s.whatsapp.net") || jid.endsWith("@g.us"));
 
     if (allJids.length === 0)
-      return await m.reply("❌ No chats or groups found.");
+      return await m.reply("❌ No chats or groups found. Try messaging someone first!");
 
     let chatLimit = 0, groupLimit = 0;
+    let mode = "custom";
+
     if (args[0] === "all") {
-      chatLimit = groupLimit = Infinity;
+      mode = "all";
     } else if (args.length >= 3) {
       const chatIndex = args.indexOf("chats");
       const groupIndex = args.indexOf("groups");
-      chatLimit = chatIndex > 0 ? parseInt(args[chatIndex - 1]) || 0 : 0;
-      groupLimit = groupIndex > 0 ? parseInt(args[groupIndex - 1]) || 0 : 0;
-      if (isNaN(chatLimit) && isNaN(groupLimit)) return await m.reply(HELP_MSG);
+      if (chatIndex > 0) chatLimit = parseInt(args[chatIndex - 1]) || 0;
+      if (groupIndex > 0) groupLimit = parseInt(args[groupIndex - 1]) || 0;
+
+      if (chatLimit === 0 && groupLimit === 0)
+        return await m.reply(HELP_MSG);
     } else {
       return await m.reply(HELP_MSG);
     }
 
-    const chats = allJids.filter(j => j.endsWith("@s.whatsapp.net")).slice(0, chatLimit || Infinity);
-    const groups = allJids.filter(j => j.endsWith("@g.us")).slice(0, groupLimit || Infinity);
-    const sendList = [...chats, ...groups].slice(0, SAFETY.MAX_JIDS);
+    const chats = allJids.filter(j => j.endsWith("@s.whatsapp.net"));
+    const groups = allJids.filter(j => j.endsWith("@g.us"));
 
-    if (sendList.length === 0) return await m.reply("❌ No valid chats or groups to send.");
+    const finalChats = mode === "all" ? chats : chats.slice(0, chatLimit);
+    const finalGroups = mode === "all" ? groups : groups.slice(0, groupLimit);
+    const sendList = [...finalChats, ...finalGroups].slice(0, SAFETY.MAX_JIDS);
 
-    await m.reply(`🚀 Forwarding to ${sendList.length} destinations (${chats.length} chats, ${groups.length} groups)...`);
+    if (sendList.length === 0)
+      return await m.reply("❌ No valid chats or groups to send.");
 
+    await m.reply(`🚀 Forwarding to ${sendList.length} destinations (${finalChats.length} chats, ${finalGroups.length} groups)...`);
+
+    // Prepare quoted message
     const q = m.quoted;
     const mtype = q.mtype;
     let content = {};
