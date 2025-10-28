@@ -12,7 +12,7 @@ cmd({
   const { reply } = extras;
 
   try {
-    // Reliable text extraction
+    // Extract text reliably
     const text = m.text || m.message?.conversation || m.message?.extendedTextMessage?.text || "";
     const parts = text.trim().split(/\s+/);
     const cmdName = parts[0].replace(/^[.!/]/, "").toLowerCase();
@@ -28,28 +28,38 @@ cmd({
     const isOwner = owners.some(num => sender.endsWith(num.slice(-8)));
     if (!isOwner) return;
 
-    // If no argument, do nothing
-    if (!arg) return;
+    if (!arg) return; // no argument → silently ignore
+
+    let msg = "";
 
     switch (arg) {
       case "on":
         config.AUTO_TYPING = true;
-        await reply("✅ AUTO_TYPING is now ON\n🔄 Restarting bot...");
-        exec("pm2 restart all", (err) => {
-          if (err) console.error("PM2 Restart Error:", err);
-        });
+        msg = "✅ AUTO_TYPING is now ON\n🔄 Restarting bot...";
+        await reply(msg);
+        // PM2 restart after short delay
+        setTimeout(() => {
+          exec("pm2 restart all", (err) => {
+            if (err) console.error("PM2 Restart Error:", err);
+          });
+        }, 1000);
         break;
 
       case "off":
         config.AUTO_TYPING = false;
-        await reply("❌ AUTO_TYPING is now OFF\n🔄 Restarting bot...");
-        exec("pm2 restart all", (err) => {
-          if (err) console.error("PM2 Restart Error:", err);
-        });
+        msg = "❌ AUTO_TYPING is now OFF\n🔄 Restarting bot...";
+        await reply(msg);
+        setTimeout(() => {
+          exec("pm2 restart all", (err) => {
+            if (err) console.error("PM2 Restart Error:", err);
+          });
+        }, 1000);
         break;
 
       case "status":
-        return reply(`💡 AUTO_TYPING is currently: ${config.AUTO_TYPING ? "✅ ON" : "❌ OFF"}`);
+        msg = `💡 AUTO_TYPING is currently: ${config.AUTO_TYPING ? "✅ ON" : "❌ OFF"}`;
+        await reply(msg);
+        break;
 
       default:
         return; // silently ignore invalid arguments
