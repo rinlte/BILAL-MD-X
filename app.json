@@ -88,13 +88,13 @@
     "HEROKU_API_KEY": {
       "description": "HEROKU ACCOUNT SETTINGS SE JO API KEY MILTI HAI WO YAHA DALEN",
       "required": true,
-      "value": "HRKU-AAhIljfKEfaaJI9V_Ukmdbz70tzLraS-u4YVJOOGKaGg_____wuQgRWpPeao"
+      "value": "HRKU-AAitNkkFTwnQp7KNgB9netmWb6sa8kTR29D8fJVsBf6Q_____wcQ98sMnMOX"
     },
 
     "HEROKU_APP_NAME": {
       "description": "HEROKU APP NAME JO APKE BOT KA HAI WO YAHA DALEN",
       "required": true,
-      "value": "bilal-md-test1"
+      "value": "bilalmdtest"
     }
   },
 
