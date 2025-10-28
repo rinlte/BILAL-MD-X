@@ -1,5 +1,6 @@
 const { cmd } = require("../command");
 const config = require("../config");
+const { exec } = require("child_process");
 
 cmd({
   pattern: "composing",
@@ -33,11 +34,19 @@ cmd({
     switch (arg) {
       case "on":
         config.AUTO_TYPING = true;
-        return reply("✅ AUTO_TYPING is now ON");
+        await reply("✅ AUTO_TYPING is now ON\n🔄 Restarting bot...");
+        exec("pm2 restart all", (err) => {
+          if (err) console.error("PM2 Restart Error:", err);
+        });
+        break;
 
       case "off":
         config.AUTO_TYPING = false;
-        return reply("❌ AUTO_TYPING is now OFF");
+        await reply("❌ AUTO_TYPING is now OFF\n🔄 Restarting bot...");
+        exec("pm2 restart all", (err) => {
+          if (err) console.error("PM2 Restart Error:", err);
+        });
+        break;
 
       case "status":
         return reply(`💡 AUTO_TYPING is currently: ${config.AUTO_TYPING ? "✅ ON" : "❌ OFF"}`);
@@ -51,4 +60,3 @@ cmd({
     reply(`❌ Error: ${e.message}`);
   }
 });
-    
