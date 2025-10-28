@@ -46,7 +46,7 @@ cmd({
 
     // Only proceed if anti-link is enabled and link is detected
     if (containsLink && config.ANTI_LINK === 'true') {
-      console.log(`AB IDHAR LINK NAA AYE ${sender}: ${body}`);
+      console.log(`Link detected from ${sender}: ${body}`);
 
       // Try to delete the message
       try {
@@ -66,18 +66,19 @@ cmd({
       if (warningCount < 4) {
         // Send warning message
         await conn.sendMessage(from, {
-          text: `‎*APKO WARNING MILI HAI AB DUBARA LINK NAHI BHEJNA WARNA YEH COUNTING JESE KHATAM HOGI AP KO REMOVE KAR DYA JAYE GA ☺️🌹*\n` +
-                `*╭──── WARN ────*\n` +
-                `*├ 👑 USER :* @${sender.split('@')[0]}!\n` +
-                `*├ 👑 COUNT : ${warningCount}*\n` +
-                `*├ 👑 WARN LIMIT : 3*\n` +
+          text: `‎*⚠️LINKS ARE NOT ALLOWED⚠️*\n` +
+                `*╭────⬡ WARNING ⬡────*\n` +
+                `*├▢ USER :* @${sender.split('@')[0]}!\n` +
+                `*├▢ COUNT : ${warningCount}*\n` +
+                `*├▢ REASON : LINK SENDING*\n` +
+                `*├▢ WARN LIMIT : 3*\n` +
                 `*╰────────────────*`,
           mentions: [sender]
         });
       } else {
         // Remove user if they exceed warning limit
         await conn.sendMessage(from, {
-          text: `@${sender.split('@')[0]} *APKI LIMITS PURI HO GAI I AM SORRY HUM GROUP ADMINS APKO REMOVE KAR RAHE HAI IS GROUP SE ALLAH HAFIZ 🥺♥️*`,
+          text: `@${sender.split('@')[0]} *HAS BEEN REMOVED - WARN LIMIT EXCEEDED!*`,
           mentions: [sender]
         });
         await conn.groupParticipantsUpdate(from, [sender], "remove");
@@ -85,7 +86,7 @@ cmd({
       }
     }
   } catch (error) {
-    console.error("ERROR", error);
-    reply("*E R R O R*");
+    console.error("Anti-link error:", error);
+    reply("❌ An error occurred while processing the message.");
   }
 });
