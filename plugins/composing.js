@@ -3,6 +3,7 @@ const path = require("path");
 const { cmd } = require("../command");
 const config = require("../config");
 
+// Status file
 const statusFile = path.join(__dirname, "./autotyping-status.json");
 if (!fs.existsSync(statusFile)) fs.writeFileSync(statusFile, JSON.stringify({ enabled: false }, null, 2));
 
@@ -12,7 +13,7 @@ function saveStatus() {
   fs.writeFileSync(statusFile, JSON.stringify(typingStatus, null, 2));
 }
 
-// Auto typing
+// Auto typing when any message arrives
 cmd({ on: "body" }, async (conn, mek, m, { from }) => {
   if (typingStatus.enabled) {
     await conn.sendPresenceUpdate("composing", from);
@@ -21,7 +22,7 @@ cmd({ on: "body" }, async (conn, mek, m, { from }) => {
 
 // Main command
 cmd({
-  pattern: "^composing$",
+  pattern: "^composing(?:\\s+(.*))?$", // accept arguments
   desc: "Enable/disable/check auto typing",
   category: "settings",
   react: "⌨️",
@@ -35,21 +36,20 @@ cmd({
     else if (m.message?.extendedTextMessage?.text) text = m.message.extendedTextMessage.text;
     text = text.trim();
 
-    // Extract command argument
-    const args = text.split(/\s+/).slice(1); // remove command itself
-    const cmdArg = args[0]?.toLowerCase() || "";
+    // Extract argument after command
+    const match = text.match(/^\.?composing\s*(.*)/i);
+    const cmdArg = (match?.[1] || "").toLowerCase().trim();
 
     // Owner check
     const sender = (m.sender || "").replace(/[^0-9]/g, "");
     let owners = config.OWNER_NUMBER || [];
     if (!Array.isArray(owners)) owners = [owners];
-    owners = owners.map(num => num.replace(/[^0-9]/g, ""));
+    owners = owners.map((num) => num.replace(/[^0-9]/g, ""));
     const isOwner = owners.some(num => sender.endsWith(num.slice(-8)));
     if (!isOwner) return reply("❌ Only *Bot Owner* can use this command.");
 
-    // 🔹 Handle commands
+    // Handle commands
     if (!cmdArg) {
-      // Show usage only if argument missing
       return reply(
         `⚙️ *Usage:*\n` +
         `.composing on\n` +
