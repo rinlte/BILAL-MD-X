@@ -6,28 +6,23 @@ const { sleep } = require("../lib/functions");
 
 const statusFile = path.join(__dirname, "./autotyping-status.json");
 
-// ✅ Create status file if not exist
 if (!fs.existsSync(statusFile)) {
   fs.writeFileSync(statusFile, JSON.stringify({ enabled: false }, null, 2));
 }
 
 let typingStatus = JSON.parse(fs.readFileSync(statusFile));
-
 function saveStatus() {
   fs.writeFileSync(statusFile, JSON.stringify(typingStatus, null, 2));
 }
 
-// 👇 Auto Typing On Message
-cmd(
-  { on: "body" },
-  async (conn, mek, m, { from }) => {
-    if (typingStatus.enabled) {
-      await conn.sendPresenceUpdate("composing", from);
-    }
+// 👇 Auto typing trigger
+cmd({ on: "body" }, async (conn, mek, m, { from }) => {
+  if (typingStatus.enabled) {
+    await conn.sendPresenceUpdate("composing", from);
   }
-);
+});
 
-// 👇 Main Command
+// 👇 Main command
 cmd(
   {
     pattern: "composing",
@@ -42,17 +37,24 @@ cmd(
       const args = text.split(" ").slice(1);
       const input = (args[0] || "").toLowerCase();
       const from = extra?.from || mek.chat || m.key.remoteJid;
-      const sender = (m.sender || mek.sender || "").replace(/[^0-9]/g, ""); // 👈 clean number (remove +, @, etc.)
 
-      // ✅ Fix Owner Check
-      const ownerList = (global.ownernumber || [])
-        .map((num) => num.replace(/[^0-9]/g, "")); // clean owner number
-      const isOwner = ownerList.includes(sender);
+      // ✅ extract sender & owner numbers
+      const senderRaw = m.sender || mek.sender || "";
+      const sender = senderRaw.replace(/[^0-9]/g, "");
+      const ownerNumbers = (global.ownernumber || []).map((x) =>
+        x.replace(/[^0-9]/g, "")
+      );
+
+      console.log("📞 Sender:", senderRaw);
+      console.log("🧩 Clean Sender:", sender);
+      console.log("👑 Owner Numbers:", ownerNumbers);
+
+      const isOwner = ownerNumbers.some((num) => sender.endsWith(num));
 
       const reply = async (msg) =>
         await conn.sendMessage(from, { text: msg }, { quoted: mek });
 
-      // 🧠 No Argument → Show Guide
+      // 🧠 help text
       if (!input) {
         return reply(
           `🧠 *Auto Typing Control Panel*\n\n` +
@@ -66,11 +68,12 @@ cmd(
         );
       }
 
-      // ❌ Owner Restriction
+      // ❌ Owner check
       if (!isOwner)
-        return reply("❌ Only *Bot Owner* can use this command.");
+        return reply(
+          `❌ Only *Bot Owner* can use this command.\n\n📞 Sender: ${sender}\n👑 Owners: ${ownerNumbers.join(", ")}`
+        );
 
-      // 📊 STATUS
       if (input === "status") {
         return reply(
           `💡 Auto Typing is currently: ${
@@ -79,7 +82,6 @@ cmd(
         );
       }
 
-      // ✅ ON
       if (input === "on") {
         typingStatus.enabled = true;
         saveStatus();
@@ -91,7 +93,6 @@ cmd(
         return;
       }
 
-      // ❌ OFF
       if (input === "off") {
         typingStatus.enabled = false;
         saveStatus();
@@ -103,7 +104,6 @@ cmd(
         return;
       }
 
-      // ⚙️ Invalid Input
       reply("⚙️ Usage:\n.composing on\n.composing off\n.composing status");
     } catch (e) {
       console.log("Composing Error:", e);
