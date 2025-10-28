@@ -1,4 +1,4 @@
-// 💫 FORWARD ALL — Umar Farooq Final Smart Limited Version
+// 💫 FORWARD ALL — Umar Farooq FINAL (Chats + Groups Working)
 
 const { cmd } = require("../command");
 const fs = require("fs");
@@ -11,7 +11,7 @@ const SAFETY = { MAX_JIDS: 1000, DELAY: 2000 };
 cmd({
   pattern: "forward",
   alias: ["fwd"],
-  desc: "Forward a replied message to all or selected chats/groups",
+  desc: "Forward a replied message to chats & groups",
   category: "owner",
   filename: __filename
 }, async (conn, mek, m, { reply, isOwner, body }) => {
@@ -62,11 +62,31 @@ cmd({
     if (!chatLimit && !groupLimit)
       return await reply("⚠️ Example:\n`.fwd 5 chats 3 groups` ya `.fwd all`");
 
-    // 🧠 Fetch chats & groups
-    const allChats = Object.keys(conn.chats || {});
+    // 🧠 Fetch groups
     const groups = await conn.groupFetchAllParticipating().catch(() => ({}));
     const groupJids = Object.keys(groups);
-    const chatJids = allChats.filter(j => j.endsWith("@s.whatsapp.net"));
+
+    // 🧠 Fetch chats (fallback support)
+    let chatJids = [];
+    try {
+      // Method 1: Baileys recent chat map
+      if (conn.chats) {
+        chatJids = Object.keys(conn.chats).filter(j => j.endsWith("@s.whatsapp.net"));
+      }
+
+      // Method 2: use contact list if above empty
+      if (!chatJids.length && conn.contacts) {
+        chatJids = Object.keys(conn.contacts).filter(j => j.endsWith("@s.whatsapp.net"));
+      }
+
+      // Method 3: fallback to getChats (for latest Baileys)
+      if (!chatJids.length && conn.getChats) {
+        const all = await conn.getChats();
+        chatJids = all.map(c => c.id).filter(id => id.endsWith("@s.whatsapp.net"));
+      }
+    } catch (e) {
+      console.log("⚠️ Chat fetch error:", e.message);
+    }
 
     const selectedChats = chatJids.slice(0, chatLimit || 0);
     const selectedGroups = groupJids.slice(0, groupLimit || 0);
@@ -95,25 +115,29 @@ cmd({
     const tracker = JSON.parse(fs.readFileSync(TRACK_FILE));
     let sentChats = 0, sentGroups = 0;
 
-    // 📨 Send to chats first
+    // 📨 Send to chats
     for (let i = 0; i < selectedChats.length; i++) {
       const jid = selectedChats[i];
       try {
         const sent = await conn.sendMessage(jid, content);
         tracker.push({ jid, msgId: sent.key.id });
         sentChats++;
-      } catch {}
+      } catch (e) {
+        console.log("Chat send fail:", jid, e.message);
+      }
       await new Promise(r => setTimeout(r, SAFETY.DELAY));
     }
 
-    // 📨 Then send to groups
+    // 📨 Send to groups
     for (let i = 0; i < selectedGroups.length; i++) {
       const jid = selectedGroups[i];
       try {
         const sent = await conn.sendMessage(jid, content);
         tracker.push({ jid, msgId: sent.key.id });
         sentGroups++;
-      } catch {}
+      } catch (e) {
+        console.log("Group send fail:", jid, e.message);
+      }
       await new Promise(r => setTimeout(r, SAFETY.DELAY));
     }
 
