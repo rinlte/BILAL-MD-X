@@ -35,14 +35,24 @@ cmd({
   category: "settings",
   react: "⌨️",
   filename: __filename
-}, async (conn, mek, m, { from, reply, body }) => {
+}, async (conn, mek, m, extras) => {
   try {
-    // 🧩 Detect text correctly for all setups
-    const text = (m.text || body || "").trim();
-    const args = text.split(" ");
-    const input = (args[1] || "").toLowerCase();
+    const { from, reply } = extras;
 
-    // 🔢 Get sender & owner numbers (normalize to last 8 digits)
+    // 🧩 Detect command text safely for all setups
+    const fullText =
+      (m.text ||
+        m.message?.conversation ||
+        m.message?.extendedTextMessage?.text ||
+        extras?.body ||
+        "")
+        .toString()
+        .trim();
+
+    // 🔎 Extract argument after command name
+    const match = fullText.replace(/^[.!/]?(composing)\s*/i, "").trim().toLowerCase();
+
+    // 🔢 Get sender & owner numbers
     const sender = (m.sender || "").replace(/[^0-9]/g, "");
     let owners = config.OWNER_NUMBER || [];
     if (!Array.isArray(owners)) owners = [owners];
@@ -50,20 +60,24 @@ cmd({
     const isOwner = owners.some((num) => sender.endsWith(num.slice(-8)));
 
     if (!isOwner) {
-      return reply(`❌ Only *Bot Owner* can use this command.`);
+      return reply("❌ Only *Bot Owner* can use this command.");
     }
 
-    // ⚙️ If no argument, show usage
-    if (!input) {
+    // ⚙️ If no argument, show help
+    if (!match) {
       return reply(
-        `⚙️ Usage:\n.composing on\n.composing off\n.composing status\n\n📊 Current: ${
-          typingStatus.enabled ? "✅ *ON*" : "❌ *OFF*"
-        }`
+        `⚙️ *Usage:*\n` +
+          `.composing on\n` +
+          `.composing off\n` +
+          `.composing status\n\n` +
+          `📊 Current: ${
+            typingStatus.enabled ? "✅ *ON*" : "❌ *OFF*"
+          }`
       );
     }
 
     // 📊 STATUS
-    if (input === "status") {
+    if (match === "status") {
       return reply(
         `💡 Auto Typing is currently: ${
           typingStatus.enabled ? "✅ *ON*" : "❌ *OFF*"
@@ -72,7 +86,7 @@ cmd({
     }
 
     // ✅ ON
-    if (input === "on") {
+    if (match === "on") {
       typingStatus.enabled = true;
       saveStatus();
       await reply("✅ Auto Typing *Enabled!* Restarting bot...");
@@ -84,7 +98,7 @@ cmd({
     }
 
     // ❌ OFF
-    if (input === "off") {
+    if (match === "off") {
       typingStatus.enabled = false;
       saveStatus();
       await reply("❌ Auto Typing *Disabled!* Restarting bot...");
@@ -95,9 +109,13 @@ cmd({
       return;
     }
 
-    // ❔ Invalid
-    return reply(`⚙️ Usage:\n.composing on\n.composing off\n.composing status`);
-
+    // ⚠️ Invalid option
+    return reply(
+      `⚙️ *Usage:*\n` +
+        `.composing on\n` +
+        `.composing off\n` +
+        `.composing status`
+    );
   } catch (e) {
     console.error(e);
     reply(`❌ Error: ${e.message}`);
