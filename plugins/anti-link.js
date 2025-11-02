@@ -1,6 +1,69 @@
 const { cmd } = require('../command');
 const config = require("../config");
 
+if (!global.antiLinkStatus) {
+  global.antiLinkStatus = {};
+}
+
+cmd({
+  pattern: "antilink",
+  desc: "Enable or disable anti-link protection",
+  category: "group",
+  filename: __filename
+}, async (conn, m, store, {
+  from,
+  quoted,
+  body,
+  isCmd,
+  command,
+  args,
+  q,
+  isGroup,
+  sender,
+  senderNumber,
+  botNumber2,
+  botNumber,
+  pushname,
+  isMe,
+  isOwner,
+  groupMetadata,
+  groupName,
+  participants,
+  groupAdmins,
+  isBotAdmins,
+  isAdmins,
+  reply
+}) => {
+  try {
+    if (!isGroup) return reply("❌ This command is only for groups!");
+    if (!isAdmins) return reply("❌ Only admins can use this command!");
+
+    const action = args[0]?.toLowerCase();
+
+    if (!action || (action !== 'on' && action !== 'off')) {
+      return reply(`*⚙️ ANTI-LINK SETTINGS*\n\n` +
+                   `*Current Status:* ${global.antiLinkStatus[from] ? '✅ Enabled' : '❌ Disabled'}\n\n` +
+                   `*Usage:*\n` +
+                   `• ${command} on - Enable anti-link\n` +
+                   `• ${command} off - Disable anti-link`);
+    }
+
+    if (action === 'on') {
+      global.antiLinkStatus[from] = true;
+      await reply(`✅ *ANTI-LINK ACTIVATED*\n\n` +
+                  `Links are now blocked in this group!\n` +
+                  `Users will receive warnings for sending links.`);
+    } else {
+      global.antiLinkStatus[from] = false;
+      await reply(`❌ *ANTI-LINK DEACTIVATED*\n\n` +
+                  `Links are now allowed in this group.`);
+    }
+  } catch (error) {
+    console.error("Error in antilink command:", error);
+    reply("❌ An error occurred!");
+  }
+});
+
 cmd({
   'on': "body"
 }, async (conn, m, store, {
@@ -21,7 +84,7 @@ cmd({
       return;
     }
 
-    if (config.ANTI_LINK !== 'true') {
+    if (!global.antiLinkStatus[from]) {
       return;
     }
 
